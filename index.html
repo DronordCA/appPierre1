@@ -667,6 +667,24 @@ nav {
 <div id="tab-argent"   class="screen hidden"></div>
 <div id="tab-reglages" class="screen hidden"></div>
 
+
+<script>
+// Stubs — replaced by module once loaded
+var _moduleReady = false;
+var _pendingCall = null;
+
+window.unlock = function() {
+  if (_moduleReady) { return window._realUnlock(); }
+  _pendingCall = 'unlock';
+};
+window.loginWithFaceID = function() {
+  if (_moduleReady) { return window._realFaceID(); }
+};
+window.showCodeForm = function() {
+  if (_moduleReady) { return window._realShowCodeForm(); }
+};
+</script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -863,16 +881,24 @@ function showLockScreen(msg) {
 }
 
 window.unlock = async function() {
-  const code = document.getElementById("lock-code").value.trim().toLowerCase().replace(/[^a-z0-9\-_]/g,"");
-  if (code.length < 2) { showLockErr("Code trop court"); return; }
+  const rawCode = document.getElementById("lock-code").value.trim();
+  if (!rawCode) { showLockErr("Entrez votre code"); return; }
+  const code = rawCode.toLowerCase().replace(/[^a-z0-9\-_]/g,"");
+  if (code.length < 2) { showLockErr("Code trop court (minimum 2 caracteres)"); return; }
+  document.getElementById("lock-err").classList.add("hidden");
   document.getElementById("lock-loading").classList.remove("hidden");
   document.getElementById("lock-form").classList.add("hidden");
-  await connect(code);
-  refreshSession();
-  localStorage.setItem("budget_code", code);
-  // Register Face ID if not yet done
-  if (window.PublicKeyCredential && !localStorage.getItem(FACEID_KEY)) {
-    setTimeout(() => registerFaceID(code), 1200);
+  try {
+    await connect(code);
+    refreshSession();
+    localStorage.setItem("budget_code", code);
+    if (window.PublicKeyCredential && !localStorage.getItem(FACEID_KEY)) {
+      setTimeout(() => registerFaceID(code), 1200);
+    }
+  } catch(e) {
+    document.getElementById("lock-loading").classList.add("hidden");
+    document.getElementById("lock-form").classList.remove("hidden");
+    showLockErr("Erreur : " + (e.message || "Verifiez votre connexion internet ou les regles Firebase"));
   }
 };
 
@@ -899,13 +925,17 @@ document.addEventListener("visibilitychange", () => {
 // ── INITIAL LOAD
 const savedCode = localStorage.getItem("budget_code");
 if (savedCode && sessionValid()) {
-  // Session still valid — connect silently
   document.getElementById("lock-loading").classList.remove("hidden");
   document.getElementById("lock-form").classList.add("hidden");
   document.getElementById("lock-sub").textContent = "Connexion en cours...";
-  connect(savedCode).then(() => refreshSession());
+  connect(savedCode)
+    .then(() => refreshSession())
+    .catch(() => {
+      localStorage.removeItem("budget_code");
+      localStorage.removeItem("budget_session_time");
+      showLockScreen(null);
+    });
 } else {
-  // Need auth
   showLockScreen(null);
 }
 
@@ -1064,6 +1094,9 @@ async function connect(code) {
   docRef = doc(db, "budgets", code);
   try {
     const snap = await getDoc(docRef);
+    // clear any previous error
+    const errEl = document.getElementById("lock-err");
+    if (errEl) errEl.classList.add("hidden");
     if(snap.exists()) DATA = {...DEFAULT_DATA, ...snap.data()};
     else { await setDoc(docRef, DEFAULT_DATA); DATA = structuredClone(DEFAULT_DATA); }
     if(unsubscribe) unsubscribe();
@@ -1081,8 +1114,14 @@ async function connect(code) {
     localStorage.setItem("budget_code", code);
     showTab("home");
   } catch(e) {
-    document.getElementById("lock-err").textContent="Erreur de connexion. Vérifiez internet.";
-    document.getElementById("lock-err").classList.remove("hidden");
+    const errEl = document.getElementById("lock-err");
+    if (errEl) {
+      errEl.textContent = "Erreur Firebase : " + (e.code || e.message || "verifiez les regles Firestore");
+      errEl.classList.remove("hidden");
+    }
+    document.getElementById("lock-loading")?.classList.add("hidden");
+    document.getElementById("lock-form")?.classList.remove("hidden");
+    throw e;
   }
 }
 
