@@ -9,6 +9,8 @@
 <meta name="apple-mobile-web-app-title" content="Nacho"/>
 <link rel="manifest" href="manifest.json"/>
 <link rel="apple-touch-icon" href="icon2.png"/>
+<link rel="apple-touch-icon-precomposed" href="icon2.png"/>
+<link rel="icon" type="image/png" href="icon2.png"/>
 <title>Nacho</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
@@ -16,6 +18,8 @@
 :root {
   --top: env(safe-area-inset-top, 54px);
   --bot: env(safe-area-inset-bottom, 20px);
+  --left: env(safe-area-inset-left, 0px);
+  --right: env(safe-area-inset-right, 0px);
   /* Brand */
   --orange:    #F97316;
   --orange2:   #EA6C0A;
@@ -47,14 +51,20 @@
   --r-xl: 28px;
 }
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-html { background: var(--navy); }
+html {
+  background: var(--navy);
+  overscroll-behavior: none;
+}
 body {
   font-family: -apple-system, 'SF Pro Display', 'SF Pro Text', Helvetica, sans-serif;
   background: var(--bg);
   max-width: 430px; margin: 0 auto;
-  min-height: 100dvh; overflow-x: hidden;
+  min-height: 100dvh;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
 }
+#app-scroll { display: contents; }
 input, select, button, textarea { font-family: inherit; }
 .hidden { display: none !important; }
 
@@ -63,7 +73,11 @@ input, select, button, textarea { font-family: inherit; }
   position: fixed; inset: 0;
   background: var(--navy);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  z-index: 999; padding: calc(var(--top) + 24px) 32px calc(var(--bot) + 24px);
+  z-index: 999;
+  padding: calc(var(--top) + 24px) 32px calc(var(--bot) + 24px);
+  /* Ensure full cover on iOS PWA */
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
 }
 .lock-logo {
   width: 84px; height: 84px; border-radius: 24px;
@@ -118,7 +132,7 @@ input, select, button, textarea { font-family: inherit; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── DYNAMIC ISLAND ──────────────────────────────────────────────────── */
-.di-bar { position:fixed; top:0; left:50%; transform:translateX(-50%); width:100%; max-width:430px; height:calc(var(--top) + 2px); background:var(--navy); z-index:98; pointer-events:none; }
+.di-bar { position:fixed; top:0; left:50%; transform:translateX(-50%); width:100%; max-width:430px; height:calc(var(--top) + 4px); background:var(--navy); z-index:98; pointer-events:none; }
 .di-pill { position:fixed; top:12px; left:50%; transform:translateX(-50%); height:34px; min-width:120px; background:#000; border-radius:20px; display:flex; align-items:center; justify-content:center; gap:6px; padding:0 14px; transition:all .4s cubic-bezier(.32,1,.23,1); z-index:99; }
 .di-pill.exp { min-width:200px; height:38px; }
 .di-dot { width:7px; height:7px; border-radius:50%; background:var(--orange); flex-shrink:0; animation: glow 2s ease-in-out infinite; }
@@ -138,14 +152,16 @@ input, select, button, textarea { font-family: inherit; }
 
 /* ── NAV ─────────────────────────────────────────────────────────────── */
 nav {
-  position:fixed; bottom:0; left:50%; transform:translateX(-50%);
-  width:100%; max-width:430px;
-  background: rgba(242,240,235,0.88);
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 430px;
+  background: rgba(242,240,235,0.95);
   backdrop-filter: blur(24px) saturate(200%);
   -webkit-backdrop-filter: blur(24px) saturate(200%);
-  border-top: 1px solid rgba(10,10,26,.06);
+  border-top: 1px solid rgba(10,10,26,.08);
   padding-bottom: calc(var(--bot) + 6px);
   z-index: 100; display: flex;
+  /* Hard stop — prevent nav from being cut off */
+  padding-bottom: max(calc(var(--bot) + 6px), 20px);
 }
 .nb {
   flex:1; display:flex; flex-direction:column; align-items:center;
@@ -157,7 +173,7 @@ nav {
 .nb.on svg { stroke:var(--orange); }
 .nb.on span { color:var(--orange); }
 .nb.on::after { content:''; position:absolute; bottom:calc(var(--bot)+2px); width:20px; height:3px; background:var(--orange); border-radius:2px 2px 0 0; }
-.screen { padding-bottom: calc(var(--bot) + 82px); min-height: 100dvh; }
+.screen { padding-bottom: calc(var(--bot) + 90px); }
 
 /* ── HERO ────────────────────────────────────────────────────────────── */
 .hero {
@@ -413,6 +429,16 @@ nav {
 /* ── PROFILE PICKER ──────────────────────────────────────── */
 .profile-pick-btn { flex:1; padding:20px; border-radius:var(--r-md); border:2px solid; font-size:17px; font-weight:700; cursor:pointer; transition:all .15s; }
 
+
+/* ── iOS PWA FIXES ─────────────────────────────────── */
+* { -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
+input, textarea { -webkit-user-select: text; user-select: text; }
+button, a { -webkit-user-select: none; user-select: none; cursor: pointer; }
+/* Prevent white flash when scrolling past bounds */
+#app-scroll { background: var(--bg); }
+/* Fix inputs on iOS PWA */
+input, select { font-size: 16px !important; /* Prevents zoom on focus */ }
+
 </style>
 </head>
 <body>
@@ -450,6 +476,7 @@ nav {
 </div>
 
 <!-- NAV -->
+</div><!-- /app-scroll -->
 <nav class="hidden" id="main-nav">
   <button class="nb on" id="nb-home">
     <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -473,6 +500,7 @@ nav {
   </button>
 </nav>
 
+<div id="app-scroll">
 <div id="tab-home"       class="screen hidden"></div>
 <div id="tab-depense"    class="screen hidden"></div>
 <div id="tab-argent"     class="screen hidden"></div>
@@ -644,45 +672,36 @@ async function doUnlock(){
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-// Wire buttons
-document.getElementById("lock-btn").addEventListener("click",doUnlock);
-document.getElementById("lock-code").addEventListener("keydown",e=>{if(e.key==="Enter")doUnlock();});
-document.getElementById("faceid-btn").addEventListener("click",doFaceID);
-document.getElementById("switch-btn").addEventListener("click",()=>{document.getElementById("faceid-wrap").classList.add("hidden");document.getElementById("lock-form").classList.remove("hidden");});
+  // Wire lock buttons
+  document.getElementById("lock-btn").addEventListener("click", doUnlock);
+  document.getElementById("lock-code").addEventListener("keydown", e => { if(e.key==="Enter") doUnlock(); });
+  document.getElementById("faceid-btn").addEventListener("click", doFaceID);
+  document.getElementById("switch-btn").addEventListener("click", () => {
+    document.getElementById("faceid-wrap").classList.add("hidden");
+    document.getElementById("lock-form").classList.remove("hidden");
+  });
 
-// Visibility / session check
-document.addEventListener("visibilitychange",()=>{
-  if(document.visibilityState==="visible"&&!document.getElementById("main-nav").classList.contains("hidden")&&!sessionOk())
-    showLock("Session expirée. Vérifiez votre identité.");
-});
-setInterval(()=>{
-  if(!document.getElementById("main-nav").classList.contains("hidden")&&!sessionOk())
-    showLock("Session expirée. Vérifiez votre identité.");
-},30000);
-
-// Initial load — wait for DOM
-function init(){
-  const savedCode=localStorage.getItem("budget_code");
-  if(savedCode&&sessionOk()){
+  // Initial load
+  const savedCode = localStorage.getItem("budget_code");
+  if(savedCode && sessionOk()) {
     document.getElementById("lock-form").classList.add("hidden");
-    document.getElementById("lock-sub").textContent="Connexion en cours...";
+    document.getElementById("lock-sub").textContent = "Connexion en cours...";
     document.getElementById("lock-loading").classList.remove("hidden");
-    connect(savedCode).then(()=>refreshTs()).catch((e)=>{
-      console.error("Auto-connect failed:",e);
+    connect(savedCode).then(() => refreshTs()).catch((e) => {
+      console.error("Auto-connect failed:", e);
       localStorage.removeItem("budget_code");
       localStorage.removeItem("budget_ts");
       document.getElementById("lock-loading").classList.add("hidden");
       document.getElementById("lock-form").classList.remove("hidden");
-      document.getElementById("lock-sub").textContent="Entrez votre code secret";
+      document.getElementById("lock-sub").textContent = "Entrez votre code secret";
     });
   } else {
-    document.getElementById("lock-sub").textContent="Entrez votre code secret";
+    document.getElementById("lock-sub").textContent = "Entrez votre code secret";
     document.getElementById("lock-loading").classList.add("hidden");
     document.getElementById("lock-form").classList.remove("hidden");
   }
-}
-if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",init);}
-else{init();}
+});
+
 
 // ── TABS
 function showTab(tab){
@@ -1439,7 +1458,6 @@ function showAddCompteForm(el){
     renderReglages("comptes");flash("Compte ajouté ✓");
   });
 }
-});
 </script>
 </body>
 </html>
