@@ -430,7 +430,21 @@ nav{
   .top-bar-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; }
 
   /* ── CONTENT GRID */
-  #desktop-content { padding: 24px 28px; }
+  #desktop-content { padding: 24px 28px; position: relative; }
+  /* On desktop, tab divs are absolutely positioned inside desktop-content */
+  #tab-home, #tab-depense, #tab-argent,
+  #tab-historique, #tab-previsions, #tab-reglages {
+    position: static !important;
+  }
+  /* Move tab divs visually into desktop-content */
+  #desktop-main #tab-home:not(.hidden),
+  #desktop-main #tab-depense:not(.hidden),
+  #desktop-main #tab-argent:not(.hidden),
+  #desktop-main #tab-historique:not(.hidden),
+  #desktop-main #tab-previsions:not(.hidden),
+  #desktop-main #tab-reglages:not(.hidden) {
+    display: block;
+  }
 
   /* Override mobile layout for desktop */
   .island-bar { display: none; }
@@ -845,23 +859,29 @@ function setupDesktop(){
     });
     document.getElementById("sb-profile-btn")?.addEventListener("click",()=>profileModal());
     document.getElementById("tb-depense-btn")?.addEventListener("click",()=>showTab("depense"));
+    // Move tab divs into desktop-content on desktop
+    const deskContent=document.getElementById("desktop-content");
+    ["home","depense","argent","historique","previsions","reglages"].forEach(t=>{
+      const el=document.getElementById("tab-"+t);
+      if(el&&deskContent)deskContent.appendChild(el);
+    });
     // Override renderTab to inject into desktop-content
-    const origRenderTab=renderTab;
-    window._desktopRenderTab=function(t){
-      const cont=document.getElementById("desktop-content");
-      if(!cont)return;
-      // Temporarily show the right tab div, render, move to desktop-content
+    window.renderTab=function(t){
+      // On desktop: render into tab div, then show it in desktop-content via CSS
+      ["home","depense","argent","historique","previsions","reglages"].forEach(id=>{
+        const el=document.getElementById("tab-"+id);
+        if(el)el.classList.add("hidden");
+      });
       const tabEl=document.getElementById("tab-"+t);
-      if(!tabEl)return;
-      tabEl.classList.remove("hidden");
-      origRenderTab(t);
-      // Move content to desktop-content
-      cont.innerHTML="";
-      while(tabEl.firstChild)cont.appendChild(tabEl.firstChild);
-      tabEl.classList.add("hidden");
+      if(tabEl)tabEl.classList.remove("hidden");
+      if(t==="home")renderHome();
+      else if(t==="depense")renderDepense();
+      else if(t==="argent")renderArgent("rev");
+      else if(t==="historique")renderHistorique();
+      else if(t==="previsions")renderPrevisions("reel");
+      else if(t==="reglages")renderReglages("comptes");
       updateSbProfile();
     };
-    window.renderTab=window._desktopRenderTab;
   } else {
     sidebar.style.display="none";
     desktopMain.style.display="none";
