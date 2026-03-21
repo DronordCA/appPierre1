@@ -429,7 +429,7 @@ nav {
   <div class="lock-logo"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="22" fill="#F97316"/><rect x="22" y="34" width="56" height="48" rx="20" fill="white"/><polygon points="22,50 22,26 40,42" fill="white"/><polygon points="78,50 78,26 60,42" fill="white"/><ellipse cx="40" cy="57" rx="4" ry="5" fill="#F97316"/><ellipse cx="60" cy="57" rx="4" ry="5" fill="#F97316"/><circle cx="50" cy="66" r="2.5" fill="#F97316"/></svg></div>
   <div class="lock-appname">Nacho</div>
   <div class="lock-tagline">Votre budget, ensemble</div>
-  <div id="lock-form" class="hidden" style="width:100%">
+  <div id="lock-form" style="width:100%">
     <div class="lock-input-wrap">
       <input class="lock-input" type="password" id="lock-code" placeholder="Code secret partagé" autocomplete="off" autocorrect="off" autocapitalize="off"/>
     </div>
@@ -586,11 +586,13 @@ function showLock(msg){
   if(hasFI&&code){
     document.getElementById("lock-sub").textContent=msg||"Vérifiez votre identité";
     document.getElementById("lock-form").classList.add("hidden");
+    document.getElementById("lock-loading").classList.add("hidden");
     document.getElementById("faceid-wrap").classList.remove("hidden");
     setTimeout(()=>doFaceID(),400);
   } else {
     document.getElementById("lock-sub").textContent=msg||"Entrez votre code secret";
     document.getElementById("lock-form").classList.remove("hidden");
+    document.getElementById("lock-loading").classList.add("hidden");
     document.getElementById("faceid-wrap").classList.add("hidden");
   }
 }
@@ -660,11 +662,21 @@ setInterval(()=>{
 // Initial load
 const savedCode=localStorage.getItem("budget_code");
 if(savedCode&&sessionOk()){
-  document.getElementById("lock-sub").textContent="Connexion...";
+  document.getElementById("lock-form").classList.add("hidden");
+  document.getElementById("lock-sub").textContent="Connexion en cours...";
   document.getElementById("lock-loading").classList.remove("hidden");
-  connect(savedCode).then(()=>refreshTs()).catch(()=>{localStorage.removeItem("budget_code");showLock(null);});
+  connect(savedCode).then(()=>refreshTs()).catch((e)=>{
+    console.error("Auto-connect failed:",e);
+    localStorage.removeItem("budget_code");
+    localStorage.removeItem("budget_ts");
+    document.getElementById("lock-loading").classList.add("hidden");
+    document.getElementById("lock-form").classList.remove("hidden");
+    document.getElementById("lock-sub").textContent="Entrez votre code secret";
+  });
 } else {
-  showLock(null);
+  document.getElementById("lock-sub").textContent="Entrez votre code secret";
+  document.getElementById("lock-loading").classList.add("hidden");
+  document.getElementById("lock-form").classList.remove("hidden");
 }
 
 // ── TABS
