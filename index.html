@@ -245,6 +245,17 @@ nav{
 .finfo{background:rgba(249,115,22,.08);border-radius:var(--rS);padding:11px 13px;font-size:13px;color:#9A3412;line-height:1.5;margin-bottom:12px;border-left:3px solid var(--orange);}
 .fconv{font-size:13px;color:var(--green);font-weight:700;padding-bottom:10px;display:flex;align-items:center;gap:5px;}
 .ferr{background:var(--rl);color:var(--red);border-radius:var(--rS);padding:10px 13px;font-size:13px;margin-bottom:8px;}
+/* Autocomplete suggestions */
+.ac-suggestions{background:var(--card);border-radius:var(--rM);overflow:hidden;margin-top:4px;box-shadow:0 4px 20px rgba(10,10,26,.12);}
+.ac-chip{display:inline-flex;align-items:center;padding:6px 12px;border-radius:20px;background:rgba(249,115,22,.1);color:var(--orange);font-size:13px;font-weight:600;cursor:pointer;margin:4px;border:none;}
+.ac-chip:active{background:rgba(249,115,22,.2);}
+.ac-suggestions-wrap{padding:8px 4px 4px;display:flex;flex-wrap:wrap;}
+/* Cat budget indicators */
+.cat-budget-bar{height:3px;border-radius:2px;margin-top:6px;overflow:hidden;background:rgba(10,10,26,.07);}
+.cat-budget-fill{height:100%;border-radius:2px;transition:width .4s;}
+.cat-row-ok .cat-amt{color:var(--green)!important;}
+.cat-row-warn .cat-amt{color:var(--amber,#D97706)!important;}
+.cat-row-over .cat-amt{color:var(--red)!important;}
 
 /* ── BUTTONS */
 .btn{width:100%;padding:16px;border-radius:var(--rM);border:none;background:var(--navy);color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:opacity .15s;}
@@ -762,6 +773,17 @@ nav{
 .finfo{background:rgba(249,115,22,.08);border-radius:var(--rS);padding:11px 13px;font-size:13px;color:#9A3412;line-height:1.5;margin-bottom:12px;border-left:3px solid var(--orange);}
 .fconv{font-size:13px;color:var(--green);font-weight:700;padding-bottom:10px;display:flex;align-items:center;gap:5px;}
 .ferr{background:var(--rl);color:var(--red);border-radius:var(--rS);padding:10px 13px;font-size:13px;margin-bottom:8px;}
+/* Autocomplete suggestions */
+.ac-suggestions{background:var(--card);border-radius:var(--rM);overflow:hidden;margin-top:4px;box-shadow:0 4px 20px rgba(10,10,26,.12);}
+.ac-chip{display:inline-flex;align-items:center;padding:6px 12px;border-radius:20px;background:rgba(249,115,22,.1);color:var(--orange);font-size:13px;font-weight:600;cursor:pointer;margin:4px;border:none;}
+.ac-chip:active{background:rgba(249,115,22,.2);}
+.ac-suggestions-wrap{padding:8px 4px 4px;display:flex;flex-wrap:wrap;}
+/* Cat budget indicators */
+.cat-budget-bar{height:3px;border-radius:2px;margin-top:6px;overflow:hidden;background:rgba(10,10,26,.07);}
+.cat-budget-fill{height:100%;border-radius:2px;transition:width .4s;}
+.cat-row-ok .cat-amt{color:var(--green)!important;}
+.cat-row-warn .cat-amt{color:var(--amber,#D97706)!important;}
+.cat-row-over .cat-amt{color:var(--red)!important;}
 
 /* ── BUTTONS */
 .btn{width:100%;padding:16px;border-radius:var(--rM);border:none;background:var(--navy);color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:opacity .15s;}
@@ -1162,7 +1184,15 @@ const CATS=["Alimentation","Restaurants","Transport","Santé","Vêtements","Lois
 const FLAGS=["🍁","🇫🇷","🏦","💶","💵","💴","🏠","💳","📈","🌍","💰","🏧"];
 const DEF_FIXES=[{id:1,nom:"Loyer",montant:1500,compte:"budget_ca"},{id:2,nom:"Téléphones",montant:90,compte:"budget_ca"},{id:3,nom:"Assurances",montant:100,compte:"budget_ca"},{id:4,nom:"Abonnements",montant:30,compte:"budget_ca"},{id:5,nom:"Chat",montant:60,compte:"budget_ca"}];
 const DEF_OBJS=[{id:1,nom:"🏠 Mise de fonds",cible:50000,acc:5000,dt:"2028-06"},{id:2,nom:"✈️ Voyage",cible:5000,acc:1000,dt:"2025-12"},{id:3,nom:"🚗 Voiture",cible:15000,acc:2000,dt:"2027-06"},{id:4,nom:"🛡️ Fonds urgence",cible:10000,acc:3000,dt:"2026-06"}];
-const DEF_DATA={depenses:[],revenus:[],virements:[],fixes:DEF_FIXES,comptes:DEF_COMPTES,ouv:{budget_ca:2100,epargne_ca:15000,urgence:3000,joint_fr:2000,livret_fr:8000},taux:1.46,objectifs:[],previsions:{},obj_versements:[]};
+const DEF_DATA={depenses:[],revenus:[],virements:[],fixes:DEF_FIXES,comptes:DEF_COMPTES,ouv:{budget_ca:2100,epargne_ca:15000,urgence:3000,joint_fr:2000,livret_fr:8000},taux:1.46,objectifs:[],previsions:{},obj_versements:[],descriptions_fav:[
+  {cat:"Alimentation",items:["IGA","Costco","Maxi","Marché Jean-Talon","Épicerie"]},
+  {cat:"Restaurants",items:["Restaurant","Tim Hortons","McDonald's","Sushi","Pizza"]},
+  {cat:"Transport",items:["STM","Uber","Essence","Stationnement","Via Rail"]},
+  {cat:"Santé",items:["Pharmacie","Médecin","Dentiste","Optométriste"]},
+  {cat:"Hygiène",items:["Pharmaprix","Jean Coutu","Sephora"]},
+  {cat:"Loisirs",items:["Cinéma","Spotify","Netflix","Amazon Prime"]},
+  {cat:"Sport",items:["Gym","Équipement sport","Cours yoga"]},
+],budgets_cats:{}};
 const CAT_ICO={Alimentation:"🛒",Restaurants:"🍽",Transport:"🚇",Santé:"💊",Vêtements:"👕",Loisirs:"🎭",Voyages:"✈️",Sport:"⚽",Cadeaux:"🎁",Hygiène:"🪥",Culture:"📚",Divers:"📦"};
 
 let DATA=JSON.parse(JSON.stringify(DEF_DATA));
@@ -1243,10 +1273,48 @@ async function connect(code){
     }
   });
   localStorage.setItem("nacho_code",code);
+  // Apply recurring transfers if due this month
+  await applyRecurringTransfers();
   document.getElementById("lock-screen").classList.add("hidden");
   if(!isDesktop())document.getElementById("main-nav").classList.remove("hidden");
   updateSbProfile();
   showTab("home");
+}
+
+async function applyRecurringTransfers(){
+  const recurrents = DATA.virements_recurrents||[];
+  if(!recurrents.length) return;
+  const now = new Date();
+  const thisMonth = now.toISOString().slice(0,7);
+  let changed = false;
+  recurrents.forEach(vr=>{
+    if(!vr.actif) return;
+    // Check if already applied this month
+    const alreadyDone = (DATA.obj_versements||[]).some(v=>
+      v.recurrentId===vr.id && (v.date||"").startsWith(thisMonth)
+    );
+    if(alreadyDone) return;
+    // Check if start date is reached
+    const startMonth = (vr.date_debut||"").slice(0,7);
+    if(startMonth > thisMonth) return;
+    // Check if today >= jour_du_mois
+    if(now.getDate() < (vr.jour||1)) return;
+    // Apply
+    if(!DATA.obj_versements) DATA.obj_versements=[];
+    const dateStr = thisMonth+"-"+(String(vr.jour||1).padStart(2,"0"));
+    DATA.obj_versements.push({
+      id: Date.now()+Math.random(),
+      objId: String(vr.objId),
+      compte: vr.compte,
+      montant: vr.montant,
+      date: dateStr,
+      note: "Virement récurrent automatique",
+      who: "Auto",
+      recurrentId: vr.id
+    });
+    changed = true;
+  });
+  if(changed){ await save(); flash("Virements récurrents appliqués ✓"); }
 }
 
 function activeTab(){return document.querySelector(".nb.on")?.id?.replace("nb-","")||"home";}
@@ -1531,8 +1599,26 @@ ${(()=>{
 <div class="pad"><div class="stitle">Objectifs</div>${renderObjs()}</div>`;
 
   if(catArr.length>0){
+    const budgets=DATA.budgets_cats||{};
     h+=`<div class="pad"><div class="stitle">Par catégorie</div><div class="lcard">`;
-    catArr.forEach(([cat,tot])=>{h+=`<div class="lr"><div class="lr-ico">${CAT_ICO[cat]||"📦"}</div><div class="lr-info"><div class="row-t">${esc(cat)}</div></div><div class="cat-amt">${fC(tot)}</div></div>`;});
+    catArr.forEach(([cat,tot])=>{
+      const bud=parseFloat(budgets[cat])||0;
+      const hasBud=bud>0;
+      const pct=hasBud?Math.min(tot/bud,1):0;
+      const cls=!hasBud?"":tot<=bud*0.8?"cat-row-ok":tot<=bud?"cat-row-warn":"cat-row-over";
+      const fillColor=tot<=bud*0.8?"var(--green)":tot<=bud?"#F59E0B":"var(--red)";
+      h+=`<div class="lr ${cls}">
+        <div class="lr-ico">${CAT_ICO[cat]||"📦"}</div>
+        <div class="lr-info">
+          <div class="row-t">${esc(cat)}</div>
+          ${hasBud?`<div class="cat-budget-bar"><div class="cat-budget-fill" style="width:${Math.round(pct*100)}%;background:${fillColor}"></div></div>`:""}
+        </div>
+        <div>
+          <div class="cat-amt" style="${!hasBud?"color:var(--orange)":tot>bud?"color:var(--red)":tot>bud*.8?"color:#D97706":"color:var(--green)"}">${fC(tot)}</div>
+          ${hasBud?`<div style="font-size:11px;color:var(--t4);text-align:right;margin-top:2px">/ ${fC(bud)}</div>`:""}
+        </div>
+      </div>`;
+    });
     h+=`</div></div>`;
   }
   h+=`<div class="pad"><div class="stitle">Dernières dépenses</div>`;
@@ -1584,6 +1670,72 @@ function profileModal(){
 }
 function closeModal(){document.getElementById("overlay").classList.add("hidden");}
 window.closeModal=closeModal;
+
+// ── OBJECTIF RÉCURRENT MODAL
+function objRecurrentModal(objId){
+  const objs=(DATA.objectifs&&DATA.objectifs.length)?DATA.objectifs:DEF_OBJS;
+  const obj=objs.find(o=>String(o.id)===String(objId));
+  if(!obj)return;
+  const o=document.getElementById("overlay");
+  const d=document.createElement("div");d.className="modal";
+  const copts=DATA.comptes.map(c=>`<option value="${esc(c.id)}">${esc((c.flag||"🏦")+" "+c.label)}</option>`).join("");
+  const today_day=new Date().getDate();
+  d.innerHTML=`<div class="modal-handle"></div>
+    <div style="font-size:32px;margin-bottom:8px">🔁</div>
+    <div style="font-size:18px;font-weight:800;color:var(--t1);margin-bottom:4px;letter-spacing:-.3px">Virement récurrent</div>
+    <div style="font-size:13px;color:var(--t3);margin-bottom:20px">→ ${esc(obj.nom)}</div>
+    <div class="fsec" style="margin-bottom:12px">
+      <div class="frow">
+        <div class="flbl req">Montant/mois</div>
+        <input id="vr-montant" type="number" inputmode="decimal" placeholder="0" style="flex:1;border:none;background:none;font-size:16px;font-weight:700;color:var(--t1);text-align:right;padding:14px 0;outline:none">
+      </div>
+      <div class="frow">
+        <div class="flbl">Depuis</div>
+        <select id="vr-compte" style="flex:1;border:none;background:none;font-size:15px;color:var(--t2);text-align:right;padding:14px 0;outline:none;-webkit-appearance:none">${copts}</select>
+      </div>
+      <div class="frow">
+        <div class="flbl">Jour du mois</div>
+        <input id="vr-jour" type="number" min="1" max="28" value="${today_day}" placeholder="1-28" style="flex:1;border:none;background:none;font-size:15px;font-weight:600;color:var(--orange);text-align:right;padding:14px 0;outline:none">
+      </div>
+      <div class="frow">
+        <div class="flbl">Démarrer le</div>
+        <input id="vr-debut" type="month" value="${new Date().toISOString().slice(0,7)}" style="flex:1;border:none;background:none;font-size:15px;color:var(--t1);text-align:right;padding:14px 0;outline:none">
+      </div>
+    </div>
+    <div style="background:rgba(37,99,235,.06);border-radius:10px;padding:11px 13px;font-size:13px;color:#1D4ED8;margin-bottom:14px;border-left:3px solid #2563EB">
+      Le virement sera appliqué automatiquement chaque mois à la date choisie.
+    </div>
+    <div id="vr-err" style="color:var(--red);font-size:13px;margin-bottom:8px"></div>
+    <div class="brow">
+      <button class="btn ghost" id="vr-cancel">Annuler</button>
+      <button class="btn orange" style="flex:1" id="vr-ok">Activer le récurrent</button>
+    </div>`;
+  o.innerHTML="";o.appendChild(d);o.classList.remove("hidden");
+  o.onclick=()=>closeModal();d.onclick=e=>e.stopPropagation();
+  d.querySelector("#vr-cancel").addEventListener("click",closeModal);
+  d.querySelector("#vr-ok").addEventListener("click",async()=>{
+    const montant=parseFloat(d.querySelector("#vr-montant").value);
+    const jour=parseInt(d.querySelector("#vr-jour").value)||1;
+    if(!montant||montant<=0){d.querySelector("#vr-err").textContent="Montant invalide";return;}
+    if(jour<1||jour>28){d.querySelector("#vr-err").textContent="Jour entre 1 et 28";return;}
+    if(!DATA.virements_recurrents)DATA.virements_recurrents=[];
+    DATA.virements_recurrents.push({
+      id:Date.now(),
+      objId:String(objId),
+      compte:d.querySelector("#vr-compte").value,
+      montant,
+      jour,
+      date_debut:d.querySelector("#vr-debut").value+"-01",
+      actif:true
+    });
+    await save();
+    // Apply immediately if today >= jour this month
+    await applyRecurringTransfers();
+    closeModal();
+    flash("Récurrent activé ✓ — "+fC(montant)+"/mois");
+    renderArgent("obj");
+  });
+}
 
 // ── OBJECTIF VERSEMENT MODAL
 function objVersementModal(objId, direction){
@@ -1733,34 +1885,99 @@ function renderDepense(){
   const el=document.getElementById("tab-depense");
   const copts=DATA.comptes.map(c=>`<option value="${esc(c.id)}">${esc((c.flag||"🏦")+" "+c.label)}</option>`).join("");
   const kopts=CATS.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
+  const defaultCompte=DATA.comptes.find(c=>c.id==="budget_ca")?.id||DATA.comptes[0]?.id||"";
   el.innerHTML=`<div class="page-hdr"><div class="page-hdr-name">Nouvelle dépense</div><div class="page-hdr-sub">Saisir une transaction</div></div>
   <div class="fbody">
     <div class="fsec">
-      <div class="frow"><div class="flbl req">Description</div><input id="d-desc" type="text" placeholder="Ex : Épicerie IGA"></div>
-      <div class="frow"><div class="flbl req">Montant</div><input id="d-montant" type="number" inputmode="decimal" placeholder="0"></div>
-      <div class="frow"><div class="flbl">Devise</div><select id="d-devise"><option value="CAD">CAD</option><option value="EUR">EUR</option></select></div>
-      <div class="frow hidden" id="d-taux-row"><div class="flbl">Taux EUR→CAD</div><input id="d-taux" type="number" step="0.0001" value="${DATA.taux}"></div>
+      <div class="frow">
+        <div class="flbl req">Catégorie</div>
+        <select id="d-cat"><option value="">Aucune</option>${kopts}</select>
+      </div>
     </div>
-    <div id="d-conv" class="fconv hidden" style="padding:0 4px 10px"></div>
+    <div id="d-chips-wrap"></div>
     <div class="fsec">
-      <div class="frow"><div class="flbl">Date</div><input id="d-date" type="date" value="${today()}"></div>
-      <div class="frow"><div class="flbl">Catégorie</div><select id="d-cat"><option value="">Aucune</option>${kopts}</select></div>
-      <div class="frow"><div class="flbl">Compte</div><select id="d-compte">${copts}</select></div>
-      <div class="frow"><div class="flbl">Note</div><input id="d-note" type="text" placeholder="Optionnel"></div>
+      <div class="frow">
+        <div class="flbl">Description</div>
+        <input id="d-desc" type="text" placeholder="Facultatif">
+      </div>
+      <div class="frow">
+        <div class="flbl req">Montant</div>
+        <input id="d-montant" type="number" inputmode="decimal" placeholder="0">
+      </div>
+      <div class="frow">
+        <div class="flbl">Devise</div>
+        <select id="d-devise"><option value="CAD">CAD</option><option value="EUR">EUR</option></select>
+      </div>
+      <div class="frow hidden" id="d-taux-row">
+        <div class="flbl">Taux EUR→CAD</div>
+        <input id="d-taux" type="number" step="0.0001" value="${DATA.taux}">
+      </div>
+    </div>
+    <div id="d-conv" class="fconv hidden" style="justify-content:flex-end;padding:2px 4px 10px"></div>
+    <div class="fsec">
+      <div class="frow">
+        <div class="flbl">Date</div>
+        <input id="d-date" type="date" value="${today()}">
+      </div>
+      <div class="frow">
+        <div class="flbl">Compte</div>
+        <select id="d-compte">${copts}</select>
+      </div>
     </div>
     <div id="d-err"></div>
     <button class="btn orange" id="d-save">Enregistrer la dépense</button>
   </div>`;
-  const dev=el.querySelector("#d-devise");
-  const upd=()=>{const eur=dev.value==="EUR";el.querySelector("#d-taux-row").classList.toggle("hidden",!eur);const m=parseFloat(el.querySelector("#d-montant").value)||0;const t=parseFloat(el.querySelector("#d-taux").value)||DATA.taux;const cv=el.querySelector("#d-conv");if(eur&&m>0){cv.classList.remove("hidden");cv.textContent="= "+fC(m*t)+" CAD";}else cv.classList.add("hidden");};
-  dev.addEventListener("change",upd);el.querySelector("#d-montant").addEventListener("input",upd);el.querySelector("#d-taux")?.addEventListener("input",upd);
-  el.querySelector("#d-save").addEventListener("click",async()=>{
-    const desc=el.querySelector("#d-desc").value.trim();const m=parseFloat(el.querySelector("#d-montant").value);
-    const devise=dev.value;const taux=devise==="EUR"?(parseFloat(el.querySelector("#d-taux").value)||DATA.taux):1;
-    const errEl=el.querySelector("#d-err");
-    if(!desc){errEl.innerHTML='<div class="ferr">Description requise</div>';return;}
+
+  el.querySelector("#d-compte").value = defaultCompte;
+
+  // Chips sous la catégorie
+  const catSel = el.querySelector("#d-cat");
+  const descInput = el.querySelector("#d-desc");
+  function showChips(){
+    const cat = catSel.value;
+    const grp = (DATA.descriptions_fav||[]).find(g=>g.cat===cat);
+    const wrap = el.querySelector("#d-chips-wrap");
+    if(!wrap) return;
+    if(grp && grp.items.length > 0){
+      wrap.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:6px;padding:10px 16px 6px">
+        ${grp.items.map(s=>`<button class="dep-chip" data-s="${esc(s)}" style="padding:7px 14px;border-radius:20px;border:1.5px solid rgba(249,115,22,.25);background:rgba(249,115,22,.08);color:var(--orange);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s">${esc(s)}</button>`).join("")}
+      </div>`;
+      wrap.querySelectorAll(".dep-chip").forEach(b=>{
+        b.addEventListener("click",()=>{
+          descInput.value = b.dataset.s;
+          wrap.querySelectorAll(".dep-chip").forEach(x=>{x.style.background="rgba(249,115,22,.08)";x.style.borderColor="rgba(249,115,22,.25)";});
+          b.style.background = "rgba(249,115,22,.22)";
+          b.style.borderColor = "var(--orange)";
+        });
+      });
+    } else {
+      wrap.innerHTML = "";
+    }
+  }
+  catSel.addEventListener("change", showChips);
+
+  const dev = el.querySelector("#d-devise");
+  const upd = ()=>{
+    const eur = dev.value==="EUR";
+    el.querySelector("#d-taux-row").classList.toggle("hidden",!eur);
+    const m = parseFloat(el.querySelector("#d-montant").value)||0;
+    const t = parseFloat(el.querySelector("#d-taux").value)||DATA.taux;
+    const cv = el.querySelector("#d-conv");
+    if(eur && m>0){cv.classList.remove("hidden");cv.textContent="= "+fC(m*t)+" CAD";}
+    else cv.classList.add("hidden");
+  };
+  dev.addEventListener("change",upd);
+  el.querySelector("#d-montant").addEventListener("input",upd);
+  el.querySelector("#d-taux")?.addEventListener("input",upd);
+
+  el.querySelector("#d-save").addEventListener("click", async()=>{
+    const desc = el.querySelector("#d-desc").value.trim();
+    const m = parseFloat(el.querySelector("#d-montant").value);
+    const devise = dev.value;
+    const taux = devise==="EUR"?(parseFloat(el.querySelector("#d-taux").value)||DATA.taux):1;
+    const errEl = el.querySelector("#d-err");
     if(!m||m<=0){errEl.innerHTML='<div class="ferr">Montant invalide</div>';return;}
-    DATA.depenses.unshift({id:Date.now(),date:el.querySelector("#d-date").value,desc,cat:el.querySelector("#d-cat").value,montant:devise==="EUR"?m*taux:m,montantOriginal:m,devise,taux,note:el.querySelector("#d-note").value.trim(),compte:el.querySelector("#d-compte").value,who:getProfile()||""});
+    DATA.depenses.unshift({id:Date.now(),date:el.querySelector("#d-date").value,desc:desc||el.querySelector("#d-cat").value||"Dépense",cat:el.querySelector("#d-cat").value,montant:devise==="EUR"?m*taux:m,montantOriginal:m,devise,taux,note:"",compte:el.querySelector("#d-compte").value,who:getProfile()||""});
     await save();refreshTs();flash("Dépense enregistrée ✓");showTab("home");
   });
 }
@@ -1804,25 +2021,42 @@ function renderArgent(mode){
   }
   if(mode==="obj"){
     const objs=(DATA.objectifs&&DATA.objectifs.length)?DATA.objectifs:DEF_OBJS;
-    h+=`<div class="fbody">`;
-    h+=`<p class="finfo">Versez de l'argent vers un objectif. Le compte source est débité, l'objectif se remplit.</p>`;
-    h+=`<div class="fsec">`;
+    const recurrents=DATA.virements_recurrents||[];
+    h+=`<div class="fbody"><p class="finfo">Versez de l'argent vers un objectif. Le compte source est débité, l'objectif se remplit.</p>`;
     objs.forEach(o=>{
       const v=(DATA.obj_versements||[]).filter(x=>x.objId===String(o.id));
       const acc=(o.acc||0)+v.reduce((a,x)=>a+(parseFloat(x.montant)||0),0);
       const pct=Math.min(acc/o.cible,1);const pd=Math.round(pct*100);
-      h+=`<div class="frow" style="min-height:58px">
-        <div class="flbl" style="flex:1;width:auto;min-width:0">
-          <div style="font-size:14px;font-weight:600;color:var(--t1)">${esc(o.nom)}</div>
-          <div style="font-size:11px;color:var(--t3);margin-top:2px">${fC(acc)} / ${fC(o.cible)} · ${pd}%</div>
+      const oRec=recurrents.filter(r=>String(r.objId)===String(o.id)&&r.actif);
+      h+=`<div style="background:var(--card);border-radius:var(--rL);margin-bottom:12px;overflow:hidden">
+        <div style="padding:14px 15px;border-bottom:1px solid var(--sep)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div style="font-size:15px;font-weight:700;color:var(--t1)">${esc(o.nom)}</div>
+            <div style="font-size:13px;font-weight:700;color:var(--orange)">${pd}%</div>
+          </div>
+          <div style="height:5px;background:rgba(10,10,26,.07);border-radius:3px;overflow:hidden;margin-bottom:6px">
+            <div style="height:100%;width:${pd}%;background:${pd>=100?"var(--green)":"var(--orange)"};border-radius:3px"></div>
+          </div>
+          <div style="font-size:12px;color:var(--t3)">${fC(acc)} / ${fC(o.cible)}</div>
         </div>
-        <div style="display:flex;gap:6px;align-items:center">
-          <button class="obj-arg-add" data-oid="${o.id}" style="padding:7px 12px;border-radius:8px;border:none;background:var(--ol);color:var(--orange);font-size:12px;font-weight:700;cursor:pointer">+ Ajouter</button>
-          ${acc>0?`<button class="obj-arg-with" data-oid="${o.id}" style="padding:7px 12px;border-radius:8px;border:none;background:var(--rl);color:var(--red);font-size:12px;font-weight:700;cursor:pointer">↩</button>`:""}
+        ${oRec.length>0?`<div style="padding:10px 15px;border-bottom:1px solid var(--sep);background:rgba(249,115,22,.04)">
+          <div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Récurrents actifs</div>
+          ${oRec.map(r=>{const c=DATA.comptes.find(x=>x.id===r.compte);return`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <div style="font-size:13px;color:var(--t2)">${c?esc(c.flag+" "+c.label):""} · chaque ${r.jour}</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="font-size:13px;font-weight:700;color:var(--orange)">${fC(r.montant)}/mois</div>
+              <button class="rec-del" data-rid="${r.id}" style="background:var(--rl);border:none;border-radius:6px;color:var(--red);width:22px;height:22px;cursor:pointer;font-size:12px">×</button>
+            </div>
+          </div>`;}).join("")}
+        </div>`:""}
+        <div style="display:flex;gap:0">
+          <button class="obj-arg-add" data-oid="${o.id}" style="flex:1;padding:13px;border:none;background:none;color:var(--orange);font-size:13px;font-weight:700;cursor:pointer;border-right:1px solid var(--sep)">+ Versement</button>
+          <button class="obj-rec-add" data-oid="${o.id}" style="flex:1;padding:13px;border:none;background:none;color:var(--blue);font-size:13px;font-weight:700;cursor:pointer;border-right:1px solid var(--sep)">🔁 Récurrent</button>
+          ${acc>0?`<button class="obj-arg-with" data-oid="${o.id}" style="flex:1;padding:13px;border:none;background:none;color:var(--red);font-size:13px;font-weight:700;cursor:pointer">↩ Retirer</button>`:""}
         </div>
       </div>`;
     });
-    h+=`</div></div>`;
+    h+=`</div>`;
   }
   h+=`</div>`;
   el.innerHTML=h;
@@ -1852,6 +2086,11 @@ function renderArgent(mode){
   // Wire objective buttons in argent tab
   el.querySelectorAll(".obj-arg-add").forEach(b=>b.addEventListener("click",()=>objVersementModal(b.dataset.oid,"add")));
   el.querySelectorAll(".obj-arg-with").forEach(b=>b.addEventListener("click",()=>objVersementModal(b.dataset.oid,"withdraw")));
+  el.querySelectorAll(".obj-rec-add").forEach(b=>b.addEventListener("click",()=>objRecurrentModal(b.dataset.oid)));
+  el.querySelectorAll(".rec-del").forEach(b=>b.addEventListener("click",async()=>{
+    DATA.virements_recurrents=(DATA.virements_recurrents||[]).filter(r=>String(r.id)!==String(b.dataset.rid));
+    await save(); flash("Récurrent supprimé"); renderArgent("obj");
+  }));
 }
 
 // ── HISTORIQUE
@@ -1989,7 +2228,7 @@ function addPrevModal(mk){
 // ── RÉGLAGES
 function renderReglages(sec){
   const S=soldes();const el=document.getElementById("tab-reglages");el.classList.remove("hidden");
-  const SECS=[["comptes","Comptes"],["fixes","Fixes"],["objectifs","Objectifs"],["profil","Profil"],["securite","Sécurité"]];
+  const SECS=[["comptes","Comptes"],["fixes","Fixes"],["objectifs","Objectifs"],["descriptions","Descriptions"],["budgets","Budgets"],["profil","Profil"],["securite","Sécurité"]];
   let h=`<div class="page-hdr"><div class="page-hdr-name">Réglages</div><div class="page-hdr-sub">Tout gérer</div></div>
   <div class="seg-wrap"><div class="seg">${SECS.map(([id,lbl])=>`<button class="sb ${sec===id?"on":""}" id="rg-${id}">${lbl}</button>`).join("")}</div></div>`;
 
@@ -2019,6 +2258,39 @@ function renderReglages(sec){
     objs.forEach((o,i)=>{h+=`<div class="oecard"><div class="frow"><input style="flex:1;border:none;background:none;font-size:15px;font-weight:600;outline:none;padding:14px 0" value="${esc(o.nom)}" data-oi="${i}" data-of="nom">${objs.length>1?`<button class="cedel" data-di="${i}">×</button>`:""}</div><div class="frow" style="border-top:1px solid var(--sep)"><div class="flbl">Cible</div><input type="number" style="flex:1;border:none;background:none;font-size:15px;outline:none;text-align:right;padding:14px 0" value="${o.cible}" data-oi="${i}" data-of="cible"></div><div class="frow" style="border-top:1px solid var(--sep)"><div class="flbl">Accumulé</div><input type="number" style="flex:1;border:none;background:none;font-size:15px;color:var(--orange);font-weight:600;outline:none;text-align:right;padding:14px 0" value="${o.acc||0}" data-oi="${i}" data-of="acc"></div><div class="frow" style="border-top:1px solid var(--sep)"><div class="flbl">Date cible</div><input type="month" style="flex:1;border:none;background:none;font-size:15px;outline:none;text-align:right;padding:14px 0" value="${o.dt||""}" data-oi="${i}" data-of="dt"></div></div>`;});
     h+=`<div style="padding:0 16px"><button class="btn ghost" id="add-o-btn">+ Ajouter</button></div><div style="padding:10px 16px 16px"><button class="btn" id="save-o-btn">Enregistrer</button></div>`;
   }
+  if(sec==="descriptions"){
+    const favs=DATA.descriptions_fav||[];
+    h+=`<div class="slbl">Descriptions rapides par catégorie</div>
+    <p class="finfo" style="margin:0 16px 12px">Ces raccourcis apparaissent dans le formulaire de dépense quand vous choisissez une catégorie.</p>`;
+    CATS.forEach(cat=>{
+      const grp=favs.find(g=>g.cat===cat)||{cat,items:[]};
+      const grpIdx=favs.findIndex(g=>g.cat===cat);
+      h+=`<div class="slbl" style="padding-top:10px">${esc(cat)}</div>
+      <div class="scard" style="margin:0 16px;padding:12px 14px">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px" id="chips-${esc(cat)}">
+          ${grp.items.map((item,i)=>`<div style="display:flex;align-items:center;gap:4px;background:var(--ol);border-radius:16px;padding:4px 10px 4px 12px"><span style="font-size:13px;font-weight:600;color:var(--orange)">${esc(item)}</span><button data-cat="${esc(cat)}" data-i="${i}" class="desc-del" style="background:none;border:none;color:var(--orange);cursor:pointer;font-size:14px;padding:0 2px">×</button></div>`).join("")}
+        </div>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="new-desc-${esc(cat)}" placeholder="Ajouter..." style="flex:1;border:1.5px solid rgba(10,10,26,.1);border-radius:8px;padding:8px 10px;font-size:13px;outline:none;background:var(--bg)">
+          <button class="desc-add" data-cat="${esc(cat)}" style="padding:8px 12px;border-radius:8px;border:none;background:var(--orange);color:white;font-size:13px;font-weight:700;cursor:pointer">+</button>
+        </div>
+      </div>`;
+    });
+    h+=`<div style="padding:12px 16px 16px"><button class="btn" id="save-desc-btn">Enregistrer</button></div>`;
+  }
+
+  if(sec==="budgets"){
+    const budgets=DATA.budgets_cats||{};
+    h+=`<div class="slbl">Budget mensuel par catégorie</div>
+    <p class="finfo" style="margin:0 16px 12px">Définissez un plafond mensuel. Sur l'accueil, les catégories s'affichent en vert si sous le budget, orange si proche, rouge si dépassé. Laissez vide pour pas de limite.</p>
+    <div class="scard" style="margin:0 16px">`;
+    CATS.forEach(cat=>{
+      const val=budgets[cat]||"";
+      h+=`<div class="frow"><div class="flbl" style="font-size:14px">${esc(cat)}</div><div style="display:flex;align-items:center;gap:4px"><input type="number" id="bud-${esc(cat)}" value="${val}" placeholder="—" style="width:90px;text-align:right;border:none;background:none;font-size:15px;font-weight:600;color:var(--orange);outline:none"><span style="font-size:13px;color:var(--t4)">$</span></div></div>`;
+    });
+    h+=`</div><div style="padding:12px 16px 16px"><button class="btn" id="save-bud-btn">Enregistrer</button></div>`;
+  }
+
   if(sec==="profil"){
     const pr=getProfile();
     h+=`<div class="slbl">Ce téléphone appartient à</div><div class="scard" style="margin:0 16px"><div class="srow" style="padding:18px 16px;gap:12px"><button id="pp-p" style="flex:1;padding:18px;border-radius:var(--rM);border:2px solid ${pr==="Pierre"?"#2563EB":"rgba(10,10,26,.1)"};background:${pr==="Pierre"?"#EFF6FF":"transparent"};color:${pr==="Pierre"?"#1D4ED8":"var(--t3)"};font-size:16px;font-weight:800;cursor:pointer">Pierre</button><button id="pp-l" style="flex:1;padding:18px;border-radius:var(--rM);border:2px solid ${pr==="Lealin"?"#7C3AED":"rgba(10,10,26,.1)"};background:${pr==="Lealin"?"#F5F3FF":"transparent"};color:${pr==="Lealin"?"#6D28D9":"var(--t3)"};font-size:16px;font-weight:800;cursor:pointer">Lealin</button></div></div>`;
@@ -2038,7 +2310,7 @@ function renderReglages(sec){
   SECS.forEach(([id])=>el.querySelector("#rg-"+id)?.addEventListener("click",()=>renderReglages(id)));
   // Desktop: wrap in 2-col settings layout
   if(window.isDesktop&&isDesktop()){
-    const menuItems=[["comptes","🏦","Comptes"],["fixes","📌","Fixes"],["objectifs","🎯","Objectifs"],["profil","👤","Profil"],["securite","🔒","Sécurité"]];
+    const menuItems=[["comptes","🏦","Comptes"],["fixes","📌","Fixes"],["objectifs","🎯","Objectifs"],["descriptions","💬","Descriptions"],["budgets","🎯","Budgets"],["profil","👤","Profil"],["securite","🔒","Sécurité"]];
     const menuHtml=`<div class="d-settings-menu">${menuItems.map(([id,ico,lbl])=>`<button class="d-settings-menu-btn${sec===id?" on":""}" data-s="${id}"><div class="s-ico">${ico}</div>${lbl}</button>`).join("")}</div>`;
     const contentHtml=el.innerHTML;
     el.innerHTML=`<div class="page-hdr"><div class="page-hdr-name">Réglages</div></div><div class="d-settings-grid">${menuHtml}<div class="d-settings-content">${contentHtml}</div></div>`;
@@ -2067,6 +2339,70 @@ function renderReglages(sec){
     el.querySelectorAll(".cedel[data-di]").forEach(b=>b.addEventListener("click",()=>{DATA.objectifs.splice(parseInt(b.dataset.di),1);renderReglages("objectifs");}));
     el.querySelector("#add-o-btn").addEventListener("click",()=>{if(!DATA.objectifs||!DATA.objectifs.length)DATA.objectifs=JSON.parse(JSON.stringify(DEF_OBJS));DATA.objectifs.push({id:Date.now(),nom:"Nouvel objectif",cible:10000,acc:0,dt:""});renderReglages("objectifs");});
     el.querySelector("#save-o-btn").addEventListener("click",async()=>{await save();flash("Objectifs enregistrés ✓");DATA.objectifs.forEach(o=>{if((o.acc||0)>=o.cible&&o.cible>0)setTimeout(()=>flash("🎉 "+o.nom),600);});});
+  }
+  if(sec==="descriptions"){
+    const favs=DATA.descriptions_fav||[];
+    h+=`<div class="slbl">Descriptions rapides par catégorie</div>
+    <p class="finfo" style="margin:0 16px 12px">Ces raccourcis apparaissent dans le formulaire de dépense quand vous choisissez une catégorie.</p>`;
+    CATS.forEach(cat=>{
+      const grp=favs.find(g=>g.cat===cat)||{cat,items:[]};
+      const grpIdx=favs.findIndex(g=>g.cat===cat);
+      h+=`<div class="slbl" style="padding-top:10px">${esc(cat)}</div>
+      <div class="scard" style="margin:0 16px;padding:12px 14px">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px" id="chips-${esc(cat)}">
+          ${grp.items.map((item,i)=>`<div style="display:flex;align-items:center;gap:4px;background:var(--ol);border-radius:16px;padding:4px 10px 4px 12px"><span style="font-size:13px;font-weight:600;color:var(--orange)">${esc(item)}</span><button data-cat="${esc(cat)}" data-i="${i}" class="desc-del" style="background:none;border:none;color:var(--orange);cursor:pointer;font-size:14px;padding:0 2px">×</button></div>`).join("")}
+        </div>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="new-desc-${esc(cat)}" placeholder="Ajouter..." style="flex:1;border:1.5px solid rgba(10,10,26,.1);border-radius:8px;padding:8px 10px;font-size:13px;outline:none;background:var(--bg)">
+          <button class="desc-add" data-cat="${esc(cat)}" style="padding:8px 12px;border-radius:8px;border:none;background:var(--orange);color:white;font-size:13px;font-weight:700;cursor:pointer">+</button>
+        </div>
+      </div>`;
+    });
+    h+=`<div style="padding:12px 16px 16px"><button class="btn" id="save-desc-btn">Enregistrer</button></div>`;
+  }
+
+  if(sec==="budgets"){
+    const budgets=DATA.budgets_cats||{};
+    h+=`<div class="slbl">Budget mensuel par catégorie</div>
+    <p class="finfo" style="margin:0 16px 12px">Définissez un plafond mensuel. Sur l'accueil, les catégories s'affichent en vert si sous le budget, orange si proche, rouge si dépassé. Laissez vide pour pas de limite.</p>
+    <div class="scard" style="margin:0 16px">`;
+    CATS.forEach(cat=>{
+      const val=budgets[cat]||"";
+      h+=`<div class="frow"><div class="flbl" style="font-size:14px">${esc(cat)}</div><div style="display:flex;align-items:center;gap:4px"><input type="number" id="bud-${esc(cat)}" value="${val}" placeholder="—" style="width:90px;text-align:right;border:none;background:none;font-size:15px;font-weight:600;color:var(--orange);outline:none"><span style="font-size:13px;color:var(--t4)">$</span></div></div>`;
+    });
+    h+=`</div><div style="padding:12px 16px 16px"><button class="btn" id="save-bud-btn">Enregistrer</button></div>`;
+  }
+
+  if(sec==="descriptions"){
+    if(!DATA.descriptions_fav||!DATA.descriptions_fav.length)DATA.descriptions_fav=JSON.parse(JSON.stringify(DEF_DATA.descriptions_fav));
+    el.querySelectorAll(".desc-del").forEach(b=>b.addEventListener("click",()=>{
+      const cat=b.dataset.cat,i=parseInt(b.dataset.i);
+      const grp=DATA.descriptions_fav.find(g=>g.cat===cat);
+      if(grp)grp.items.splice(i,1);
+      renderReglages("descriptions");
+    }));
+    el.querySelectorAll(".desc-add").forEach(b=>b.addEventListener("click",()=>{
+      const cat=b.dataset.cat;
+      const inp=el.querySelector(`#new-desc-${cat}`);
+      if(!inp||!inp.value.trim())return;
+      if(!DATA.descriptions_fav)DATA.descriptions_fav=[];
+      let grp=DATA.descriptions_fav.find(g=>g.cat===cat);
+      if(!grp){grp={cat,items:[]};DATA.descriptions_fav.push(grp);}
+      if(!grp.items.includes(inp.value.trim()))grp.items.push(inp.value.trim());
+      inp.value="";renderReglages("descriptions");
+    }));
+    el.querySelector("#save-desc-btn").addEventListener("click",async()=>{await save();flash("Descriptions enregistrées ✓");});
+  }
+  if(sec==="budgets"){
+    el.querySelector("#save-bud-btn").addEventListener("click",async()=>{
+      if(!DATA.budgets_cats)DATA.budgets_cats={};
+      CATS.forEach(cat=>{
+        const val=parseFloat(el.querySelector(`#bud-${cat}`)?.value)||0;
+        if(val>0)DATA.budgets_cats[cat]=val;
+        else delete DATA.budgets_cats[cat];
+      });
+      await save();flash("Budgets enregistrés ✓");renderReglages("budgets");
+    });
   }
   if(sec==="profil"){
     el.querySelector("#pp-p").addEventListener("click",()=>{localStorage.setItem(PROFILE_KEY,"Pierre");flash("Profil : Pierre ✓");renderReglages("profil");});
