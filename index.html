@@ -42,8 +42,11 @@
   --rXL: 26px;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html{background:var(--navy);overscroll-behavior:none;}
+html{background:var(--bg);overscroll-behavior:none;}
 body{font-family:-apple-system,"SF Pro Display","SF Pro Text",Helvetica,sans-serif;background:var(--bg);max-width:430px;margin:0 auto;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;overscroll-behavior:none;}
+/* Prevent white flash bars on iOS scroll bounce */
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:200px;background:var(--navy);z-index:-1;}
+body::after{content:'';position:fixed;bottom:0;left:0;right:0;height:200px;background:var(--bg);z-index:-1;}
 input,select,button{font-family:inherit;font-size:16px;}/* 16px prevents iOS zoom */
 .hidden{display:none!important;}
 
@@ -188,6 +191,12 @@ nav{
 
 /* ── LIST */
 .lcard{background:var(--card);border-radius:var(--rL);overflow:hidden;}
+/* Swipe to delete */
+.lr-wrap{position:relative;overflow:hidden;}
+.lr-delete{position:absolute;right:0;top:0;bottom:0;width:72px;background:var(--red);display:flex;align-items:center;justify-content:center;color:white;font-size:20px;cursor:pointer;transform:translateX(100%);transition:transform .2s;}
+.lr-wrap.swiped .lr-delete{transform:translateX(0);}
+.lr-wrap.swiped .lr{transform:translateX(-72px);}
+.lr{transition:transform .2s;}
 .lr{display:flex;align-items:center;padding:12px 14px;border-bottom:1px solid var(--sep);}
 .lr:last-child{border-bottom:none;}
 .lr.tap{cursor:pointer;transition:background .1s;}
@@ -594,7 +603,9 @@ function renderHome(){
   const mon=cm();
   const depMois=DATA.depenses.filter(d=>d.date&&d.date.startsWith(mon));
   const budId=DATA.comptes.find(c=>c.id==="budget_ca")?.id||DATA.comptes[0]?.id;
-  const virM=DATA.virements.filter(v=>v.dest===budId&&v.date&&v.date.startsWith(mon)).reduce((a,v)=>a+(parseFloat(v.montant)||0),0);
+  // Reçus = virements + revenus directs vers le compte budget ce mois
+  const virM=DATA.virements.filter(v=>v.dest===budId&&v.date&&v.date.startsWith(mon)).reduce((a,v)=>a+(parseFloat(v.montant)||0),0)
+    + DATA.revenus.filter(r=>r.compte===budId&&r.date&&r.date.startsWith(mon)).reduce((a,r)=>a+(parseFloat(r.montantCAD||r.montant)||0),0);
   const totFix=DATA.fixes.reduce((a,f)=>a+(parseFloat(f.montant)||0),0);
   const depB=depMois.filter(d=>d.compte===budId).reduce((a,d)=>a+(parseFloat(d.montant)||0),0);
   const soldM=virM-totFix-depB;
@@ -693,6 +704,48 @@ function openDepDetail(id){
   o.onclick=()=>closeModal();d.onclick=e=>e.stopPropagation();
   d.querySelector("#dm-c").addEventListener("click",closeModal);
   d.querySelector("#dm-d").addEventListener("click",async()=>{DATA.depenses=DATA.depenses.filter(x=>String(x.id)!==String(id));await save();closeModal();flash("Supprimé");renderHome();const ht=document.getElementById("tab-historique");if(ht&&!ht.classList.contains("hidden"))renderHistorique();});
+}
+
+// ── REV DETAIL
+function openRevDetail(id){
+  const rev=DATA.revenus.find(r=>String(r.id)===String(id));if(!rev)return;
+  const c=DATA.comptes.find(x=>x.id===rev.compte);
+  const o=document.getElementById("overlay");const d=document.createElement("div");d.className="modal";
+  d.innerHTML=`<div class="modal-handle"></div>
+    <div style="font-size:32px;margin-bottom:10px">💰</div>
+    <div style="font-size:21px;font-weight:800;color:var(--t1);margin-bottom:5px;letter-spacing:-.3px">${esc(rev.desc||"Revenu")}</div>
+    <div style="font-size:36px;font-weight:900;color:var(--green);margin-bottom:8px;letter-spacing:-1.5px">+${fC(rev.montantCAD||rev.montant)}</div>
+    ${rev.devise&&rev.devise!=="CAD"?`<div style="font-size:13px;color:var(--t3);margin-bottom:2px">${rev.montant} ${rev.devise} · taux ${rev.taux}</div>`:""}
+    <div style="font-size:14px;color:var(--t3);margin-bottom:2px">${c?esc((c.flag||"🏦")+" "+c.label):""} · ${esc(rev.date)}</div>
+    <div class="brow" style="margin-top:20px">
+      <button class="btn ghost" id="rv-c">Fermer</button>
+      <button class="btn danger" id="rv-d">Supprimer</button>
+    </div>`;
+  o.innerHTML="";o.appendChild(d);o.classList.remove("hidden");
+  o.onclick=()=>closeModal();d.onclick=e=>e.stopPropagation();
+  d.querySelector("#rv-c").addEventListener("click",closeModal);
+  d.querySelector("#rv-d").addEventListener("click",async()=>{DATA.revenus=DATA.revenus.filter(r=>String(r.id)!==String(id));await save();closeModal();flash("Revenu supprimé");renderHistorique();if(!document.getElementById("tab-home").classList.contains("hidden"))renderHome();});
+}
+
+// ── VIR DETAIL
+function openVirDetail(id){
+  const vir=DATA.virements.find(v=>String(v.id)===String(id));if(!vir)return;
+  const src=DATA.comptes.find(x=>x.id===vir.source);const dst=DATA.comptes.find(x=>x.id===vir.dest);
+  const o=document.getElementById("overlay");const d=document.createElement("div");d.className="modal";
+  d.innerHTML=`<div class="modal-handle"></div>
+    <div style="font-size:32px;margin-bottom:10px">🔄</div>
+    <div style="font-size:21px;font-weight:800;color:var(--t1);margin-bottom:5px;letter-spacing:-.3px">${esc(vir.desc||"Virement")}</div>
+    <div style="font-size:36px;font-weight:900;color:var(--blue);margin-bottom:8px;letter-spacing:-1.5px">${fC(vir.montant)}</div>
+    <div style="font-size:14px;color:var(--t3);margin-bottom:2px">${src?esc((src.flag||"🏦")+" "+src.label):"?"} → ${dst?esc((dst.flag||"🏦")+" "+dst.label):"?"}</div>
+    <div style="font-size:14px;color:var(--t3);margin-bottom:20px">${esc(vir.date)}</div>
+    <div class="brow">
+      <button class="btn ghost" id="vr-c">Fermer</button>
+      <button class="btn danger" id="vr-d">Supprimer</button>
+    </div>`;
+  o.innerHTML="";o.appendChild(d);o.classList.remove("hidden");
+  o.onclick=()=>closeModal();d.onclick=e=>e.stopPropagation();
+  d.querySelector("#vr-c").addEventListener("click",closeModal);
+  d.querySelector("#vr-d").addEventListener("click",async()=>{DATA.virements=DATA.virements.filter(v=>String(v.id)!==String(id));await save();closeModal();flash("Virement supprimé");renderHistorique();if(!document.getElementById("tab-home").classList.contains("hidden"))renderHome();});
 }
 
 // ── DÉPENSE
@@ -832,10 +885,10 @@ function renderHistorique(){
         h+=`<div class="lr tap" data-id="${t.id}" data-type="dep"><div class="lr-ico">${CAT_ICO[t.cat]||"💳"}</div><div class="lr-info"><div class="row-t">${esc(t.desc)} ${badge}</div><div class="row-s">${esc(t.cat||"—")} · ${esc(t.date)}</div></div><div class="row-a neg">${fC(t.montant)}</div></div>`;
       } else if(t._type==="rev"){
         const c=DATA.comptes.find(x=>x.id===t.compte);
-        h+=`<div class="lr"><div class="lr-ico" style="background:var(--gl)">💰</div><div class="lr-info"><div class="row-t">${esc(t.desc||"Revenu")}</div><div class="row-s">${c?esc(c.flag+" "+c.label):""} · ${esc(t.date)}</div></div><div class="row-a pos">+${fC(t.montantCAD||t.montant)}</div></div>`;
+        h+=`<div class="lr tap" data-id="${t.id}" data-type="rev"><div class="lr-ico" style="background:var(--gl)">💰</div><div class="lr-info"><div class="row-t">${esc(t.desc||"Revenu")}</div><div class="row-s">${c?esc(c.flag+" "+c.label):""} · ${esc(t.date)}</div></div><div class="row-a pos">+${fC(t.montantCAD||t.montant)}</div></div>`;
       } else {
         const src=DATA.comptes.find(x=>x.id===t.source);const dst=DATA.comptes.find(x=>x.id===t.dest);
-        h+=`<div class="lr"><div class="lr-ico" style="background:var(--bl)">🔄</div><div class="lr-info"><div class="row-t">${esc(t.desc||"Virement")}</div><div class="row-s">${src?esc(src.flag):""} → ${dst?esc(dst.flag):""} · ${esc(t.date)}</div></div><div class="row-a" style="color:var(--blue)">${fC(t.montant)}</div></div>`;
+        h+=`<div class="lr tap" data-id="${t.id}" data-type="vir"><div class="lr-ico" style="background:var(--bl)">🔄</div><div class="lr-info"><div class="row-t">${esc(t.desc||"Virement")}</div><div class="row-s">${src?esc(src.flag):""} → ${dst?esc(dst.flag):""} · ${esc(t.date)}</div></div><div class="row-a" style="color:var(--blue)">${fC(t.montant)}</div></div>`;
       }
     });
     h+=`</div>`;
@@ -844,7 +897,12 @@ function renderHistorique(){
   el.querySelector("#h-s").addEventListener("input",e=>{hS=e.target.value;renderHistorique();});
   el.querySelectorAll("#t-chips .chip").forEach(c=>c.addEventListener("click",()=>{hType=c.dataset.t;renderHistorique();}));
   el.querySelectorAll("#m-chips .chip").forEach(c=>c.addEventListener("click",()=>{hM=c.dataset.m;renderHistorique();}));
-  el.querySelectorAll(".lr.tap[data-type='dep']").forEach(r=>r.addEventListener("click",()=>openDepDetail(r.dataset.id)));
+  el.querySelectorAll(".lr.tap[data-id]").forEach(r=>r.addEventListener("click",()=>{
+    const type=r.dataset.type, id=r.dataset.id;
+    if(type==="dep") openDepDetail(id);
+    else if(type==="rev") openRevDetail(id);
+    else if(type==="vir") openVirDetail(id);
+  }));
 }
 
 // ── PREVISIONS
