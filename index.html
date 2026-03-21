@@ -11,6 +11,11 @@
 <link rel="apple-touch-icon" href="icon2.png"/>
 <link rel="apple-touch-icon-precomposed" href="icon2.png"/>
 <title>Nacho</title>
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 :root {
@@ -79,6 +84,7 @@ input,select,button{font-family:inherit;font-size:16px;}/* 16px prevents iOS zoo
 
 /* ── TOAST */
 #toast{position:fixed;top:calc(var(--sat) + 10px);left:50%;transform:translateX(-50%);background:rgba(10,10,26,.95);color:#fff;padding:10px 20px;border-radius:24px;font-size:14px;font-weight:600;z-index:500;white-space:nowrap;pointer-events:none;border:1px solid rgba(255,255,255,.08);}
+#offline-bar{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#D97706;color:white;text-align:center;font-size:12px;font-weight:700;padding:calc(var(--sat) + 2px) 0 6px;z-index:400;display:none;letter-spacing:.3px;}
 
 /* ── OVERLAY */
 #overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:flex;align-items:flex-end;justify-content:center;z-index:200;}
@@ -539,6 +545,11 @@ DOCTYPE html>
 <link rel="apple-touch-icon" href="icon2.png"/>
 <link rel="apple-touch-icon-precomposed" href="icon2.png"/>
 <title>Nacho</title>
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 :root {
@@ -607,6 +618,7 @@ input,select,button{font-family:inherit;font-size:16px;}/* 16px prevents iOS zoo
 
 /* ── TOAST */
 #toast{position:fixed;top:calc(var(--sat) + 10px);left:50%;transform:translateX(-50%);background:rgba(10,10,26,.95);color:#fff;padding:10px 20px;border-radius:24px;font-size:14px;font-weight:600;z-index:500;white-space:nowrap;pointer-events:none;border:1px solid rgba(255,255,255,.08);}
+#offline-bar{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#D97706;color:white;text-align:center;font-size:12px;font-weight:700;padding:calc(var(--sat) + 2px) 0 6px;z-index:400;display:none;letter-spacing:.3px;}
 
 /* ── OVERLAY */
 #overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:flex;align-items:flex-end;justify-content:center;z-index:200;}
@@ -1044,6 +1056,96 @@ nav{
   #desktop-main { margin-left: 260px; }
 }
 
+
+/* ── ANIMATIONS ────────────────────────────────── */
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeInFast { from{opacity:0} to{opacity:1} }
+@keyframes scaleIn { from{opacity:0;transform:scale(.95)} to{opacity:1;transform:scale(1)} }
+@keyframes slideInLeft { from{opacity:0;transform:translateX(-12px)} to{opacity:1;transform:translateX(0)} }
+@keyframes shimmer { from{background-position:-200px 0} to{background-position:200px 0} }
+
+.screen { animation: fadeIn .25s ease-out; }
+.hero { animation: fadeIn .3s ease-out; }
+.ac { animation: scaleIn .2s ease-out; }
+.lcard { animation: fadeIn .25s ease-out; }
+.modal { animation: slideUp .3s cubic-bezier(.32,1,.23,1); }
+.obj-row { animation: fadeIn .2s ease-out; }
+.pmc { animation: fadeIn .2s ease-out; }
+
+/* Stagger children */
+.acgrid .ac:nth-child(1) { animation-delay: .05s; }
+.acgrid .ac:nth-child(2) { animation-delay: .1s; }
+.acgrid .ac:nth-child(3) { animation-delay: .15s; }
+.acgrid .ac:nth-child(4) { animation-delay: .2s; }
+.lr { transition: background .12s; }
+
+/* ── PREMIUM CARD EFFECTS ────────────────────────── */
+.ac { box-shadow: 0 1px 3px rgba(10,10,26,.06); transition: transform .15s, box-shadow .15s; }
+.ac:active { transform: scale(.97); box-shadow: 0 0 0 rgba(10,10,26,.06); }
+
+.budget-card { box-shadow: 0 8px 32px rgba(10,10,26,.25); }
+
+.lcard { box-shadow: 0 1px 3px rgba(10,10,26,.06); }
+
+.obj-track { background: rgba(10,10,26,.06); }
+.obj-fill { transition: width 1s cubic-bezier(.32,1,.23,1); }
+
+/* ── PREMIUM HERO ───────────────────────────────── */
+.hero { background: linear-gradient(160deg, #0D0D24 0%, #0A0A1A 60%, #111128 100%); }
+.hero::before { content:''; position:absolute; top:-100px; left:-80px; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle,rgba(249,115,22,.08) 0%,transparent 65%); pointer-events:none; }
+.hero::after { content:''; position:absolute; bottom:-60px; right:-60px; width:240px; height:240px; border-radius:50%; background:radial-gradient(circle,rgba(124,58,237,.07) 0%,transparent 65%); pointer-events:none; }
+
+/* ── PREMIUM BUDGET CARD ─────────────────────────── */
+.budget-card { background: linear-gradient(135deg, #0D0D24 0%, #14142A 50%, #0F0F20 100%); position:relative; overflow:hidden; }
+.budget-card::before { content:''; position:absolute; top:-40px; right:-40px; width:200px; height:200px; border-radius:50%; background:radial-gradient(circle,rgba(5,150,105,.15) 0%,transparent 65%); pointer-events:none; }
+
+/* ── FORM IMPROVEMENTS ───────────────────────────── */
+.fsec { box-shadow: 0 1px 3px rgba(10,10,26,.06); }
+.frow { transition: background .1s; }
+.frow:focus-within { background: rgba(249,115,22,.025); }
+
+/* ── BUTTON PRESS EFFECT ─────────────────────────── */
+.btn { transition: transform .12s, opacity .12s, background .15s; }
+.btn:active { transform: scale(.97); }
+.btn.orange:active { background: var(--orange2); }
+
+/* ── NAV BUTTON PRESS ────────────────────────────── */
+.nb { transition: opacity .1s; }
+.nb:active { opacity: .6; }
+
+/* ── CHIP ANIMATION ──────────────────────────────── */
+.dep-chip { transition: all .15s cubic-bezier(.32,1,.23,1); }
+.dep-chip:active { transform: scale(.95); }
+
+/* ── SCROLL SNAP for smooth tabs on mobile ────── */
+.screen { scroll-behavior: smooth; }
+
+/* ── SECTION SEPARATOR ───────────────────────────── */
+.section-flag-label::before { content:''; flex:0; display:none; }
+.section-flag-label { margin-bottom:12px; padding:0 2px; }
+.section-flag-label span { font-size:11px; font-weight:700; color:var(--t3); text-transform:uppercase; letter-spacing:1px; }
+
+/* ── PREMIUM LOCK SCREEN ─────────────────────────── */
+#lock-screen { background: linear-gradient(180deg, #0A0A1A 0%, #0D0D24 100%); }
+
+/* ── TOAST ANIMATION ──────────────────────────────── */
+#toast { transition: opacity .2s; }
+
+/* ── PROGRESS BAR ANIMATED ───────────────────────── */
+@keyframes progressFill {
+  from { width: 0%; }
+}
+.obj-fill, .cat-budget-fill { animation: progressFill 1s cubic-bezier(.32,1,.23,1); }
+.budget-card-amt { animation: fadeIn .4s ease-out; }
+.hero-amount { animation: fadeIn .4s ease-out; }
+
+/* ── SIDEBAR ACTIVE TRANSITION ────────────────────── */
+@media (min-width: 768px) {
+  .sb-btn { transition: all .15s cubic-bezier(.32,1,.23,1); }
+  .sb-btn.on { box-shadow: inset 0 0 0 1px rgba(249,115,22,.2); }
+  #desktop-content { animation: fadeInFast .2s ease-out; }
+}
+
 </style>
 </head>
 <body>
@@ -1105,6 +1207,7 @@ nav{
 
 <div class="island-bar"></div>
 <div id="toast" class="hidden"></div>
+<div id="offline-bar">📡 Hors ligne — les données seront synchronisées à la reconnexion</div>
 <div id="overlay" class="overlay hidden"></div>
 
 <!-- LOCK -->
@@ -1212,7 +1315,39 @@ const esc=s=>String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>
 let tt;
 function flash(m){const t=document.getElementById("toast");t.textContent=m;t.classList.remove("hidden");clearTimeout(tt);tt=setTimeout(()=>t.classList.add("hidden"),2200);}
 
-async function save(){if(!docRef)return;ignoreNext=true;try{await setDoc(docRef,DATA);}catch(e){flash("Erreur sauvegarde");}}
+// Offline queue
+let offlineQueue = [];
+function isOnline(){ return navigator.onLine; }
+
+window.addEventListener("online", async()=>{
+  document.getElementById("offline-bar").style.display="none";
+  if(offlineQueue.length>0&&docRef){
+    flash("Synchronisation en cours...");
+    // Merge queued data
+    offlineQueue=[];
+    ignoreNext=true;
+    try{await setDoc(docRef,DATA);flash("Synchronisé ✓");}catch(e){}
+  }
+});
+window.addEventListener("offline",()=>{
+  document.getElementById("offline-bar").style.display="block";
+  flash("📡 Mode hors ligne activé");
+});
+
+async function save(){
+  // Always save to localStorage first (instant)
+  try{localStorage.setItem("nacho_cache",JSON.stringify(DATA));}catch(e){}
+  if(!docRef) return;
+  if(!isOnline()){
+    offlineQueue.push(Date.now());
+    return; // Will sync when back online
+  }
+  ignoreNext=true;
+  try{await setDoc(docRef,DATA);}catch(e){
+    offlineQueue.push(Date.now());
+    document.getElementById("offline-bar").style.display="block";
+  }
+}
 
 function soldes(){
   const s={};
@@ -1247,6 +1382,21 @@ function getProfile(){return localStorage.getItem(PROFILE_KEY);}
 
 async function connect(code){
   docRef=doc(db,"budgets",code);
+  // Show offline indicator immediately if no connection
+  if(!isOnline()){
+    document.getElementById("offline-bar").style.display="block";
+    // Load from local cache
+    const cached=localStorage.getItem("nacho_cache");
+    if(cached){try{DATA={...JSON.parse(JSON.stringify(DEF_DATA)),...JSON.parse(cached)};}catch(e){}}
+    // Skip Firestore, go straight to app
+    DEF_COMPTES.forEach(dc=>{if(!DATA.comptes.find(c=>c.id===dc.id)){DATA.comptes.splice(DEF_COMPTES.indexOf(dc),0,dc);if(DATA.ouv[dc.id]===undefined)DATA.ouv[dc.id]=0;}});
+    await applyRecurringTransfers();
+    localStorage.setItem("nacho_code",code);
+    document.getElementById("lock-screen").classList.add("hidden");
+    if(!isDesktop())document.getElementById("main-nav").classList.remove("hidden");
+    updateSbProfile();showTab("home");
+    return;
+  }
   const snap=await getDoc(docRef);
   if(snap.exists())DATA={...JSON.parse(JSON.stringify(DEF_DATA)),...snap.data()};
   else{await setDoc(docRef,DEF_DATA);DATA=JSON.parse(JSON.stringify(DEF_DATA));}
@@ -1273,6 +1423,8 @@ async function connect(code){
     }
   });
   localStorage.setItem("nacho_code",code);
+  // Cache data locally for offline use
+  try{localStorage.setItem("nacho_cache",JSON.stringify(DATA));}catch(e){}
   // Apply recurring transfers if due this month
   await applyRecurringTransfers();
   document.getElementById("lock-screen").classList.add("hidden");
@@ -2444,14 +2596,23 @@ document.addEventListener("DOMContentLoaded", function() {
   });
   setupDesktop();
   const code = localStorage.getItem("nacho_code");
-  if(code && sessionOk()){
-    document.getElementById("lock-form").classList.add("hidden");
-    document.getElementById("lock-loading").classList.remove("hidden");
-    connect(code).then(()=>refreshTs()).catch(()=>{
-      localStorage.removeItem("nacho_code");localStorage.removeItem("nacho_ts");
-      document.getElementById("lock-loading").classList.add("hidden");
-      document.getElementById("lock-form").classList.remove("hidden");
-    });
+  if(code){
+    const age = Date.now() - parseInt(localStorage.getItem("nacho_ts")||"0");
+    const SILENT_MS = 3 * 60 * 1000; // only auto-connect if opened < 3min ago
+    if(age < SILENT_MS){
+      // Very recent — connect silently (background tab restore)
+      document.getElementById("lock-form").classList.add("hidden");
+      document.getElementById("lock-loading").classList.remove("hidden");
+      connect(code).then(()=>refreshTs()).catch(()=>{
+        localStorage.removeItem("nacho_ts");
+        showLock(null);
+      });
+    } else {
+      // Session expired or first open — always go through lock (Face ID or code)
+      showLock(null);
+    }
+  } else {
+    showLock(null);
   }
 });
 </script>
