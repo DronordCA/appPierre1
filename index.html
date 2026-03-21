@@ -102,7 +102,7 @@ nav{
 .nb span{font-size:10px;color:var(--t4);font-weight:500;transition:color .15s;}
 .nb.on svg{stroke:var(--orange);}
 .nb.on span{color:var(--orange);}
-.nb.on::after{content:'';position:absolute;bottom:calc(var(--sab) + 2px);width:18px;height:3px;background:var(--orange);border-radius:1.5px 1.5px 0 0;}
+.nb.on::after{content:'';position:absolute;bottom:3px;width:18px;height:3px;background:var(--orange);border-radius:1.5px 1.5px 0 0;}
 
 /* ── SCREENS */
 .screen{padding-bottom:calc(var(--sab) + 88px);}
@@ -481,10 +481,27 @@ async function connect(code){
   const snap=await getDoc(docRef);
   if(snap.exists())DATA={...JSON.parse(JSON.stringify(DEF_DATA)),...snap.data()};
   else{await setDoc(docRef,DEF_DATA);DATA=JSON.parse(JSON.stringify(DEF_DATA));}
+  // Ensure new default comptes are present (migration)
+  DEF_COMPTES.forEach(dc=>{
+    if(!DATA.comptes.find(c=>c.id===dc.id)){
+      DATA.comptes.splice(DEF_COMPTES.indexOf(dc),0,dc);
+      if(DATA.ouv[dc.id]===undefined)DATA.ouv[dc.id]=0;
+    }
+  });
   if(unsub)unsub();
   unsub=onSnapshot(docRef,s=>{
     if(ignoreNext){ignoreNext=false;return;}
-    if(s.exists()){DATA={...JSON.parse(JSON.stringify(DEF_DATA)),...s.data()};flash("🔄 Mis à jour");renderTab(activeTab());}
+    if(s.exists()){
+      DATA={...JSON.parse(JSON.stringify(DEF_DATA)),...s.data()};
+      // Migration: ensure urgence exists
+      DEF_COMPTES.forEach(dc=>{
+        if(!DATA.comptes.find(c=>c.id===dc.id)){
+          DATA.comptes.splice(DEF_COMPTES.indexOf(dc),0,dc);
+          if(DATA.ouv[dc.id]===undefined)DATA.ouv[dc.id]=0;
+        }
+      });
+      flash("🔄 Mis à jour");renderTab(activeTab());
+    }
   });
   localStorage.setItem("nacho_code",code);
   document.getElementById("lock-screen").classList.add("hidden");
@@ -650,6 +667,18 @@ function renderHome(){
   <div class="hero-eur">${fE(pat/DATA.taux)}</div>
   <div class="hero-date">${mL()}</div>
 </div>
+<div class="pad"><div class="budget-card">
+  <div class="budget-card-top">
+    <div><div class="budget-card-label">Budget Canada · ce mois</div></div>
+    <div class="budget-card-flag">🍁</div>
+  </div>
+  <div class="budget-card-amt ${soldM<0?"neg":""}">${fC(soldM)}</div>
+  <div class="budget-pills">
+    <div class="bp"><div class="bp-n">Reçus</div><div class="bp-v" style="color:#34D399">${fC(virM)}</div></div>
+    <div class="bp"><div class="bp-n">Fixes</div><div class="bp-v" style="color:#93C5FD">${fC(totFix)}</div></div>
+    <div class="bp"><div class="bp-n">Variables</div><div class="bp-v" style="color:#FCD34D">${fC(depB)}</div></div>
+  </div>
+</div></div>
 ${(()=>{
   const others=DATA.comptes.filter(c=>c.id!=="budget_ca");
   const caComptes=others.filter(c=>c.devise==="CAD");
@@ -669,18 +698,6 @@ ${(()=>{
   }
   return out+'</div>';
 })()}
-<div class="pad"><div class="budget-card">
-  <div class="budget-card-top">
-    <div><div class="budget-card-label">Budget Canada · ce mois</div></div>
-    <div class="budget-card-flag">🍁</div>
-  </div>
-  <div class="budget-card-amt ${soldM<0?"neg":""}">${fC(soldM)}</div>
-  <div class="budget-pills">
-    <div class="bp"><div class="bp-n">Reçus</div><div class="bp-v" style="color:#34D399">${fC(virM)}</div></div>
-    <div class="bp"><div class="bp-n">Fixes</div><div class="bp-v" style="color:#93C5FD">${fC(totFix)}</div></div>
-    <div class="bp"><div class="bp-n">Variables</div><div class="bp-v" style="color:#FCD34D">${fC(depB)}</div></div>
-  </div>
-</div></div>
 <div class="pad"><div class="chart-hdr" style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px"><div class="stitle" style="margin:0">Évolution</div><div style="font-size:12px;color:var(--t3)">CAD</div></div><div class="chart-card" style="padding:12px 14px 10px"><div id="chart-cont"><div style="text-align:center;color:var(--t4);font-size:13px;padding:10px 0">Chargement...</div></div></div></div>
 <div class="pad"><div class="stitle">Objectifs</div>${renderObjs()}</div>`;
 
