@@ -148,6 +148,10 @@ nav{
 
 /* ── ACCOUNT CARDS */
 .acgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+/* Section label avec séparateur pays */
+.section-flag-label{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:0 2px;}
+.section-flag-label span{font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;}
+.section-flag-label::after{content:'';flex:1;height:1px;background:var(--sep);}
 .ac{background:var(--card);border-radius:var(--rL);padding:16px 14px 18px;position:relative;overflow:hidden;}
 .ac-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--rL) var(--rL) 0 0;}
 .ac-flag{font-size:20px;margin-bottom:10px;display:block;}
@@ -418,12 +422,12 @@ const FB = {apiKey:"AIzaSyBxgpSk3uUNMgT-jWChST836f17RqA_WvY",authDomain:"budget-
 const app = initializeApp(FB);
 const db  = getFirestore(app);
 
-const DEF_COMPTES=[{id:"budget_ca",label:"Budget Canada",devise:"CAD",flag:"🍁"},{id:"epargne_ca",label:"Épargne Canada",devise:"CAD",flag:"🍁"},{id:"joint_fr",label:"Compte joint FR",devise:"EUR",flag:"🇫🇷"},{id:"livret_fr",label:"Livret A",devise:"EUR",flag:"🇫🇷"}];
+const DEF_COMPTES=[{id:"budget_ca",label:"Budget Canada",devise:"CAD",flag:"🍁"},{id:"epargne_ca",label:"Épargne Canada",devise:"CAD",flag:"🍁"},{id:"urgence",label:"Fonds urgence",devise:"CAD",flag:"🛡️"},{id:"joint_fr",label:"Compte joint FR",devise:"EUR",flag:"🇫🇷"},{id:"livret_fr",label:"Livret A",devise:"EUR",flag:"🇫🇷"}];
 const CATS=["Alimentation","Restaurants","Transport","Santé","Vêtements","Loisirs","Voyages","Sport","Cadeaux","Hygiène","Culture","Divers"];
 const FLAGS=["🍁","🇫🇷","🏦","💶","💵","💴","🏠","💳","📈","🌍","💰","🏧"];
 const DEF_FIXES=[{id:1,nom:"Loyer",montant:1500,compte:"budget_ca"},{id:2,nom:"Téléphones",montant:90,compte:"budget_ca"},{id:3,nom:"Assurances",montant:100,compte:"budget_ca"},{id:4,nom:"Abonnements",montant:30,compte:"budget_ca"},{id:5,nom:"Chat",montant:60,compte:"budget_ca"}];
 const DEF_OBJS=[{id:1,nom:"🏠 Mise de fonds",cible:50000,acc:5000,dt:"2028-06"},{id:2,nom:"✈️ Voyage",cible:5000,acc:1000,dt:"2025-12"},{id:3,nom:"🚗 Voiture",cible:15000,acc:2000,dt:"2027-06"},{id:4,nom:"🛡️ Fonds urgence",cible:10000,acc:3000,dt:"2026-06"}];
-const DEF_DATA={depenses:[],revenus:[],virements:[],fixes:DEF_FIXES,comptes:DEF_COMPTES,ouv:{budget_ca:2100,epargne_ca:15000,joint_fr:2000,livret_fr:8000},taux:1.46,objectifs:[],previsions:{}};
+const DEF_DATA={depenses:[],revenus:[],virements:[],fixes:DEF_FIXES,comptes:DEF_COMPTES,ouv:{budget_ca:2100,epargne_ca:15000,urgence:3000,joint_fr:2000,livret_fr:8000},taux:1.46,objectifs:[],previsions:{}};
 const CAT_ICO={Alimentation:"🛒",Restaurants:"🍽",Transport:"🚇",Santé:"💊",Vêtements:"👕",Loisirs:"🎭",Voyages:"✈️",Sport:"⚽",Cadeaux:"🎁",Hygiène:"🪥",Culture:"📚",Divers:"📦"};
 
 let DATA=JSON.parse(JSON.stringify(DEF_DATA));
@@ -646,14 +650,25 @@ function renderHome(){
   <div class="hero-eur">${fE(pat/DATA.taux)}</div>
   <div class="hero-date">${mL()}</div>
 </div>
-<div class="pad"><div class="stitle">Épargne & comptes</div><div class="acgrid">
-  ${DATA.comptes.filter(c=>c.id!=="budget_ca").map(c=>{
+${(()=>{
+  const others=DATA.comptes.filter(c=>c.id!=="budget_ca");
+  const caComptes=others.filter(c=>c.devise==="CAD");
+  const frComptes=others.filter(c=>c.devise==="EUR"||c.devise==="USD");
+  function acCard(c){
     const isUsd=c.devise==="USD";
     const stripe=c.devise==="CAD"?"linear-gradient(90deg,#059669,#34D399)":isUsd?"linear-gradient(90deg,#2563EB,#60A5FA)":"linear-gradient(90deg,#7C3AED,#A78BFA)";
     const col=c.devise==="CAD"?"var(--green)":isUsd?"var(--blue)":"var(--purple)";
     return `<div class="ac"><div class="ac-bar" style="background:${stripe}"></div><div class="ac-flag">${esc(c.flag||"🏦")}</div><div class="ac-name">${esc(c.label)}</div><div class="ac-amt" style="color:${col}">${fN(S[c.id]||0,c.devise)}</div></div>`;
-  }).join("")}
-</div></div>
+  }
+  let out='<div class="pad">';
+  if(caComptes.length>0){
+    out+=`<div class="section-flag-label"><span>🍁 Canada</span></div><div class="acgrid">${caComptes.map(acCard).join("")}</div>`;
+  }
+  if(frComptes.length>0){
+    out+=`<div class="section-flag-label" style="margin-top:14px"><span>🇫🇷 France</span></div><div class="acgrid">${frComptes.map(acCard).join("")}</div>`;
+  }
+  return out+'</div>';
+})()}
 <div class="pad"><div class="budget-card">
   <div class="budget-card-top">
     <div><div class="budget-card-label">Budget Canada · ce mois</div></div>
