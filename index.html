@@ -849,34 +849,26 @@ function setupDesktop(){
     document.getElementById("tb-depense-btn")?.addEventListener("click",()=>showTab("depense"));
     // On desktop: render directly into desktop-content
     // Override renderTab to inject into desktop-content
-    // On desktop: inject a proxy tab div into desktop-content
-    // Each render function uses document.getElementById("tab-X") — we redirect it
+    // On desktop: move all tab divs into desktop-content, then use normal show/hide
     const deskContent = document.getElementById("desktop-content");
-    const _origGetEl = document.getElementById.bind(document);
-    const TABS = ["home","depense","argent","historique","previsions","reglages"];
+    ["home","depense","argent","historique","previsions","reglages"].forEach(t => {
+      const el = document.getElementById("tab-"+t);
+      if(el && deskContent) deskContent.appendChild(el);
+    });
 
     window.renderTab = function(t) {
-      if(!deskContent) return;
-      // Create a fresh div for this tab, inject into desktop-content
-      deskContent.innerHTML = "";
-      const proxy = document.createElement("div");
-      proxy.id = "tab-"+t;
-      proxy.className = "screen";
-      deskContent.appendChild(proxy);
-      // Temporarily override getElementById for this tab so render fns find it
-      const origFn = document.getElementById.bind(document);
-      const patchedGet = function(id) {
-        if(id === "tab-"+t) return proxy;
-        return origFn(id);
-      };
-      document.getElementById = patchedGet;
-      if(t==="home")renderHome();
-      else if(t==="depense")renderDepense();
-      else if(t==="argent")renderArgent("rev");
-      else if(t==="historique")renderHistorique();
-      else if(t==="previsions")renderPrevisions("reel");
-      else if(t==="reglages")renderReglages("comptes");
-      document.getElementById = origFn;
+      ["home","depense","argent","historique","previsions","reglages"].forEach(id => {
+        const el = document.getElementById("tab-"+id);
+        if(el) el.classList.add("hidden");
+      });
+      const tabEl = document.getElementById("tab-"+t);
+      if(tabEl) tabEl.classList.remove("hidden");
+      if(t==="home") renderHome();
+      else if(t==="depense") renderDepense();
+      else if(t==="argent") renderArgent("rev");
+      else if(t==="historique") renderHistorique();
+      else if(t==="previsions") renderPrevisions("reel");
+      else if(t==="reglages") renderReglages("comptes");
       updateSbProfile();
     };
   } else {
