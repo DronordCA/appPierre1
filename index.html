@@ -673,25 +673,45 @@ function renderDepense(){
   <div class="fbody">
     <div class="fsec">
       <div class="frow"><div class="flbl req">Description</div><input id="d-desc" type="text" placeholder="Ex : Épicerie IGA"></div>
-      <div class="frow"><div class="flbl req">Montant CAD</div><input id="d-montant" type="number" inputmode="decimal" placeholder="0"></div>
+      <div class="frow"><div class="flbl req">Montant</div><input id="d-montant" type="number" inputmode="decimal" placeholder="0"></div>
+      <div class="frow"><div class="flbl">Devise</div><select id="d-devise"><option value="CAD">CAD</option><option value="EUR">EUR</option></select></div>
+      <div class="frow hidden" id="d-taux-row"><div class="flbl">Taux EUR→CAD</div><input id="d-taux" type="number" step="0.0001" value="${DATA.taux}"></div>
     </div>
+    <div id="d-conv" class="fconv hidden"></div>
     <div class="fsec">
       <div class="frow"><div class="flbl">Date</div><input id="d-date" type="date" value="${today()}"></div>
       <div class="frow"><div class="flbl">Catégorie</div><select id="d-cat"><option value="">Aucune</option>${katopts}</select></div>
       <div class="frow"><div class="flbl">Compte</div><select id="d-compte">${copts}</select></div>
+      <div class="frow"><div class="flbl">Note</div><input id="d-note" type="text" placeholder="Optionnel"></div>
     </div>
     <div id="d-err"></div>
     <button class="btn green" id="d-save">Enregistrer la dépense</button>
   </div>`;
+  const devSel=el.querySelector("#d-devise");
+  const updateDConv=()=>{
+    const eur=devSel.value==="EUR";
+    el.querySelector("#d-taux-row").classList.toggle("hidden",!eur);
+    const m=parseFloat(el.querySelector("#d-montant").value)||0;
+    const t=parseFloat(el.querySelector("#d-taux").value)||DATA.taux;
+    const conv=el.querySelector("#d-conv");
+    if(eur&&m>0){conv.classList.remove("hidden");conv.textContent="= "+fC(m*t)+" CAD";}
+    else conv.classList.add("hidden");
+  };
+  devSel.addEventListener("change",updateDConv);
+  el.querySelector("#d-montant").addEventListener("input",updateDConv);
+  el.querySelector("#d-taux")?.addEventListener("input",updateDConv);
   el.querySelector("#d-save").addEventListener("click",async()=>{
     const desc=el.querySelector("#d-desc").value.trim();
-    const montant=parseFloat(el.querySelector("#d-montant").value);
+    const montantRaw=parseFloat(el.querySelector("#d-montant").value);
+    const devise=devSel.value;
+    const taux=devise==="EUR"?(parseFloat(el.querySelector("#d-taux").value)||DATA.taux):1;
+    const montantCAD=devise==="EUR"?montantRaw*taux:montantRaw;
     const errEl=el.querySelector("#d-err");
     if(!desc){errEl.innerHTML='<div class="ferr">Description requise</div>';return;}
-    if(!montant||montant<=0){errEl.innerHTML='<div class="ferr">Montant invalide</div>';return;}
-    const dep={id:Date.now(),date:el.querySelector("#d-date").value,desc,cat:el.querySelector("#d-cat").value,montant,compte:el.querySelector("#d-compte").value,who:getProfile()||""};
+    if(!montantRaw||montantRaw<=0){errEl.innerHTML='<div class="ferr">Montant invalide</div>';return;}
+    const dep={id:Date.now(),date:el.querySelector("#d-date").value,desc,cat:el.querySelector("#d-cat").value,montant:montantCAD,montantOriginal:montantRaw,devise,taux,note:el.querySelector("#d-note").value.trim(),compte:el.querySelector("#d-compte").value,who:getProfile()||""};
     DATA.depenses.unshift(dep);
-    await saveData();refreshTs();flash("Dépense enregistrée ✓");showDI("Dépense","-"+fC(montant));showTab("home");
+    await saveData();refreshTs();flash("Dépense enregistrée ✓");showDI("Dépense","-"+fC(montantCAD));showTab("home");
   });
 }
 
@@ -829,35 +849,106 @@ function renderHistorique(){
 
 // ── PREVISIONS
 let prevSc="reel";
-function renderPrevisions(sc){
-  prevSc=sc;
-  if(!DATA.previsions)DATA.previsions={};
-  const pd=DATA.previsions[sc]||{};
-  const months=[];const now=new Date();
-  for(let i=0;i<3;i++){const d=new Date(now.getFullYear(),now.getMonth()+i,1);months.push({key:d.toISOString().slice(0,7),label:d.toLocaleString("fr-FR",{month:"long",year:"numeric"})});}
-  const totFix=DATA.fixes.reduce((a,f)=>a+(parseFloat(f.montant)||0),0);
-  const el=document.getElementById("tab-previsions");
+let prevView="solde"; // solde | patrimoine | epargne | france
 
-  let h=`<div class="fhdr">Prévisions<div class="fhdr-sub">3 prochains mois</div></div>
-  <div class="pscen">
-    <button class="psb ${sc==="reel"?"on":""}" id="ps-reel">Réaliste</button>
-    <button class="psb ${sc==="optimiste"?"on":""}" id="ps-opt">Optimiste</button>
-  </div>`;
-  months.forEach(({key,label})=>{
+function getNextMonths(n){
+  const months=[];const now=new Date();
+  for(let i=0;i<n;i++){const d=new Date(now.getFullYear(),now.getMonth()+i,1);months.push({key:d.toISOString().slice(0,7),label:d.toLocaleString("fr-FR",{month:"long",year:"numeric"})});}
+  return months;
+}
+
+function computeProjection(sc){
+  // Returns array of {month, label, solde, patrimoine, epargne, france}
+  const months=getNextMonths(3);
+  const pd=(DATA.previsions&&DATA.previsions[sc])||{};
+  const totFix=DATA.fixes.reduce((a,f)=>a+(parseFloat(f.montant)||0),0);
+  const soldes=getSoldes();
+  let curPat=DATA.comptes.reduce((a,c)=>a+(soldes[c.id]||0)*(c.devise==="EUR"?DATA.taux:1),0);
+  let curEp=soldes["epargne_ca"]||0;
+  let curFr=((soldes["joint_fr"]||0)+(soldes["livret_fr"]||0));
+  return months.map(({key,label})=>{
     const items=pd[key]||[];
     const revs=items.filter(i=>i.type==="revenu").reduce((a,i)=>a+i.montant,0);
     const deps=items.filter(i=>i.type==="depense").reduce((a,i)=>a+i.montant,0);
     const solde=revs-totFix-deps;
-    h+=`<div class="pmc"><div class="pmh"><div class="pmname">${label}</div><div class="psolde ${solde>=0?"pos":"neg"}">${fC(solde)}</div></div>`;
-    h+=`<div class="pdr"><div><div class="pname">Dépenses fixes</div><div class="ptype">Récurrentes</div></div><div class="pamt db">${fC(totFix)}</div></div>`;
+    curPat+=solde;curEp+=solde;
+    return {key,label,solde,patrimoine:Math.max(curPat,0),epargne:Math.max(curEp,0),france:curFr*DATA.taux,items,totFix};
+  });
+}
+
+function renderPrevisions(sc){
+  prevSc=sc;
+  if(!DATA.previsions)DATA.previsions={};
+  const el=document.getElementById("tab-previsions");
+  const proj=computeProjection(sc);
+
+  // Build chart data
+  const soldes=getSoldes();
+  const currentPat=DATA.comptes.reduce((a,c)=>a+(soldes[c.id]||0)*(c.devise==="EUR"?DATA.taux:1),0);
+  const currentEp=soldes["epargne_ca"]||0;
+  const currentFr=((soldes["joint_fr"]||0)+(soldes["livret_fr"]||0))*DATA.taux;
+  const mL_now=new Date().toLocaleString("fr-FR",{month:"short"});
+
+  const chartLabels=[mL_now,...proj.map(p=>{const[y,m]=p.key.split("-");return new Date(y,m-1).toLocaleString("fr-FR",{month:"short"});})];
+  const patData=[Math.round(currentPat),...proj.map(p=>Math.round(p.patrimoine))];
+  const epData=[Math.round(currentEp),...proj.map(p=>Math.round(p.epargne))];
+  const frData=[Math.round(currentFr),...proj.map(p=>Math.round(p.france))];
+  const soldeData=[null,...proj.map(p=>Math.round(p.solde))];
+
+  let h=`<div class="fhdr">Prévisions<div class="fhdr-sub">3 prochains mois · scénario ${sc==="reel"?"réaliste":"optimiste"}</div></div>
+  <div class="pscen">
+    <button class="psb ${sc==="reel"?"on":""}" id="ps-reel">Réaliste</button>
+    <button class="psb ${sc==="optimiste"?"on":""}" id="ps-opt">Optimiste</button>
+  </div>
+  <div style="padding:0 16px 12px">
+    <div style="background:white;border-radius:var(--card-r);overflow:hidden">
+      <div style="display:flex;overflow-x:auto;border-bottom:.5px solid var(--gray2)">
+        <button class="pview-btn ${prevView==="solde"?"on":""}" data-view="solde" style="flex:1;flex-shrink:0;padding:10px 8px;border:none;background:${prevView==="solde"?"var(--navy)":"white"};color:${prevView==="solde"?"white":"var(--text3)"};font-size:12px;font-weight:600;cursor:pointer;border-right:.5px solid var(--gray2)">Solde mensuel</button>
+        <button class="pview-btn ${prevView==="patrimoine"?"on":""}" data-view="patrimoine" style="flex:1;flex-shrink:0;padding:10px 8px;border:none;background:${prevView==="patrimoine"?"var(--navy)":"white"};color:${prevView==="patrimoine"?"white":"var(--text3)"};font-size:12px;font-weight:600;cursor:pointer;border-right:.5px solid var(--gray2)">Patrimoine</button>
+        <button class="pview-btn ${prevView==="epargne"?"on":""}" data-view="epargne" style="flex:1;flex-shrink:0;padding:10px 8px;border:none;background:${prevView==="epargne"?"var(--navy)":"white"};color:${prevView==="epargne"?"white":"var(--text3)"};font-size:12px;font-weight:600;cursor:pointer;border-right:.5px solid var(--gray2)">Épargne CA</button>
+        <button class="pview-btn ${prevView==="france"?"on":""}" data-view="france" style="flex:1;flex-shrink:0;padding:10px 8px;border:none;background:${prevView==="france"?"var(--navy)":"white"};color:${prevView==="france"?"white":"var(--text3)"};font-size:12px;font-weight:600;cursor:pointer">France</button>
+      </div>
+      <div style="padding:16px"><div style="height:140px;position:relative"><canvas id="prev-chart"></canvas></div></div>
+    </div>
+  </div>`;
+
+  proj.forEach(({key,label,solde,patrimoine,epargne,france,items,totFix})=>{
+    const viewAmt=prevView==="solde"?solde:prevView==="patrimoine"?patrimoine:prevView==="epargne"?epargne:france;
+    const isPos=viewAmt>=0;
+    h+=`<div class="pmc">
+      <div class="pmh">
+        <div class="pmname">${label}</div>
+        <div class="psolde ${isPos?"pos":"neg"}">${fC(viewAmt)}</div>
+      </div>
+      <div class="pdr"><div><div class="pname">Dépenses fixes</div><div class="ptype">Récurrentes</div></div><div class="pamt db">${fC(totFix)}</div></div>`;
     items.forEach((item,idx)=>{
       h+=`<div class="pdr"><div><div class="pname">${esc(item.nom)}</div><div class="ptype">${item.type==="revenu"?"Revenu prévu":"Dépense prévue"}</div></div><div style="display:flex;align-items:center;gap:8px"><div class="pamt ${item.type==="revenu"?"cr":"db"}">${item.type==="revenu"?"+":""}${fC(item.montant)}</div><button class="pdel-btn" data-key="${key}" data-idx="${idx}" style="background:var(--red-l);border:none;border-radius:6px;color:var(--red);width:24px;height:24px;cursor:pointer;font-size:16px">×</button></div></div>`;
     });
-    h+=`<button class="padd" data-addkey="${key}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Ajouter</button></div>`;
+    h+=`<button class="padd" data-addkey="${key}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Ajouter une entrée</button>
+    </div>`;
   });
+
   el.innerHTML=h;
+
+  // Chart
+  setTimeout(()=>{
+    const c=document.getElementById("prev-chart");if(!c)return;
+    if(window._prevChart)window._prevChart.destroy();
+    const datasets=[];
+    const views={solde:{data:soldeData,color:"#0EA47A"},patrimoine:{data:patData,color:"#2563EB"},epargne:{data:epData,color:"#0891B2"},france:{data:frData,color:"#D97706"}};
+    const v=views[prevView]||views.solde;
+    // Optimiste vs realiste comparison
+    const projOpt=computeProjection("optimiste");
+    const projReel=computeProjection("reel");
+    const getView=(p)=>prevView==="solde"?p.solde:prevView==="patrimoine"?p.patrimoine:prevView==="epargne"?p.epargne:p.france;
+    datasets.push({label:"Réaliste",data:[prevView==="solde"?null:Math.round(currentPat),...projReel.map(p=>Math.round(getView(p)))],borderColor:"#0EA47A",borderWidth:2.5,pointBackgroundColor:"#0EA47A",pointRadius:3,tension:0.4,fill:false});
+    datasets.push({label:"Optimiste",data:[prevView==="solde"?null:Math.round(currentPat),...projOpt.map(p=>Math.round(getView(p)))],borderColor:"#2563EB",borderWidth:2,pointBackgroundColor:"#2563EB",pointRadius:3,tension:0.4,borderDash:[4,3],fill:false});
+    window._prevChart=new Chart(c,{type:"line",data:{labels:chartLabels,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:"bottom",labels:{font:{size:11},boxWidth:20}}},scales:{x:{grid:{display:false},ticks:{font:{size:11},color:"#9CA3AF"}},y:{display:false}}}});
+  },50);
+
   el.querySelector("#ps-reel").addEventListener("click",()=>renderPrevisions("reel"));
   el.querySelector("#ps-opt").addEventListener("click",()=>renderPrevisions("optimiste"));
+  el.querySelectorAll(".pview-btn").forEach(btn=>btn.addEventListener("click",()=>{prevView=btn.dataset.view;renderPrevisions(prevSc);}));
   el.querySelectorAll(".pdel-btn").forEach(btn=>btn.addEventListener("click",async()=>{
     const key=btn.dataset.key;const idx=parseInt(btn.dataset.idx);
     if(DATA.previsions[prevSc]&&DATA.previsions[prevSc][key]){DATA.previsions[prevSc][key].splice(idx,1);await saveData();renderPrevisions(prevSc);}
@@ -896,14 +987,11 @@ function addPrevModal(monthKey){
 function renderReglages(sec){
   const soldes=getSoldes();
   const el=document.getElementById("tab-reglages");
-  // Make reglages visible
   el.classList.remove("hidden");
-  let h=`<div class="fhdr">Réglages<div class="fhdr-sub">Comptes, objectifs & taux</div></div>
+  const SECS=[["profil","Profil"],["comptes","Comptes"],["fixes","Fixes"],["objectifs","Objectifs"],["taux","Taux"],["securite","Sécurité"]];
+  let h=`<div class="fhdr">Réglages<div class="fhdr-sub">Tout gérer en un endroit</div></div>
   <div class="seg-w"><div class="seg">
-    <button class="sb ${sec==="comptes"?"on":""}" id="rg-comptes">Comptes</button>
-    <button class="sb ${sec==="fixes"?"on":""}" id="rg-fixes">Fixes</button>
-    <button class="sb ${sec==="objectifs"?"on":""}" id="rg-objs">Objectifs</button>
-    <button class="sb ${sec==="taux"?"on":""}" id="rg-taux">Taux</button>
+    ${SECS.map(([id,lbl])=>`<button class="sb ${sec===id?"on":""}" id="rg-${id}">${lbl}</button>`).join("")}
   </div></div>`;
 
   if(sec==="comptes"){
@@ -937,8 +1025,50 @@ function renderReglages(sec){
 
   if(sec==="taux"){
     h+=`<div class="slbl">Taux de change</div><div class="scard" style="margin:0 16px"><div class="srow"><div class="smain"><div class="stit">EUR → CAD</div><div class="ssub">Modifier lors d'un virement France → Canada</div></div><input id="taux-inp" type="number" step="0.0001" value="${DATA.taux}" style="width:90px;text-align:right;border:none;background:none;font-size:16px;font-weight:700;color:var(--teal);outline:none"></div><div class="srow"><div class="ssub" id="taux-prev">1 EUR = ${Number(DATA.taux).toFixed(4)} CAD</div></div></div>`;
-    h+=`<div style="padding:12px 16px 16px"><button class="btn" id="save-taux-btn">Enregistrer le taux</button></div>`;
-    h+=`<div class="slbl">Session</div><div style="padding:0 16px 100px"><button class="btn ghost" id="logout-btn" style="color:var(--red);border-color:rgba(220,38,38,.3)">Se déconnecter</button></div>`;
+    h+=`<div style="padding:12px 16px 100px"><button class="btn" id="save-taux-btn">Enregistrer le taux</button></div>`;
+  }
+
+  if(sec==="profil"){
+    const pr=getProfile();
+    h+=`<div class="slbl">Identité sur ce téléphone</div>
+    <div class="scard" style="margin:0 16px">
+      <div class="srow" style="gap:16px;padding:20px 16px">
+        <button id="pp-pierre" style="flex:1;padding:20px;border-radius:16px;border:2px solid ${pr==="Pierre"?"#2563EB":"var(--gray3)"};background:${pr==="Pierre"?"#EFF6FF":"white"};color:${pr==="Pierre"?"#2563EB":"var(--text3)"};font-size:17px;font-weight:700;cursor:pointer">Pierre</button>
+        <button id="pp-lealin" style="flex:1;padding:20px;border-radius:16px;border:2px solid ${pr==="Lealin"?"#9333EA":"var(--gray3)"};background:${pr==="Lealin"?"#FDF4FF":"white"};color:${pr==="Lealin"?"#9333EA":"var(--text3)"};font-size:17px;font-weight:700;cursor:pointer">Lealin</button>
+      </div>
+    </div>
+    <div class="slbl">Statistiques</div>
+    <div class="scard" style="margin:0 16px">
+      <div class="stat-row">
+        <div class="stat-i"><div class="stat-n">${DATA.depenses.length}</div><div class="stat-l">dépenses</div></div>
+        <div class="stat-i"><div class="stat-n">${DATA.revenus.length}</div><div class="stat-l">revenus</div></div>
+        <div class="stat-i"><div class="stat-n">${DATA.virements.length}</div><div class="stat-l">virements</div></div>
+      </div>
+      <div class="stat-row" style="border-top:.5px solid var(--gray2)">
+        <div class="stat-i"><div class="stat-n">${(DATA.objectifs&&DATA.objectifs.length)||DEF_OBJS.length}</div><div class="stat-l">objectifs</div></div>
+        <div class="stat-i"><div class="stat-n">${DATA.fixes.length}</div><div class="stat-l">postes fixes</div></div>
+        <div class="stat-i"><div class="stat-n">${DATA.comptes.length}</div><div class="stat-l">comptes</div></div>
+      </div>
+    </div>`;
+    h+=`<div style="padding:16px 16px 100px"></div>`;
+  }
+
+  if(sec==="securite"){
+    h+=`<div class="slbl">Changer le code secret</div>
+    <div class="scard" style="margin:0 16px">
+      <div class="srow"><div class="smain"><div class="stit">Nouveau code</div></div><input id="new-code" type="password" placeholder="Entrez le nouveau code" autocomplete="off" style="width:160px;text-align:right;border:none;background:none;font-size:15px;outline:none;color:var(--text2)"></div>
+      <div class="srow"><div class="smain"><div class="stit">Confirmer</div></div><input id="confirm-code" type="password" placeholder="Répétez le code" autocomplete="off" style="width:160px;text-align:right;border:none;background:none;font-size:15px;outline:none;color:var(--text2)"></div>
+    </div>
+    <div id="code-err" class="ferr hidden" style="margin:8px 16px 0"></div>
+    <div style="padding:12px 16px 0"><button class="btn" id="change-code-btn">Changer le code</button></div>
+    <div class="slbl" style="margin-top:16px">Face ID</div>
+    <div class="scard" style="margin:0 16px">
+      <div class="srow"><div class="smain"><div class="stit">Statut Face ID</div><div class="ssub">${localStorage.getItem(FACEID_KEY)?"Activé sur ce téléphone":"Non configuré"}</div></div>
+      ${localStorage.getItem(FACEID_KEY)?`<button id="reset-faceid-btn" class="btn ghost sml" style="color:var(--red);border-color:rgba(220,38,38,.3);padding:8px 12px;font-size:13px">Réinitialiser</button>`:`<button id="setup-faceid-btn" class="btn green sml" style="padding:8px 12px;font-size:13px">Configurer</button>`}
+      </div>
+    </div>
+    <div class="slbl" style="margin-top:16px">Session</div>
+    <div style="padding:0 16px 100px"><button class="btn ghost" id="logout-btn" style="color:var(--red);border-color:rgba(220,38,38,.3)">Se déconnecter</button></div>`;
   }
 
   // Show reglages tab
@@ -950,10 +1080,9 @@ function renderReglages(sec){
   el.innerHTML=h;
 
   // Wire seg buttons
-  el.querySelector("#rg-comptes")?.addEventListener("click",()=>renderReglages("comptes"));
-  el.querySelector("#rg-fixes")?.addEventListener("click",()=>renderReglages("fixes"));
-  el.querySelector("#rg-objs")?.addEventListener("click",()=>renderReglages("objectifs"));
-  el.querySelector("#rg-taux")?.addEventListener("click",()=>renderReglages("taux"));
+  [["comptes","comptes"],["fixes","fixes"],["objs","objectifs"],["taux","taux"],["profil","profil"],["securite","securite"]].forEach(([id,sec])=>{
+    el.querySelector("#rg-"+id)?.addEventListener("click",()=>renderReglages(sec));
+  });
 
   // COMPTES events
   if(sec==="comptes"){
@@ -997,7 +1126,45 @@ function renderReglages(sec){
   if(sec==="taux"){
     el.querySelector("#taux-inp").addEventListener("input",()=>{const v=parseFloat(el.querySelector("#taux-inp").value)||DATA.taux;el.querySelector("#taux-prev").textContent=`1 EUR = ${v.toFixed(4)} CAD`;});
     el.querySelector("#save-taux-btn").addEventListener("click",async()=>{DATA.taux=parseFloat(el.querySelector("#taux-inp").value)||DATA.taux;await saveData();flash("Taux mis à jour ✓");});
-    el.querySelector("#logout-btn").addEventListener("click",()=>{localStorage.removeItem("budget_code");localStorage.removeItem("budget_ts");if(unsub)unsub();showLock(null);});
+  }
+  // PROFIL events
+  if(sec==="profil"){
+    el.querySelector("#pp-pierre")?.addEventListener("click",()=>{localStorage.setItem(PROFILE_KEY,"Pierre");flash("Profil : Pierre ✓");renderReglages("profil");});
+    el.querySelector("#pp-lealin")?.addEventListener("click",()=>{localStorage.setItem(PROFILE_KEY,"Lealin");flash("Profil : Lealin ✓");renderReglages("profil");});
+  }
+  // SECURITE events
+  if(sec==="securite"){
+    el.querySelector("#change-code-btn")?.addEventListener("click",async()=>{
+      const nc=el.querySelector("#new-code").value.trim().toLowerCase().replace(/[^a-z0-9\-_]/g,"");
+      const cc=el.querySelector("#confirm-code").value.trim().toLowerCase().replace(/[^a-z0-9\-_]/g,"");
+      const errEl=el.querySelector("#code-err");
+      if(nc.length<2){errEl.textContent="Code trop court (min 2 caractères)";errEl.classList.remove("hidden");return;}
+      if(nc!==cc){errEl.textContent="Les codes ne correspondent pas";errEl.classList.remove("hidden");return;}
+      errEl.classList.add("hidden");
+      // Copy data to new code
+      const newRef=doc(db,"budgets",nc);
+      try{
+        await setDoc(newRef,DATA);
+        localStorage.setItem("budget_code",nc);
+        docRef=newRef;
+        if(unsub)unsub();
+        unsub=onSnapshot(docRef,s=>{if(ignoreNext){ignoreNext=false;return;}if(s.exists()){DATA={...JSON.parse(JSON.stringify(DEF_DATA)),...s.data()};showSync("Synchro reçue");renderTab(activeTab());}});
+        flash("Code changé ✓ — partagez le nouveau code avec Lealin");
+        el.querySelector("#new-code").value="";
+        el.querySelector("#confirm-code").value="";
+      } catch(e){errEl.textContent="Erreur: "+e.message;errEl.classList.remove("hidden");}
+    });
+    el.querySelector("#logout-btn")?.addEventListener("click",()=>{localStorage.removeItem("budget_code");localStorage.removeItem("budget_ts");if(unsub)unsub();showLock(null);});
+    el.querySelector("#reset-faceid-btn")?.addEventListener("click",()=>{localStorage.removeItem(FACEID_KEY);flash("Face ID réinitialisé");renderReglages("securite");});
+    el.querySelector("#setup-faceid-btn")?.addEventListener("click",async()=>{
+      const code=localStorage.getItem("budget_code")||"0318";
+      try{
+        const ch=crypto.getRandomValues(new Uint8Array(32));
+        const cred=await navigator.credentials.create({publicKey:{challenge:ch,rp:{name:"Budget"},user:{id:new TextEncoder().encode(code),name:"budget",displayName:"Budget"},pubKeyCredParams:[{type:"public-key",alg:-7}],authenticatorSelection:{authenticatorAttachment:"platform",userVerification:"required",residentKey:"preferred"},timeout:60000}});
+        localStorage.setItem(FACEID_KEY,JSON.stringify({id:Array.from(new Uint8Array(cred.rawId)),code}));
+        flash("Face ID activé ✓");renderReglages("securite");
+      }catch(e){flash("Face ID annulé ou non disponible");}
+    });
   }
 }
 window.renderReglages=renderReglages;
