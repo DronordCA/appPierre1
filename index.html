@@ -1540,6 +1540,15 @@ const isDesktop=()=>window.innerWidth>=768;
 
 const TAB_TITLES={home:"Accueil",depense:"Nouvelle dépense",argent:"Argent",historique:"Historique",previsions:"Prévisions",reglages:"Réglages"};
 
+// Helper — refresh home correctly on both mobile and desktop
+function refreshHome(){
+  if(window.isDesktop && isDesktop()){
+    window.renderTab("home");
+  } else {
+    renderHome();
+  }
+}
+
 function showTab(tab){
   if(isDesktop()){
     // Desktop: render into desktop-content
@@ -1657,7 +1666,7 @@ function renderObjs(){
   const objs=(DATA.objectifs&&DATA.objectifs.length)?DATA.objectifs:DEF_OBJS;
   let h='<div class="obj-card">';
   objs.forEach(o=>{
-    const versements=(DATA.obj_versements||[]).filter(v=>v.objId===o.id);
+    const versements=(DATA.obj_versements||[]).filter(v=>String(v.objId)===String(o.id));
     const accDyn=versements.reduce((a,v)=>a+(parseFloat(v.montant)||0),0);
     const acc=(o.acc||0)+accDyn;
     const pct=Math.min(acc/o.cible,1),pd=Math.round(pct*100),done=pd>=100;
@@ -1665,7 +1674,7 @@ function renderObjs(){
     const pm=(mo&&mo>0)?Math.ceil(Math.max(o.cible-acc,0)/mo):null;
     h+=`<div class="obj-row" data-oid="${o.id}">
       <div class="obj-top"><div class="obj-name">${esc(o.nom)}</div><div class="obj-pct">${done?"✓ ":""}${pd}%</div></div>
-      <div class="obj-track"><div class="obj-fill${done?" done":""}" style="width:${pd}%"></div></div>
+      <div class="obj-track"><div class="obj-fill${done?" done":""}" style="width:${pd}%;animation:progressFill 1s cubic-bezier(.32,1,.23,1)"></div></div>
       <div class="obj-bot">
         <div class="obj-amts">${fC(acc)} <span style="color:var(--t4)">/ ${fC(o.cible)}</span></div>
         ${pm&&!done?`<div class="obj-pm">${fC(pm)}/mois</div>`:""}
@@ -1817,8 +1826,8 @@ function profileModal(){
   d.innerHTML=`<div class="modal-handle"></div><div style="font-size:24px;font-weight:900;color:var(--t1);letter-spacing:-.5px;margin-bottom:6px">Qui êtes-vous ?</div><p style="font-size:14px;color:var(--t3);margin:0 0 22px;line-height:1.5">Ce téléphone sera identifié sur chaque transaction.</p><div style="display:flex;gap:12px;margin-bottom:4px"><button id="pp-p" style="flex:1;padding:20px;border-radius:var(--rM);border:2px solid #2563EB;background:#EFF6FF;color:#1D4ED8;font-size:17px;font-weight:800;cursor:pointer">Pierre</button><button id="pp-l" style="flex:1;padding:20px;border-radius:var(--rM);border:2px solid #7C3AED;background:#F5F3FF;color:#6D28D9;font-size:17px;font-weight:800;cursor:pointer">Lealin</button></div>`;
   o.innerHTML="";o.appendChild(d);o.classList.remove("hidden");
   o.onclick=()=>closeModal();d.onclick=e=>e.stopPropagation();
-  d.querySelector("#pp-p").addEventListener("click",()=>{localStorage.setItem(PROFILE_KEY,"Pierre");closeModal();renderHome();});
-  d.querySelector("#pp-l").addEventListener("click",()=>{localStorage.setItem(PROFILE_KEY,"Lealin");closeModal();renderHome();});
+  d.querySelector("#pp-p").addEventListener("click",()=>{localStorage.setItem(PROFILE_KEY,"Pierre");closeModal();refreshHome();});
+  d.querySelector("#pp-l").addEventListener("click",()=>{localStorage.setItem(PROFILE_KEY,"Lealin");closeModal();refreshHome();});
 }
 function closeModal(){document.getElementById("overlay").classList.add("hidden");}
 window.closeModal=closeModal;
@@ -1943,7 +1952,7 @@ function objVersementModal(objId, direction){
     await save();
     closeModal();
     flash(isAdd?`+${fC(montant)} → ${esc(obj.nom)} ✓`:`↩ ${fC(montant)} retiré de ${esc(obj.nom)}`);
-    renderHome();
+    refreshHome();
   });
 }
 
@@ -1958,7 +1967,7 @@ function openDepDetail(id){
   o.innerHTML="";o.appendChild(d);o.classList.remove("hidden");
   o.onclick=()=>closeModal();d.onclick=e=>e.stopPropagation();
   d.querySelector("#dm-c").addEventListener("click",closeModal);
-  d.querySelector("#dm-d").addEventListener("click",async()=>{DATA.depenses=DATA.depenses.filter(x=>String(x.id)!==String(id));await save();closeModal();flash("Supprimé");renderHome();const ht=document.getElementById("tab-historique");if(ht&&!ht.classList.contains("hidden"))renderHistorique();});
+  d.querySelector("#dm-d").addEventListener("click",async()=>{DATA.depenses=DATA.depenses.filter(x=>String(x.id)!==String(id));await save();closeModal();flash("Supprimé");refreshHome();const ht=document.getElementById("tab-historique");if(ht&&!ht.classList.contains("hidden"))renderHistorique();});
 }
 
 // ── REV DETAIL
@@ -2176,7 +2185,7 @@ function renderArgent(mode){
     const recurrents=DATA.virements_recurrents||[];
     h+=`<div class="fbody"><p class="finfo">Versez de l'argent vers un objectif. Le compte source est débité, l'objectif se remplit.</p>`;
     objs.forEach(o=>{
-      const v=(DATA.obj_versements||[]).filter(x=>x.objId===String(o.id));
+      const v=(DATA.obj_versements||[]).filter(x=>String(x.objId)===String(o.id));
       const acc=(o.acc||0)+v.reduce((a,x)=>a+(parseFloat(x.montant)||0),0);
       const pct=Math.min(acc/o.cible,1);const pd=Math.round(pct*100);
       const oRec=recurrents.filter(r=>String(r.objId)===String(o.id)&&r.actif);
