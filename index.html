@@ -342,9 +342,225 @@ nav{
 
 /* ── OBJ EDIT */
 .oecard{background:var(--card);border-radius:var(--rL);margin:0 16px 10px;overflow:hidden;}
+
+/* ═══════════════════════════════════════
+   DESKTOP LAYOUT (≥768px)
+═══════════════════════════════════════ */
+@media (min-width: 768px) {
+  html { background: #1A1A2E; }
+  body {
+    max-width: 100%;
+    display: flex;
+    min-height: 100vh;
+    background: #F0EEE9;
+  }
+
+  /* ── SIDEBAR */
+  #sidebar {
+    width: 240px;
+    min-width: 240px;
+    background: var(--navy);
+    display: flex;
+    flex-direction: column;
+    padding: 32px 0 24px;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+  }
+  .sb-logo {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 22px 32px;
+    border-bottom: 1px solid rgba(255,255,255,.07);
+    margin-bottom: 12px;
+  }
+  .sb-logo-icon { width: 36px; height: 36px; border-radius: 10px; overflow: hidden; flex-shrink: 0; }
+  .sb-logo-icon svg { width: 100%; height: 100%; display: block; }
+  .sb-logo-name { font-size: 20px; font-weight: 800; color: white; letter-spacing: -.5px; }
+  .sb-nav { flex: 1; padding: 0 12px; display: flex; flex-direction: column; gap: 2px; }
+  .sb-btn {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 14px; border-radius: 12px;
+    background: none; border: none; cursor: pointer;
+    color: rgba(255,255,255,.45); font-size: 14px; font-weight: 600;
+    transition: all .15s; text-align: left;
+  }
+  .sb-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .sb-btn:hover { background: rgba(255,255,255,.07); color: rgba(255,255,255,.7); }
+  .sb-btn.on { background: rgba(249,115,22,.15); color: var(--orange); }
+  .sb-divider { height: 1px; background: rgba(255,255,255,.07); margin: 8px 12px; }
+  .sb-bottom { padding: 0 12px; }
+  .sb-profile {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px; border-radius: 12px;
+    background: rgba(255,255,255,.05);
+    cursor: pointer; border: none;
+    transition: background .15s;
+  }
+  .sb-profile:hover { background: rgba(255,255,255,.09); }
+  .sb-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; flex-shrink: 0; }
+  .sb-pname { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.55); flex: 1; text-align: left; }
+  .sb-sync { font-size: 11px; color: rgba(255,255,255,.25); margin-top: 2px; }
+
+  /* ── MAIN CONTENT AREA */
+  #desktop-main {
+    margin-left: 240px;
+    flex: 1;
+    min-height: 100vh;
+    background: var(--bg);
+  }
+
+  /* ── TOP BAR */
+  #top-bar {
+    height: 60px;
+    background: rgba(240,238,233,.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(10,10,26,.07);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .top-bar-title { font-size: 18px; font-weight: 800; color: var(--t1); letter-spacing: -.4px; }
+  .top-bar-right { display: flex; align-items: center; gap: 10px; }
+  .top-bar-btn {
+    padding: 8px 16px; border-radius: 10px;
+    background: var(--orange); color: white;
+    border: none; font-size: 13px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; gap: 6px;
+  }
+  .top-bar-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; }
+
+  /* ── CONTENT GRID */
+  #desktop-content { padding: 24px 28px; }
+
+  /* Override mobile layout for desktop */
+  .island-bar { display: none; }
+  nav { display: none !important; }
+  .screen { padding-bottom: 24px; }
+  .page-hdr {
+    background: none;
+    padding: 0 0 16px !important;
+    border-bottom: 1px solid var(--sep);
+    margin-bottom: 8px;
+  }
+  .page-hdr-name { font-size: 24px; color: var(--t1) !important; }
+  .page-hdr-sub { color: var(--t3) !important; }
+
+  /* Hero on desktop — remove navy bg, inline layout */
+  .hero {
+    background: none;
+    padding: 0 !important;
+  }
+  .hero-top { display: none; }
+  .hero-eyebrow { color: var(--t3); }
+  .hero-amount { font-size: 40px; color: var(--t1); }
+  .hero-eur { color: var(--t3); }
+  .hero-trend.up { background: var(--gl); color: var(--green); }
+  .hero-trend.dn { background: var(--rl); color: var(--red); }
+  .hero-date { color: var(--t4); }
+
+  /* Two-column grid on desktop for home */
+  #tab-home .desktop-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  #tab-home .desktop-col-left { display: flex; flex-direction: column; gap: 14px; }
+  #tab-home .desktop-col-right { display: flex; flex-direction: column; gap: 14px; }
+
+  /* Remove pad wrapper on desktop — handled by desktop-content */
+  #desktop-content .pad { padding: 0; }
+
+  /* Forms on desktop — centered, max width */
+  #tab-depense .fbody,
+  #tab-argent .fbody,
+  #tab-reglages .slbl,
+  #tab-reglages .scard,
+  #tab-reglages .cecard,
+  #tab-reglages .oecard,
+  #tab-reglages [style*="padding:0 16px"],
+  #tab-reglages [style*="padding:10px 16px"] {
+    max-width: 560px;
+  }
+  #tab-depense, #tab-argent { max-width: 600px; }
+
+  /* Historique / Previsions full width */
+  #tab-historique .lcard,
+  #tab-previsions .pmc { margin-left: 0; margin-right: 0; }
+  #tab-historique .search-wrap { padding-left: 0; padding-right: 0; }
+  #tab-historique .chips { padding-left: 0; }
+
+  /* Segments on desktop */
+  .seg-wrap { padding-left: 0; padding-right: 0; }
+  .pscen { padding-left: 0; }
+
+  /* Budget card desktop */
+  .budget-card { max-width: 100%; }
+}
+
+@media (min-width: 1100px) {
+  #sidebar { width: 260px; }
+  #desktop-main { margin-left: 260px; }
+}
+
 </style>
 </head>
 <body>
+
+<!-- SIDEBAR (desktop only) -->
+<div id="sidebar" style="display:none">
+  <div class="sb-logo">
+    <div class="sb-logo-icon"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="22" fill="#F97316"/><rect x="22" y="34" width="56" height="48" rx="20" fill="white"/><polygon points="22,50 22,26 40,42" fill="white"/><polygon points="78,50 78,26 60,42" fill="white"/><ellipse cx="40" cy="57" rx="4" ry="5" fill="#F97316"/><ellipse cx="60" cy="57" rx="4" ry="5" fill="#F97316"/><circle cx="50" cy="66" r="2.5" fill="#F97316"/></svg></div>
+    <div class="sb-logo-name">Nacho</div>
+  </div>
+  <div class="sb-nav">
+    <button class="sb-btn on" id="sb-home">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Accueil
+    </button>
+    <button class="sb-btn" id="sb-depense">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      Nouvelle dépense
+    </button>
+    <button class="sb-btn" id="sb-argent">
+      <svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+      Argent
+    </button>
+    <button class="sb-btn" id="sb-historique">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Historique
+    </button>
+    <button class="sb-btn" id="sb-previsions">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Prévisions
+    </button>
+    <div class="sb-divider"></div>
+    <button class="sb-btn" id="sb-reglages">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      Réglages
+    </button>
+  </div>
+  <div class="sb-bottom">
+    <button class="sb-profile" id="sb-profile-btn">
+      <div class="sb-avatar" id="sb-avatar"></div>
+      <div><div class="sb-pname" id="sb-pname">Profil</div></div>
+    </button>
+  </div>
+</div>
+
+<!-- DESKTOP MAIN -->
+<div id="desktop-main" style="display:none">
+  <div id="top-bar">
+    <div class="top-bar-title" id="top-bar-title">Accueil</div>
+    <div class="top-bar-right">
+      <button class="top-bar-btn" id="tb-depense-btn">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        Nouvelle dépense
+      </button>
+    </div>
+  </div>
+  <div id="desktop-content"></div>
+</div>
 
 <div class="island-bar"></div>
 <div id="toast" class="hidden"></div>
@@ -505,7 +721,8 @@ async function connect(code){
   });
   localStorage.setItem("nacho_code",code);
   document.getElementById("lock-screen").classList.add("hidden");
-  document.getElementById("main-nav").classList.remove("hidden");
+  if(!isDesktop())document.getElementById("main-nav").classList.remove("hidden");
+  updateSbProfile();
   showTab("home");
 }
 
@@ -576,16 +793,35 @@ document.addEventListener("visibilitychange",()=>{
     showLock("Session expirée");
 });
 
+const isDesktop=()=>window.innerWidth>=768;
+
+const TAB_TITLES={home:"Accueil",depense:"Nouvelle dépense",argent:"Argent",historique:"Historique",previsions:"Prévisions",reglages:"Réglages"};
+
 function showTab(tab){
-  ["home","depense","argent","historique","previsions","reglages"].forEach(t=>{
-    const el=document.getElementById("tab-"+t);
-    const nb=document.getElementById("nb-"+t);
-    if(el)el.classList.toggle("hidden",t!==tab);
-    if(nb)nb.classList.toggle("on",t===tab);
-  });
-  renderTab(tab);
+  if(isDesktop()){
+    // Desktop: render into desktop-content
+    ["sb-home","sb-depense","sb-argent","sb-historique","sb-previsions","sb-reglages"].forEach(id=>{
+      document.getElementById(id)?.classList.remove("on");
+    });
+    document.getElementById("sb-"+tab)?.classList.add("on");
+    const title=document.getElementById("top-bar-title");
+    if(title)title.textContent=TAB_TITLES[tab]||"";
+    // Show/hide the quick add button
+    const tbBtn=document.getElementById("tb-depense-btn");
+    if(tbBtn)tbBtn.style.display=tab==="depense"?"none":"flex";
+    renderTab(tab);
+  } else {
+    ["home","depense","argent","historique","previsions","reglages"].forEach(t=>{
+      const el=document.getElementById("tab-"+t);
+      const nb=document.getElementById("nb-"+t);
+      if(el)el.classList.toggle("hidden",t!==tab);
+      if(nb)nb.classList.toggle("on",t===tab);
+    });
+    renderTab(tab);
+  }
 }
 window.showTab=showTab;
+
 function renderTab(t){
   if(t==="home")renderHome();
   if(t==="depense")renderDepense();
@@ -594,7 +830,56 @@ function renderTab(t){
   if(t==="previsions")renderPrevisions("reel");
   if(t==="reglages")renderReglages("comptes");
 }
-["home","depense","argent","historique","previsions"].forEach(t=>document.getElementById("nb-"+t).addEventListener("click",()=>showTab(t)));
+
+function setupDesktop(){
+  const sidebar=document.getElementById("sidebar");
+  const desktopMain=document.getElementById("desktop-main");
+  const mobileNav=document.getElementById("main-nav");
+  if(isDesktop()){
+    sidebar.style.display="flex";
+    desktopMain.style.display="block";
+    if(mobileNav)mobileNav.classList.add("hidden");
+    // Wire sidebar buttons
+    ["home","depense","argent","historique","previsions","reglages"].forEach(t=>{
+      document.getElementById("sb-"+t)?.addEventListener("click",()=>showTab(t));
+    });
+    document.getElementById("sb-profile-btn")?.addEventListener("click",()=>profileModal());
+    document.getElementById("tb-depense-btn")?.addEventListener("click",()=>showTab("depense"));
+    // Override renderTab to inject into desktop-content
+    const origRenderTab=renderTab;
+    window._desktopRenderTab=function(t){
+      const cont=document.getElementById("desktop-content");
+      if(!cont)return;
+      // Temporarily show the right tab div, render, move to desktop-content
+      const tabEl=document.getElementById("tab-"+t);
+      if(!tabEl)return;
+      tabEl.classList.remove("hidden");
+      origRenderTab(t);
+      // Move content to desktop-content
+      cont.innerHTML="";
+      while(tabEl.firstChild)cont.appendChild(tabEl.firstChild);
+      tabEl.classList.add("hidden");
+      updateSbProfile();
+    };
+    window.renderTab=window._desktopRenderTab;
+  } else {
+    sidebar.style.display="none";
+    desktopMain.style.display="none";
+    if(mobileNav)mobileNav.classList.remove("hidden");
+    ["home","depense","argent","historique","previsions"].forEach(t=>document.getElementById("nb-"+t)?.addEventListener("click",()=>showTab(t)));
+  }
+}
+
+function updateSbProfile(){
+  const pr=getProfile();
+  const av=document.getElementById("sb-avatar");
+  const pn=document.getElementById("sb-pname");
+  const ac=pr==="Pierre"?"#2563EB":pr==="Lealin"?"#7C3AED":"#888";
+  const ab=pr==="Pierre"?"#EFF6FF":pr==="Lealin"?"#F5F3FF":"#2A2A4A";
+  if(av){av.textContent=pr?pr[0]:"?";av.style.background=ab;av.style.color=ac;}
+  if(pn)pn.textContent=pr||"Choisir profil";
+}
+
 
 // ── CHART
 function renderChart(){
@@ -1132,6 +1417,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("faceid-wrap").classList.add("hidden");
     document.getElementById("lock-form").classList.remove("hidden");
   });
+  setupDesktop();
   const code = localStorage.getItem("nacho_code");
   if(code && sessionOk()){
     document.getElementById("lock-form").classList.add("hidden");
