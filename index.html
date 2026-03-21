@@ -947,7 +947,7 @@ function getProfile(){return myProfile;}
 window.setProfile=function(name){myProfile=name;localStorage.setItem(PROFILE_KEY,name);closeModal();renderHome();};
 function profileModal(){
   const o=document.getElementById("overlay");
-  o.innerHTML='<div class="modal" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">Qui etes-vous ?</div><p style="font-size:14px;color:var(--text3);margin:8px 0 20px">Ce telephone sera identifie comme :</p><div style="display:flex;gap:12px"><button onclick="setProfile('Pierre')" style="flex:1;padding:20px;border-radius:16px;border:2px solid #2563EB;background:#EFF6FF;color:#2563EB;font-size:17px;font-weight:700;cursor:pointer">Pierre</button><button onclick="setProfile('Lealin')" style="flex:1;padding:20px;border-radius:16px;border:2px solid #9333EA;background:#FDF4FF;color:#9333EA;font-size:17px;font-weight:700;cursor:pointer">Lealin</button></div></div>';
+  o.innerHTML='<div class="modal" onclick="event.stopPropagation()"><div class="modal-handle"></div><div class="modal-title">Qui etes-vous ?</div><p style="font-size:14px;color:var(--text3);margin:8px 0 20px">Ce telephone sera identifie comme :</p><div style="display:flex;gap:12px"><button onclick="setProfile(&apos;Pierre&apos;)" style="flex:1;padding:20px;border-radius:16px;border:2px solid #2563EB;background:#EFF6FF;color:#2563EB;font-size:17px;font-weight:700;cursor:pointer">Pierre</button><button onclick="setProfile(&apos;Lealin&apos;)" style="flex:1;padding:20px;border-radius:16px;border:2px solid #9333EA;background:#FDF4FF;color:#9333EA;font-size:17px;font-weight:700;cursor:pointer">Lealin</button></div></div>';
   o.classList.remove("hidden"); o.onclick=null;
 }
 
@@ -979,7 +979,7 @@ function renderObjectives(){
     if(pm)h+='<div class="obj-monthly">'+fmtCAD(pm)+'/mois</div>';
     h+='</div></div>';
   });
-  h+='<button class="prev-add-btn" onclick="showTab('reglages');renderReglages('objectifs')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Gerer les objectifs</button>';
+  h+='<button class="prev-add-btn" onclick="showTab(&apos;reglages&apos;);renderReglages(&apos;objectifs&apos;)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Gerer les objectifs</button>';
   return h+'</div>';
 }
 
@@ -1172,7 +1172,7 @@ function renderHome() {
         <div class="profile-avatar" style="background:${ab};color:${ac}">${pr?pr[0]:"?"}</div>
         <div class="profile-name">${pr||"Profil"}</div>
       </div>
-      <button class="hero-settings-btn" onclick="showTab('reglages');renderReglages('comptes')">
+      <button class="hero-settings-btn" onclick="showTab(&apos;reglages&apos;);renderReglages(&apos;comptes&apos;)">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
       </button>
     </div>
