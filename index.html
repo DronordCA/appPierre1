@@ -1146,6 +1146,39 @@ nav{
   #desktop-content { animation: fadeInFast .2s ease-out; }
 }
 
+
+/* ── APPLE-STYLE SETTINGS ─────────────────────── */
+.rg-page { padding-bottom: 40px; }
+.rg-profile-hdr {
+  display: flex; align-items: center; gap: 14px;
+  padding: 20px 16px; background: var(--card);
+  margin: 12px 16px; border-radius: var(--rL);
+  cursor: pointer; transition: background .1s;
+  box-shadow: 0 1px 3px rgba(10,10,26,.06);
+}
+.rg-profile-hdr:active { background: rgba(10,10,26,.03); }
+.rg-avatar { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; flex-shrink: 0; }
+.rg-profile-info { flex: 1; }
+.rg-profile-name { font-size: 17px; font-weight: 700; color: var(--t1); letter-spacing: -.3px; }
+.rg-profile-sub { font-size: 13px; color: var(--t3); margin-top: 2px; }
+.rg-profile-chevron { background: none; border: none; font-size: 24px; color: var(--t4); cursor: pointer; padding: 0 4px; }
+.rg-group-label { font-size: 12px; font-weight: 600; color: var(--t3); text-transform: uppercase; letter-spacing: .6px; padding: 16px 16px 6px; }
+.rg-group { background: var(--card); border-radius: var(--rL); overflow: hidden; margin: 0 16px; box-shadow: 0 1px 3px rgba(10,10,26,.06); }
+.rg-item { display: flex; align-items: center; gap: 12px; padding: 13px 15px; width: 100%; background: none; border: none; text-align: left; transition: background .1s; }
+.rg-item[data-sec] { cursor: pointer; }
+.rg-item[data-sec]:active { background: rgba(10,10,26,.04); }
+.rg-item-icon { font-size: 18px; width: 30px; text-align: center; flex-shrink: 0; }
+.rg-item-body { flex: 1; min-width: 0; }
+.rg-item-label { font-size: 15px; font-weight: 500; color: var(--t1); }
+.rg-item-sub { font-size: 12px; color: var(--t3); margin-top: 1px; }
+.rg-chevron { font-size: 20px; color: var(--t4); font-weight: 300; flex-shrink: 0; }
+.rg-sep { height: 1px; background: var(--sep); margin-left: 56px; }
+.rg-back { display: flex; align-items: center; gap: 4px; background: none; border: none; color: var(--orange); font-size: 16px; font-weight: 600; cursor: pointer; padding: 12px 16px 4px; }
+.rg-back span { font-size: 22px; line-height: 1; }
+.rg-section-hdr { display: flex; align-items: center; gap: 10px; padding: 4px 16px 12px; }
+.rg-section-icon { font-size: 28px; }
+.rg-section-title { font-size: 22px; font-weight: 800; color: var(--t1); letter-spacing: -.5px; }
+
 </style>
 </head>
 <body>
@@ -2390,93 +2423,297 @@ function addPrevModal(mk){
 function renderReglages(sec){
   const S=soldes();const el=document.getElementById("tab-reglages");el.classList.remove("hidden");
   const SECS=[["comptes","Comptes"],["fixes","Fixes"],["objectifs","Objectifs"],["descriptions","Descriptions"],["budgets","Budgets"],["profil","Profil"],["securite","Sécurité"]];
-  let h=`<div class="page-hdr"><div class="page-hdr-name">Réglages</div><div class="page-hdr-sub">Tout gérer</div></div>
-  <div class="seg-wrap"><div class="seg">${SECS.map(([id,lbl])=>`<button class="sb ${sec===id?"on":""}" id="rg-${id}">${lbl}</button>`).join("")}</div></div>`;
 
-  if(sec==="comptes"){
-    h+=`<div class="slbl">Soldes actuels</div><div class="scard">${DATA.comptes.map(c=>`<div class="srow"><div class="s-ico">${esc(c.flag||"🏦")}</div><div class="s-main"><div class="s-t">${esc(c.label)}</div></div><div class="s-v ${c.devise==="EUR"?"purple":c.devise==="USD"?"blue":"green"}">${fN(S[c.id]||0,c.devise)}</div></div>`).join("")}<div class="stat-grid"><div class="stat-i"><div class="stat-n">${DATA.depenses.length}</div><div class="stat-l">dépenses</div></div><div class="stat-i"><div class="stat-n">${DATA.revenus.length}</div><div class="stat-l">revenus</div></div><div class="stat-i"><div class="stat-n">${DATA.virements.length}</div><div class="stat-l">virements</div></div></div></div>`;
-    h+=`<div class="slbl">Gérer les comptes</div>`;
-    DATA.comptes.forEach((c,i)=>{const fopts=FLAGS.map(f=>`<option value="${f}"${f===c.flag?" selected":""}>${f}</option>`).join("");h+=`<div class="cecard"><div class="cerow"><div class="ceflag">${esc(c.flag||"🏦")}<select class="fl-sel" data-i="${i}">${fopts}</select></div><input class="cename" type="text" value="${esc(c.label)}" data-i="${i}"><select class="cedev" data-i="${i}"><option value="CAD"${c.devise==="CAD"?" selected":""}>CAD</option><option value="EUR"${c.devise==="EUR"?" selected":""}>EUR</option><option value="USD"${c.devise==="USD"?" selected":""}>USD</option></select>${DATA.comptes.length>1?`<button class="cedel" data-di="${i}">×</button>`:""}</div><div class="ouvrow"><div class="ouvlbl">Ouverture :</div><input class="ouvinp" type="number" value="${DATA.ouv[c.id]||0}" data-id="${c.id}"></div></div>`;});
-    h+=`<div id="add-area" style="padding:0 16px"><button class="btn ghost" id="add-c-btn">+ Ajouter un compte</button></div><div style="padding:10px 16px 16px"><button class="btn" id="save-c-btn">Enregistrer</button></div>`;
-  }
-  if(sec==="fixes"){
-    const tot=DATA.fixes.reduce((a,f)=>a+(parseFloat(f.montant)||0),0);
-    const copts=DATA.comptes.map(c=>`<option value="${esc(c.id)}">${esc((c.flag||"🏦")+" "+c.label)}</option>`).join("");
-    const fixRows=DATA.fixes.map((f,i)=>{
-      const cid=f.compte||(DATA.comptes.find(c=>c.id==="budget_ca")?.id||DATA.comptes[0]?.id);
-      const cOpts=DATA.comptes.map(c=>`<option value="${esc(c.id)}"${c.id===cid?" selected":""}>${esc((c.flag||"🏦")+" "+c.label)}</option>`).join("");
-      return `<div style="border-bottom:1px solid var(--sep)">
-        <div class="fixrow"><input class="fixname" type="text" value="${esc(f.nom)}" placeholder="Nom" data-fi="${i}"><input class="fixamt" type="number" value="${f.montant}" data-fi="${i}"><button class="fixdel" data-di="${i}">×</button></div>
-        <div style="display:flex;align-items:center;padding:8px 15px;gap:8px;border-top:1px solid var(--sep)"><span style="font-size:12px;color:var(--t3);flex-shrink:0">Compte :</span><select class="fixcpt" data-fi="${i}" style="flex:1;border:none;background:none;font-size:13px;font-weight:600;color:var(--orange);outline:none;-webkit-appearance:none;text-align:right">${cOpts}</select></div>
-      </div>`;
-    }).join("");
-    h+=`<div class="slbl">Dépenses fixes mensuelles</div><div class="finfo" style="margin:0 16px 10px">Chaque poste est déduit automatiquement une fois par mois du compte sélectionné.</div><div class="scard" style="margin:0 16px">${fixRows}<div class="fixtot" id="ftot">Total : <strong>${fC(tot)}</strong></div></div><div style="padding:10px 16px 0"><button class="btn ghost" id="add-f-btn">+ Ajouter</button></div><div style="padding:10px 16px 16px"><button class="btn" id="save-f-btn">Enregistrer</button></div>`;
-  }
-  if(sec==="objectifs"){
-    const objs=(DATA.objectifs&&DATA.objectifs.length)?DATA.objectifs:JSON.parse(JSON.stringify(DEF_OBJS));
-    if(!DATA.objectifs||!DATA.objectifs.length)DATA.objectifs=objs;
-    h+=`<div class="slbl">Vos objectifs d'épargne</div>`;
-    objs.forEach((o,i)=>{h+=`<div class="oecard"><div class="frow"><input style="flex:1;border:none;background:none;font-size:15px;font-weight:600;outline:none;padding:14px 0" value="${esc(o.nom)}" data-oi="${i}" data-of="nom">${objs.length>1?`<button class="cedel" data-di="${i}">×</button>`:""}</div><div class="frow" style="border-top:1px solid var(--sep)"><div class="flbl">Cible</div><input type="number" style="flex:1;border:none;background:none;font-size:15px;outline:none;text-align:right;padding:14px 0" value="${o.cible}" data-oi="${i}" data-of="cible"></div><div class="frow" style="border-top:1px solid var(--sep)"><div class="flbl">Accumulé</div><input type="number" style="flex:1;border:none;background:none;font-size:15px;color:var(--orange);font-weight:600;outline:none;text-align:right;padding:14px 0" value="${o.acc||0}" data-oi="${i}" data-of="acc"></div><div class="frow" style="border-top:1px solid var(--sep)"><div class="flbl">Date cible</div><input type="month" style="flex:1;border:none;background:none;font-size:15px;outline:none;text-align:right;padding:14px 0" value="${o.dt||""}" data-oi="${i}" data-of="dt"></div></div>`;});
-    h+=`<div style="padding:0 16px"><button class="btn ghost" id="add-o-btn">+ Ajouter</button></div><div style="padding:10px 16px 16px"><button class="btn" id="save-o-btn">Enregistrer</button></div>`;
-  }
-  if(sec==="descriptions"){
-    const favs=DATA.descriptions_fav||[];
-    h+=`<div class="slbl">Descriptions rapides par catégorie</div>
-    <p class="finfo" style="margin:0 16px 12px">Ces raccourcis apparaissent dans le formulaire de dépense quand vous choisissez une catégorie.</p>`;
-    CATS.forEach(cat=>{
-      const grp=favs.find(g=>g.cat===cat)||{cat,items:[]};
-      const grpIdx=favs.findIndex(g=>g.cat===cat);
-      h+=`<div class="slbl" style="padding-top:10px">${esc(cat)}</div>
-      <div class="scard" style="margin:0 16px;padding:12px 14px">
-        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px" id="chips-${esc(cat)}">
-          ${grp.items.map((item,i)=>`<div style="display:flex;align-items:center;gap:4px;background:var(--ol);border-radius:16px;padding:4px 10px 4px 12px"><span style="font-size:13px;font-weight:600;color:var(--orange)">${esc(item)}</span><button data-cat="${esc(cat)}" data-i="${i}" class="desc-del" style="background:none;border:none;color:var(--orange);cursor:pointer;font-size:14px;padding:0 2px">×</button></div>`).join("")}
-        </div>
-        <div style="display:flex;gap:8px">
-          <input type="text" id="new-desc-${esc(cat)}" placeholder="Ajouter..." style="flex:1;border:1.5px solid rgba(10,10,26,.1);border-radius:8px;padding:8px 10px;font-size:13px;outline:none;background:var(--bg)">
-          <button class="desc-add" data-cat="${esc(cat)}" style="padding:8px 12px;border-radius:8px;border:none;background:var(--orange);color:white;font-size:13px;font-weight:700;cursor:pointer">+</button>
-        </div>
-      </div>`;
+  // ── Apple-style settings page
+  // No segmented control — sidebar-style menu or inline sections
+  const PR=getProfile();
+  const ac=PR==="Pierre"?"#2563EB":PR==="Lealin"?"#7C3AED":"#6B7280";
+  const ab=PR==="Pierre"?"#EFF6FF":PR==="Lealin"?"#F5F3FF":"#F3F4F6";
+
+  // Build the full page with menu on top, content below (or side-by-side on desktop)
+  let h=`<div class="rg-page">`;
+
+  // ── PROFILE HEADER (Apple style)
+  h+=`<div class="rg-profile-hdr">
+    <div class="rg-avatar" style="background:${ab};color:${ac}">${PR?PR[0]:"?"}</div>
+    <div class="rg-profile-info">
+      <div class="rg-profile-name">${PR||"Choisir un profil"}</div>
+      <div class="rg-profile-sub">Nacho · compte partagé</div>
+    </div>
+    <button class="rg-profile-chevron" id="rg-goto-profil">›</button>
+  </div>`;
+
+  // ── MENU GROUPS (Apple Settings style)
+  const allSecs=[
+    {group:"Finances", items:[
+      {id:"comptes",icon:"🏦",label:"Comptes",sub:DATA.comptes.length+" comptes"},
+      {id:"fixes",icon:"📌",label:"Fixes mensuels",sub:DATA.fixes.length+" postes · "+fC(DATA.fixes.reduce((a,f)=>a+(parseFloat(f.montant)||0),0))},
+      {id:"objectifs",icon:"🎯",label:"Objectifs d'épargne",sub:((DATA.objectifs&&DATA.objectifs.length)||DEF_OBJS.length)+" objectifs"},
+    ]},
+    {group:"Dépenses", items:[
+      {id:"descriptions",icon:"💬",label:"Descriptions rapides",sub:"Raccourcis par catégorie"},
+      {id:"budgets",icon:"📊",label:"Budgets par catégorie",sub:"Plafonds mensuels"},
+    ]},
+    {group:"Compte & Sécurité", items:[
+      {id:"profil",icon:"👤",label:"Profil & taux",sub:PR||"Non configuré"},
+      {id:"securite",icon:"🔒",label:"Code & Face ID",sub:"Sécurité"},
+    ]},
+  ];
+
+  if(!sec){
+    // ── MAIN MENU
+    allSecs.forEach(group=>{
+      h+=`<div class="rg-group-label">${esc(group.group)}</div>
+      <div class="rg-group">`;
+      group.items.forEach((item,i)=>{
+        const isLast=i===group.items.length-1;
+        h+=`<button class="rg-item" data-sec="${item.id}">
+          <div class="rg-item-icon">${item.icon}</div>
+          <div class="rg-item-body">
+            <div class="rg-item-label">${esc(item.label)}</div>
+            <div class="rg-item-sub">${esc(item.sub)}</div>
+          </div>
+          <div class="rg-chevron">›</div>
+        </button>${isLast?"":'<div class="rg-sep"></div>'}`;
+      });
+      h+=`</div>`;
     });
-    h+=`<div style="padding:12px 16px 16px"><button class="btn" id="save-desc-btn">Enregistrer</button></div>`;
-  }
+    h+=`<div style="height:32px"></div>`;
+  } else {
+    // ── BACK BUTTON + SECTION CONTENT
+    h+=`<button class="rg-back" id="rg-back"><span>‹</span> Réglages</button>`;
 
-  if(sec==="budgets"){
-    const budgets=DATA.budgets_cats||{};
-    h+=`<div class="slbl">Budget mensuel par catégorie</div>
-    <p class="finfo" style="margin:0 16px 12px">Définissez un plafond mensuel. Sur l'accueil, les catégories s'affichent en vert si sous le budget, orange si proche, rouge si dépassé. Laissez vide pour pas de limite.</p>
-    <div class="scard" style="margin:0 16px">`;
-    CATS.forEach(cat=>{
-      const val=budgets[cat]||"";
-      h+=`<div class="frow"><div class="flbl" style="font-size:14px">${esc(cat)}</div><div style="display:flex;align-items:center;gap:4px"><input type="number" id="bud-${esc(cat)}" value="${val}" placeholder="—" style="width:90px;text-align:right;border:none;background:none;font-size:15px;font-weight:600;color:var(--orange);outline:none"><span style="font-size:13px;color:var(--t4)">$</span></div></div>`;
-    });
-    h+=`</div><div style="padding:12px 16px 16px"><button class="btn" id="save-bud-btn">Enregistrer</button></div>`;
-  }
+    if(sec==="comptes"){
+      const coTotal=DATA.comptes.reduce((a,c)=>a+(S[c.id]||0)*(c.devise==="EUR"?DATA.taux:1),0);
+      h+=`<div class="rg-section-hdr"><div class="rg-section-icon">🏦</div><div class="rg-section-title">Comptes</div></div>`;
+      h+=`<div class="rg-group-label">Patrimoine total · ${fC(coTotal)}</div>
+      <div class="rg-group">`;
+      DATA.comptes.forEach(c=>{
+        const sol=S[c.id]||0;
+        const col=c.devise==="CAD"?"var(--green)":c.devise==="USD"?"var(--blue)":"var(--purple)";
+        h+=`<div class="rg-item" style="cursor:default">
+          <div class="rg-item-icon">${esc(c.flag||"🏦")}</div>
+          <div class="rg-item-body"><div class="rg-item-label">${esc(c.label)}</div><div class="rg-item-sub">${c.devise}</div></div>
+          <div style="font-size:15px;font-weight:700;color:${col}">${fN(sol,c.devise)}</div>
+        </div><div class="rg-sep"></div>`;
+      });
+      h+=`</div>`;
 
-  if(sec==="profil"){
-    const pr=getProfile();
-    h+=`<div class="slbl">Ce téléphone appartient à</div><div class="scard" style="margin:0 16px"><div class="srow" style="padding:18px 16px;gap:12px"><button id="pp-p" style="flex:1;padding:18px;border-radius:var(--rM);border:2px solid ${pr==="Pierre"?"#2563EB":"rgba(10,10,26,.1)"};background:${pr==="Pierre"?"#EFF6FF":"transparent"};color:${pr==="Pierre"?"#1D4ED8":"var(--t3)"};font-size:16px;font-weight:800;cursor:pointer">Pierre</button><button id="pp-l" style="flex:1;padding:18px;border-radius:var(--rM);border:2px solid ${pr==="Lealin"?"#7C3AED":"rgba(10,10,26,.1)"};background:${pr==="Lealin"?"#F5F3FF":"transparent"};color:${pr==="Lealin"?"#6D28D9":"var(--t3)"};font-size:16px;font-weight:800;cursor:pointer">Lealin</button></div></div>`;
-    h+=`<div class="slbl">Taux EUR → CAD</div><div class="scard" style="margin:0 16px"><div class="srow"><div class="s-main"><div class="s-t">Taux actuel</div><div class="s-s">Modifier lors d'un virement France → Canada</div></div><input id="taux-inp" type="number" step="0.0001" value="${DATA.taux}" style="width:88px;text-align:right;border:none;background:none;font-size:16px;font-weight:700;color:var(--orange);outline:none"></div><div class="srow"><div class="s-s" id="taux-prev">1 EUR = ${Number(DATA.taux).toFixed(4)} CAD</div></div></div><div style="padding:10px 16px 16px"><button class="btn" id="save-taux-btn">Enregistrer le taux</button></div>`;
-  }
-  if(sec==="securite"){
-    h+=`<div class="slbl">Changer le code secret</div><div class="scard" style="margin:0 16px"><div class="srow"><div class="s-main"><div class="s-t">Nouveau code</div></div><input id="nc" type="password" placeholder="Nouveau code" autocomplete="off" style="width:150px;text-align:right;border:none;background:none;font-size:15px;outline:none;color:var(--t2)"></div><div class="srow"><div class="s-main"><div class="s-t">Confirmer</div></div><input id="cc" type="password" placeholder="Confirmer" autocomplete="off" style="width:150px;text-align:right;border:none;background:none;font-size:15px;outline:none;color:var(--t2)"></div></div><div id="code-err" class="ferr hidden" style="margin:8px 16px 0"></div><div style="padding:10px 16px 0"><button class="btn" id="chg-code-btn">Changer le code</button></div>`;
-    h+=`<div class="slbl">Face ID</div><div class="scard" style="margin:0 16px"><div class="srow"><div class="s-main"><div class="s-t">Statut</div><div class="s-s">${localStorage.getItem(FACEID_KEY)?"Activé":"Non configuré"}</div></div>${localStorage.getItem(FACEID_KEY)?`<button id="reset-fi" style="background:var(--rl);border:none;border-radius:8px;color:var(--red);padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer">Réinitialiser</button>`:`<button id="setup-fi" style="background:var(--ol);border:none;border-radius:8px;color:var(--orange);padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer">Configurer</button>`}</div></div>`;
-    h+=`<div class="slbl">Session</div><div style="padding:0 16px 100px"><button class="btn ghost" id="logout-btn" style="color:var(--red);border-color:rgba(220,38,38,.25)">Se déconnecter</button></div>`;
-  }
+      h+=`<div class="rg-group-label">Modifier les comptes</div>`;
+      DATA.comptes.forEach((c,i)=>{
+        const fopts=FLAGS.map(f=>`<option value="${f}"${f===c.flag?" selected":""}>${f}</option>`).join("");
+        h+=`<div class="cecard"><div class="cerow">
+          <div class="ceflag">${esc(c.flag||"🏦")}<select class="fl-sel" data-i="${i}">${fopts}</select></div>
+          <input class="cename" type="text" value="${esc(c.label)}" data-i="${i}">
+          <select class="cedev" data-i="${i}"><option value="CAD"${c.devise==="CAD"?" selected":""}>CAD</option><option value="EUR"${c.devise==="EUR"?" selected":""}>EUR</option><option value="USD"${c.devise==="USD"?" selected":""}>USD</option></select>
+          ${DATA.comptes.length>1?`<button class="cedel" data-di="${i}">×</button>`:""}
+        </div><div class="ouvrow"><div class="ouvlbl">Solde d'ouverture</div><input class="ouvinp" type="number" value="${DATA.ouv[c.id]||0}" data-id="${c.id}"></div></div>`;
+      });
+      h+=`<div id="add-area" style="padding:0 16px 8px"><button class="btn ghost" id="add-c-btn">+ Nouveau compte</button></div>
+      <div style="padding:4px 16px 16px"><button class="btn orange" id="save-c-btn">Enregistrer</button></div>`;
+    }
 
-  // Show reglages, hide others
-  ["home","depense","argent","historique","previsions"].forEach(t=>{document.getElementById("tab-"+t).classList.add("hidden");document.getElementById("nb-"+t)?.classList.remove("on");});
+    if(sec==="fixes"){
+      const tot=DATA.fixes.reduce((a,f)=>a+(parseFloat(f.montant)||0),0);
+      h+=`<div class="rg-section-hdr"><div class="rg-section-icon">📌</div><div class="rg-section-title">Fixes mensuels</div></div>`;
+      h+=`<div class="finfo" style="margin:0 16px 12px">Déduits automatiquement une fois par mois du compte sélectionné.</div>`;
+      const copts=DATA.comptes.map(c=>`<option value="${esc(c.id)}">${esc((c.flag||"🏦")+" "+c.label)}</option>`).join("");
+      DATA.fixes.forEach((f,i)=>{
+        const cid=f.compte||(DATA.comptes.find(c=>c.id==="budget_ca")?.id||DATA.comptes[0]?.id);
+        const cOpts=DATA.comptes.map(c=>`<option value="${esc(c.id)}"${c.id===cid?" selected":""}>${esc((c.flag||"🏦")+" "+c.label)}</option>`).join("");
+        h+=`<div class="rg-group" style="margin-bottom:10px">
+          <div class="rg-item" style="cursor:default">
+            <div class="rg-item-icon">📌</div>
+            <div class="rg-item-body" style="flex:1">
+              <input class="fixname" type="text" value="${esc(f.nom)}" placeholder="Nom" data-fi="${i}" style="border:none;background:none;outline:none;font-size:15px;font-weight:500;color:var(--t1);width:100%">
+            </div>
+            <input class="fixamt" type="number" value="${f.montant}" data-fi="${i}" style="width:80px;text-align:right;border:none;background:none;outline:none;font-size:15px;font-weight:700;color:var(--orange)">
+            <button class="fixdel" data-di="${i}">×</button>
+          </div>
+          <div class="rg-sep"></div>
+          <div class="rg-item" style="cursor:default;min-height:44px">
+            <div style="font-size:13px;color:var(--t3);flex:1">Compte</div>
+            <select class="fixcpt" data-fi="${i}" style="border:none;background:none;outline:none;font-size:14px;font-weight:600;color:var(--orange);text-align:right;-webkit-appearance:none">${cOpts}</select>
+          </div>
+        </div>`;
+      });
+      h+=`<div class="rg-group" style="margin-bottom:12px">
+        <div class="rg-item" style="cursor:default;justify-content:space-between">
+          <div style="font-size:14px;color:var(--t3)">Total mensuel</div>
+          <div id="ftot" style="font-size:15px;font-weight:800;color:var(--t1)">${fC(tot)}</div>
+        </div>
+      </div>`;
+      h+=`<div style="padding:0 16px 8px"><button class="btn ghost" id="add-f-btn">+ Ajouter un poste</button></div>
+      <div style="padding:4px 16px 16px"><button class="btn orange" id="save-f-btn">Enregistrer</button></div>`;
+    }
+
+    if(sec==="objectifs"){
+      const objs=(DATA.objectifs&&DATA.objectifs.length)?DATA.objectifs:JSON.parse(JSON.stringify(DEF_OBJS));
+      if(!DATA.objectifs||!DATA.objectifs.length)DATA.objectifs=objs;
+      h+=`<div class="rg-section-hdr"><div class="rg-section-icon">🎯</div><div class="rg-section-title">Objectifs d'épargne</div></div>`;
+      objs.forEach((o,i)=>{
+        const acc=o.acc||0;const pct=Math.min(acc/o.cible,1);const pd=Math.round(pct*100);
+        h+=`<div class="rg-group" style="margin-bottom:10px"><div style="padding:14px 15px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <input style="flex:1;border:none;background:none;font-size:16px;font-weight:700;outline:none;color:var(--t1)" value="${esc(o.nom)}" data-oi="${i}" data-of="nom">
+            ${objs.length>1?`<button class="cedel" data-di="${i}" style="flex-shrink:0">×</button>`:""}
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div style="background:var(--bg);border-radius:10px;padding:10px">
+              <div style="font-size:11px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Cible</div>
+              <input type="number" style="border:none;background:none;outline:none;font-size:16px;font-weight:700;color:var(--t1);width:100%" value="${o.cible}" data-oi="${i}" data-of="cible">
+            </div>
+            <div style="background:var(--bg);border-radius:10px;padding:10px">
+              <div style="font-size:11px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Accumulé · ${pd}%</div>
+              <input type="number" style="border:none;background:none;outline:none;font-size:16px;font-weight:700;color:var(--orange);width:100%" value="${acc}" data-oi="${i}" data-of="acc">
+            </div>
+          </div>
+          <div style="margin-top:10px;height:5px;background:rgba(10,10,26,.07);border-radius:3px;overflow:hidden"><div style="height:100%;width:${pd}%;background:${pd>=100?"var(--green)":"var(--orange)"};border-radius:3px"></div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+            <div style="font-size:12px;color:var(--t3)">Date cible</div>
+            <input type="month" style="border:none;background:none;outline:none;font-size:13px;font-weight:600;color:var(--blue);text-align:right" value="${o.dt||""}" data-oi="${i}" data-of="dt">
+          </div>
+        </div></div>`;
+      });
+      h+=`<div style="padding:0 16px 8px"><button class="btn ghost" id="add-o-btn">+ Ajouter un objectif</button></div>
+      <div style="padding:4px 16px 16px"><button class="btn orange" id="save-o-btn">Enregistrer</button></div>`;
+    }
+
+    if(sec==="descriptions"){
+      h+=`<div class="rg-section-hdr"><div class="rg-section-icon">💬</div><div class="rg-section-title">Descriptions rapides</div></div>`;
+      h+=`<div class="finfo" style="margin:0 16px 12px">Apparaissent comme chips dans le formulaire de dépense selon la catégorie choisie.</div>`;
+      if(!DATA.descriptions_fav||!DATA.descriptions_fav.length)DATA.descriptions_fav=JSON.parse(JSON.stringify(DEF_DATA.descriptions_fav));
+      CATS.forEach(cat=>{
+        const grp=DATA.descriptions_fav.find(g=>g.cat===cat)||{cat,items:[]};
+        h+=`<div class="rg-group-label">${esc(cat)}</div>
+        <div class="rg-group" style="padding:12px 14px">
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px" id="chips-${esc(cat)}">
+            ${grp.items.map((item,i)=>`<div style="display:inline-flex;align-items:center;gap:3px;background:var(--ol);border-radius:16px;padding:5px 6px 5px 12px"><span style="font-size:13px;font-weight:600;color:var(--orange)">${esc(item)}</span><button class="desc-del" data-cat="${esc(cat)}" data-i="${i}" style="background:none;border:none;color:var(--orange);cursor:pointer;font-size:15px;padding:0 3px;opacity:.7">×</button></div>`).join("")}
+            ${grp.items.length===0?`<span style="font-size:13px;color:var(--t4)">Aucun raccourci</span>`:""}
+          </div>
+          <div style="display:flex;gap:8px">
+            <input type="text" id="new-desc-${esc(cat)}" placeholder="Ajouter..." style="flex:1;border:1.5px solid rgba(10,10,26,.1);border-radius:9px;padding:9px 12px;font-size:14px;outline:none;background:var(--bg);color:var(--t1)">
+            <button class="desc-add" data-cat="${esc(cat)}" style="width:38px;height:38px;border-radius:9px;border:none;background:var(--orange);color:white;font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center">+</button>
+          </div>
+        </div>`;
+      });
+      h+=`<div style="padding:4px 16px 16px"><button class="btn orange" id="save-desc-btn">Enregistrer</button></div>`;
+    }
+
+    if(sec==="budgets"){
+      const budgets=DATA.budgets_cats||{};
+      h+=`<div class="rg-section-hdr"><div class="rg-section-icon">📊</div><div class="rg-section-title">Budgets mensuels</div></div>`;
+      h+=`<div class="finfo" style="margin:0 16px 12px">Vert = sous 80% · Orange = proche · Rouge = dépassé. Laissez vide pour aucune limite.</div>`;
+      h+=`<div class="rg-group">`;
+      CATS.forEach((cat,i)=>{
+        const val=budgets[cat]||"";
+        const isLast=i===CATS.length-1;
+        h+=`<div class="rg-item" style="cursor:default">
+          <div class="rg-item-icon">${CAT_ICO[cat]||"📦"}</div>
+          <div class="rg-item-body"><div class="rg-item-label">${esc(cat)}</div></div>
+          <div style="display:flex;align-items:center;gap:4px">
+            <input type="number" id="bud-${esc(cat)}" value="${val}" placeholder="—" style="width:80px;text-align:right;border:none;background:none;font-size:15px;font-weight:700;color:var(--orange);outline:none">
+            <span style="font-size:13px;color:var(--t4);font-weight:500">$</span>
+          </div>
+        </div>${isLast?"":'<div class="rg-sep"></div>'}`;
+      });
+      h+=`</div><div style="padding:12px 16px 16px"><button class="btn orange" id="save-bud-btn">Enregistrer</button></div>`;
+    }
+
+    if(sec==="profil"){
+      const PR2=getProfile();
+      h+=`<div class="rg-section-hdr"><div class="rg-section-icon">👤</div><div class="rg-section-title">Profil & Taux</div></div>`;
+      h+=`<div class="rg-group-label">Ce téléphone appartient à</div>
+      <div style="display:flex;gap:12px;padding:0 16px 16px">
+        <button id="pp-p" style="flex:1;padding:18px;border-radius:var(--rL);border:2px solid ${PR2==="Pierre"?"#2563EB":"rgba(10,10,26,.1)"};background:${PR2==="Pierre"?"#EFF6FF":"var(--card)"};color:${PR2==="Pierre"?"#1D4ED8":"var(--t3)"};font-size:16px;font-weight:800;cursor:pointer;transition:all .15s">
+          Pierre${PR2==="Pierre"?` <span style="font-size:12px">✓</span>`:""}
+        </button>
+        <button id="pp-l" style="flex:1;padding:18px;border-radius:var(--rL);border:2px solid ${PR2==="Lealin"?"#7C3AED":"rgba(10,10,26,.1)"};background:${PR2==="Lealin"?"#F5F3FF":"var(--card)"};color:${PR2==="Lealin"?"#6D28D9":"var(--t3)"};font-size:16px;font-weight:800;cursor:pointer;transition:all .15s">
+          Lealin${PR2==="Lealin"?` <span style="font-size:12px">✓</span>`:""}
+        </button>
+      </div>
+      <div class="rg-group-label">Taux de change EUR → CAD</div>
+      <div class="rg-group">
+        <div class="rg-item" style="cursor:default">
+          <div class="rg-item-icon">💱</div>
+          <div class="rg-item-body"><div class="rg-item-label">Taux actuel</div><div class="rg-item-sub">Mis à jour manuellement</div></div>
+          <input id="taux-inp" type="number" step="0.0001" value="${DATA.taux}" style="width:84px;text-align:right;border:none;background:none;font-size:15px;font-weight:700;color:var(--orange);outline:none">
+        </div>
+        <div class="rg-sep"></div>
+        <div class="rg-item" style="cursor:default;min-height:36px">
+          <div style="font-size:13px;color:var(--t4)" id="taux-prev">1 EUR = ${Number(DATA.taux).toFixed(4)} CAD</div>
+        </div>
+      </div>
+      <div style="padding:12px 16px 16px"><button class="btn orange" id="save-taux-btn">Enregistrer le taux</button></div>`;
+
+      // Stats
+      const totalDep=DATA.depenses.reduce((a,d)=>a+(parseFloat(d.montant)||0),0);
+      h+=`<div class="rg-group-label">Statistiques</div>
+      <div class="rg-group">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr)">
+          <div style="text-align:center;padding:18px 0;border-right:1px solid var(--sep)"><div style="font-size:22px;font-weight:900;color:var(--t1);letter-spacing:-1px">${DATA.depenses.length}</div><div style="font-size:11px;color:var(--t3);margin-top:3px">dépenses</div></div>
+          <div style="text-align:center;padding:18px 0;border-right:1px solid var(--sep)"><div style="font-size:22px;font-weight:900;color:var(--t1);letter-spacing:-1px">${DATA.revenus.length}</div><div style="font-size:11px;color:var(--t3);margin-top:3px">revenus</div></div>
+          <div style="text-align:center;padding:18px 0"><div style="font-size:22px;font-weight:900;color:var(--t1);letter-spacing:-1px">${DATA.virements.length}</div><div style="font-size:11px;color:var(--t3);margin-top:3px">virements</div></div>
+        </div>
+        <div class="rg-sep"></div>
+        <div class="rg-item" style="cursor:default">
+          <div class="rg-item-body"><div class="rg-item-label">Total dépensé</div></div>
+          <div style="font-size:15px;font-weight:700;color:var(--red)">${fC(totalDep)}</div>
+        </div>
+      </div>`;
+    }
+
+    if(sec==="securite"){
+      h+=`<div class="rg-section-hdr"><div class="rg-section-icon">🔒</div><div class="rg-section-title">Sécurité</div></div>`;
+      const hasFI=!!localStorage.getItem(FACEID_KEY);
+      h+=`<div class="rg-group-label">Face ID</div>
+      <div class="rg-group">
+        <div class="rg-item" style="cursor:default">
+          <div class="rg-item-icon">🆔</div>
+          <div class="rg-item-body"><div class="rg-item-label">Face ID</div><div class="rg-item-sub">${hasFI?"Activé sur cet appareil":"Non configuré"}</div></div>
+          ${hasFI?`<button id="reset-fi" style="background:var(--rl);border:none;border-radius:8px;color:var(--red);padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer">Réinitialiser</button>`:`<button id="setup-fi" style="background:var(--ol);border:none;border-radius:8px;color:var(--orange);padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer">Configurer</button>`}
+        </div>
+      </div>`;
+      h+=`<div class="rg-group-label">Changer le code secret</div>
+      <div class="rg-group">
+        <div class="rg-item" style="cursor:default">
+          <div class="rg-item-icon">🔑</div>
+          <div class="rg-item-body"><div class="rg-item-label">Nouveau code</div></div>
+          <input id="nc" type="password" placeholder="Nouveau" autocomplete="off" style="width:130px;text-align:right;border:none;background:none;font-size:15px;outline:none;color:var(--t2)">
+        </div>
+        <div class="rg-sep"></div>
+        <div class="rg-item" style="cursor:default">
+          <div class="rg-item-icon">🔑</div>
+          <div class="rg-item-body"><div class="rg-item-label">Confirmer</div></div>
+          <input id="cc" type="password" placeholder="Confirmer" autocomplete="off" style="width:130px;text-align:right;border:none;background:none;font-size:15px;outline:none;color:var(--t2)">
+        </div>
+      </div>
+      <div id="code-err" class="ferr hidden" style="margin:8px 16px 0"></div>
+      <div style="padding:8px 16px 0"><button class="btn" id="chg-code-btn">Changer le code</button></div>`;
+      h+=`<div class="rg-group-label" style="margin-top:16px">Session</div>
+      <div style="padding:0 16px 32px"><button class="btn ghost" id="logout-btn" style="color:var(--red);border-color:rgba(220,38,38,.2)">Se déconnecter de Nacho</button></div>`;
+    }
+  }
+  h+=`</div>`;
+
+  // ── Hide other tabs, show reglages
+  ["home","depense","argent","historique","previsions"].forEach(t=>{
+    document.getElementById("tab-"+t).classList.add("hidden");
+    document.getElementById("nb-"+t)?.classList.remove("on");
+  });
   el.innerHTML=h;
 
-  // Wire seg
-  SECS.forEach(([id])=>el.querySelector("#rg-"+id)?.addEventListener("click",()=>renderReglages(id)));
-  // Desktop: wrap in 2-col settings layout
-  if(window.isDesktop&&isDesktop()){
-    const menuItems=[["comptes","🏦","Comptes"],["fixes","📌","Fixes"],["objectifs","🎯","Objectifs"],["descriptions","💬","Descriptions"],["budgets","🎯","Budgets"],["profil","👤","Profil"],["securite","🔒","Sécurité"]];
-    const menuHtml=`<div class="d-settings-menu">${menuItems.map(([id,ico,lbl])=>`<button class="d-settings-menu-btn${sec===id?" on":""}" data-s="${id}"><div class="s-ico">${ico}</div>${lbl}</button>`).join("")}</div>`;
-    const contentHtml=el.innerHTML;
-    el.innerHTML=`<div class="page-hdr"><div class="page-hdr-name">Réglages</div></div><div class="d-settings-grid">${menuHtml}<div class="d-settings-content">${contentHtml}</div></div>`;
-    el.querySelectorAll(".d-settings-menu-btn").forEach(b=>b.addEventListener("click",()=>renderReglages(b.dataset.s)));
+  // ── WIRE EVENTS
+
+  // Menu navigation
+  if(!sec){
+    el.querySelector("#rg-goto-profil")?.addEventListener("click",()=>renderReglages("profil"));
+    el.querySelectorAll(".rg-item[data-sec]").forEach(b=>b.addEventListener("click",()=>renderReglages(b.dataset.sec)));
+    return;
   }
+
+  // Back button
+  el.querySelector("#rg-back")?.addEventListener("click",()=>renderReglages(null));
 
   if(sec==="comptes"){
     el.querySelectorAll(".fl-sel").forEach(s=>s.addEventListener("change",()=>{const i=parseInt(s.dataset.i);DATA.comptes[i].flag=s.value;s.previousSibling.textContent=s.value;}));
@@ -2485,15 +2722,15 @@ function renderReglages(sec){
     el.querySelectorAll(".ouvinp").forEach(inp=>inp.addEventListener("input",()=>{DATA.ouv[inp.dataset.id]=parseFloat(inp.value)||0;}));
     el.querySelectorAll(".cedel[data-di]").forEach(b=>b.addEventListener("click",()=>{const i=parseInt(b.dataset.di);if(DATA.comptes.length<=1)return;delete DATA.ouv[DATA.comptes[i].id];DATA.comptes.splice(i,1);renderReglages("comptes");}));
     el.querySelector("#add-c-btn").addEventListener("click",()=>showAddCompte(el));
-    el.querySelector("#save-c-btn").addEventListener("click",async()=>{await save();flash("Enregistré ✓");});
+    el.querySelector("#save-c-btn").addEventListener("click",async()=>{await save();flash("Comptes enregistrés ✓");});
   }
   if(sec==="fixes"){
     el.querySelectorAll(".fixname").forEach(inp=>inp.addEventListener("input",()=>{DATA.fixes[parseInt(inp.dataset.fi)].nom=inp.value;}));
-    el.querySelectorAll(".fixamt").forEach(inp=>inp.addEventListener("input",()=>{DATA.fixes[parseInt(inp.dataset.fi)].montant=parseFloat(inp.value)||0;const tot=DATA.fixes.reduce((a,f)=>a+(parseFloat(f.montant)||0),0);const ft=el.querySelector("#ftot");if(ft)ft.innerHTML=`Total : <strong>${fC(tot)}</strong>`;}));
+    el.querySelectorAll(".fixamt").forEach(inp=>inp.addEventListener("input",()=>{DATA.fixes[parseInt(inp.dataset.fi)].montant=parseFloat(inp.value)||0;const tot=DATA.fixes.reduce((a,f)=>a+(parseFloat(f.montant)||0),0);const ft=el.querySelector("#ftot");if(ft)ft.textContent=fC(tot);}));
     el.querySelectorAll(".fixcpt").forEach(s=>s.addEventListener("change",()=>{DATA.fixes[parseInt(s.dataset.fi)].compte=s.value;}));
     el.querySelectorAll(".fixdel[data-di]").forEach(b=>b.addEventListener("click",()=>{DATA.fixes.splice(parseInt(b.dataset.di),1);renderReglages("fixes");}));
     el.querySelector("#add-f-btn").addEventListener("click",()=>{const defId=DATA.comptes.find(c=>c.id==="budget_ca")?.id||DATA.comptes[0]?.id;DATA.fixes.push({id:Date.now(),nom:"",montant:0,compte:defId});renderReglages("fixes");});
-    el.querySelector("#save-f-btn").addEventListener("click",async()=>{await save();flash("Enregistré ✓");});
+    el.querySelector("#save-f-btn").addEventListener("click",async()=>{await save();flash("Fixes enregistrés ✓");});
   }
   if(sec==="objectifs"){
     el.querySelectorAll("[data-oi][data-of]").forEach(inp=>inp.addEventListener("input",()=>{const i=parseInt(inp.dataset.oi),f=inp.dataset.of;DATA.objectifs[i][f]=f==="nom"||f==="dt"?inp.value:parseFloat(inp.value)||0;}));
@@ -2502,68 +2739,12 @@ function renderReglages(sec){
     el.querySelector("#save-o-btn").addEventListener("click",async()=>{await save();flash("Objectifs enregistrés ✓");DATA.objectifs.forEach(o=>{if((o.acc||0)>=o.cible&&o.cible>0)setTimeout(()=>flash("🎉 "+o.nom),600);});});
   }
   if(sec==="descriptions"){
-    const favs=DATA.descriptions_fav||[];
-    h+=`<div class="slbl">Descriptions rapides par catégorie</div>
-    <p class="finfo" style="margin:0 16px 12px">Ces raccourcis apparaissent dans le formulaire de dépense quand vous choisissez une catégorie.</p>`;
-    CATS.forEach(cat=>{
-      const grp=favs.find(g=>g.cat===cat)||{cat,items:[]};
-      const grpIdx=favs.findIndex(g=>g.cat===cat);
-      h+=`<div class="slbl" style="padding-top:10px">${esc(cat)}</div>
-      <div class="scard" style="margin:0 16px;padding:12px 14px">
-        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px" id="chips-${esc(cat)}">
-          ${grp.items.map((item,i)=>`<div style="display:flex;align-items:center;gap:4px;background:var(--ol);border-radius:16px;padding:4px 10px 4px 12px"><span style="font-size:13px;font-weight:600;color:var(--orange)">${esc(item)}</span><button data-cat="${esc(cat)}" data-i="${i}" class="desc-del" style="background:none;border:none;color:var(--orange);cursor:pointer;font-size:14px;padding:0 2px">×</button></div>`).join("")}
-        </div>
-        <div style="display:flex;gap:8px">
-          <input type="text" id="new-desc-${esc(cat)}" placeholder="Ajouter..." style="flex:1;border:1.5px solid rgba(10,10,26,.1);border-radius:8px;padding:8px 10px;font-size:13px;outline:none;background:var(--bg)">
-          <button class="desc-add" data-cat="${esc(cat)}" style="padding:8px 12px;border-radius:8px;border:none;background:var(--orange);color:white;font-size:13px;font-weight:700;cursor:pointer">+</button>
-        </div>
-      </div>`;
-    });
-    h+=`<div style="padding:12px 16px 16px"><button class="btn" id="save-desc-btn">Enregistrer</button></div>`;
-  }
-
-  if(sec==="budgets"){
-    const budgets=DATA.budgets_cats||{};
-    h+=`<div class="slbl">Budget mensuel par catégorie</div>
-    <p class="finfo" style="margin:0 16px 12px">Définissez un plafond mensuel. Sur l'accueil, les catégories s'affichent en vert si sous le budget, orange si proche, rouge si dépassé. Laissez vide pour pas de limite.</p>
-    <div class="scard" style="margin:0 16px">`;
-    CATS.forEach(cat=>{
-      const val=budgets[cat]||"";
-      h+=`<div class="frow"><div class="flbl" style="font-size:14px">${esc(cat)}</div><div style="display:flex;align-items:center;gap:4px"><input type="number" id="bud-${esc(cat)}" value="${val}" placeholder="—" style="width:90px;text-align:right;border:none;background:none;font-size:15px;font-weight:600;color:var(--orange);outline:none"><span style="font-size:13px;color:var(--t4)">$</span></div></div>`;
-    });
-    h+=`</div><div style="padding:12px 16px 16px"><button class="btn" id="save-bud-btn">Enregistrer</button></div>`;
-  }
-
-  if(sec==="descriptions"){
-    if(!DATA.descriptions_fav||!DATA.descriptions_fav.length)DATA.descriptions_fav=JSON.parse(JSON.stringify(DEF_DATA.descriptions_fav));
-    el.querySelectorAll(".desc-del").forEach(b=>b.addEventListener("click",()=>{
-      const cat=b.dataset.cat,i=parseInt(b.dataset.i);
-      const grp=DATA.descriptions_fav.find(g=>g.cat===cat);
-      if(grp)grp.items.splice(i,1);
-      renderReglages("descriptions");
-    }));
-    el.querySelectorAll(".desc-add").forEach(b=>b.addEventListener("click",()=>{
-      const cat=b.dataset.cat;
-      const inp=el.querySelector(`#new-desc-${cat}`);
-      if(!inp||!inp.value.trim())return;
-      if(!DATA.descriptions_fav)DATA.descriptions_fav=[];
-      let grp=DATA.descriptions_fav.find(g=>g.cat===cat);
-      if(!grp){grp={cat,items:[]};DATA.descriptions_fav.push(grp);}
-      if(!grp.items.includes(inp.value.trim()))grp.items.push(inp.value.trim());
-      inp.value="";renderReglages("descriptions");
-    }));
+    el.querySelectorAll(".desc-del").forEach(b=>b.addEventListener("click",()=>{const cat=b.dataset.cat,i=parseInt(b.dataset.i);const grp=DATA.descriptions_fav.find(g=>g.cat===cat);if(grp)grp.items.splice(i,1);renderReglages("descriptions");}));
+    el.querySelectorAll(".desc-add").forEach(b=>b.addEventListener("click",()=>{const cat=b.dataset.cat;const inp=el.querySelector(`#new-desc-${cat}`);if(!inp||!inp.value.trim())return;if(!DATA.descriptions_fav)DATA.descriptions_fav=[];let grp=DATA.descriptions_fav.find(g=>g.cat===cat);if(!grp){grp={cat,items:[]};DATA.descriptions_fav.push(grp);}if(!grp.items.includes(inp.value.trim()))grp.items.push(inp.value.trim());inp.value="";renderReglages("descriptions");}));
     el.querySelector("#save-desc-btn").addEventListener("click",async()=>{await save();flash("Descriptions enregistrées ✓");});
   }
   if(sec==="budgets"){
-    el.querySelector("#save-bud-btn").addEventListener("click",async()=>{
-      if(!DATA.budgets_cats)DATA.budgets_cats={};
-      CATS.forEach(cat=>{
-        const val=parseFloat(el.querySelector(`#bud-${cat}`)?.value)||0;
-        if(val>0)DATA.budgets_cats[cat]=val;
-        else delete DATA.budgets_cats[cat];
-      });
-      await save();flash("Budgets enregistrés ✓");renderReglages("budgets");
-    });
+    el.querySelector("#save-bud-btn").addEventListener("click",async()=>{if(!DATA.budgets_cats)DATA.budgets_cats={};CATS.forEach(cat=>{const val=parseFloat(el.querySelector(`#bud-${cat}`)?.value)||0;if(val>0)DATA.budgets_cats[cat]=val;else delete DATA.budgets_cats[cat];});await save();flash("Budgets enregistrés ✓");renderReglages("budgets");});
   }
   if(sec==="profil"){
     el.querySelector("#pp-p").addEventListener("click",()=>{localStorage.setItem(PROFILE_KEY,"Pierre");flash("Profil : Pierre ✓");renderReglages("profil");});
@@ -2583,6 +2764,14 @@ function renderReglages(sec){
     el.querySelector("#logout-btn").addEventListener("click",()=>{localStorage.removeItem("nacho_code");localStorage.removeItem("nacho_ts");if(unsub)unsub();showLock(null);});
     el.querySelector("#reset-fi")?.addEventListener("click",()=>{localStorage.removeItem(FACEID_KEY);flash("Face ID réinitialisé");renderReglages("securite");});
     el.querySelector("#setup-fi")?.addEventListener("click",async()=>{const code=localStorage.getItem("nacho_code")||"";try{const ch=crypto.getRandomValues(new Uint8Array(32));const cred=await navigator.credentials.create({publicKey:{challenge:ch,rp:{name:"Nacho"},user:{id:new TextEncoder().encode(code),name:"nacho",displayName:"Nacho"},pubKeyCredParams:[{type:"public-key",alg:-7}],authenticatorSelection:{authenticatorAttachment:"platform",userVerification:"required",residentKey:"preferred"},timeout:60000}});localStorage.setItem(FACEID_KEY,JSON.stringify({id:Array.from(new Uint8Array(cred.rawId)),code}));flash("Face ID activé ✓");renderReglages("securite");}catch(e){flash("Face ID annulé");}});
+  }
+
+  // Desktop settings sidebar
+  if(window.isDesktop&&isDesktop()&&sec){
+    const menuItems=[["comptes","🏦","Comptes"],["fixes","📌","Fixes"],["objectifs","🎯","Objectifs"],["descriptions","💬","Descriptions"],["budgets","📊","Budgets"],["profil","👤","Profil"],["securite","🔒","Sécurité"]];
+    const contentHtml=el.innerHTML;
+    el.innerHTML=`<div class="page-hdr"><div class="page-hdr-name">Réglages</div></div><div class="d-settings-grid"><div class="d-settings-menu">${menuItems.map(([id,ico,lbl])=>`<button class="d-settings-menu-btn${sec===id?" on":""}" data-s="${id}"><div class="s-ico">${ico}</div>${lbl}</button>`).join("")}</div><div class="d-settings-content">${contentHtml}</div></div>`;
+    el.querySelectorAll(".d-settings-menu-btn").forEach(b=>b.addEventListener("click",()=>renderReglages(b.dataset.s)));
   }
 }
 window.renderReglages=renderReglages;
