@@ -1012,21 +1012,58 @@ function renderHistorique(){
   if(histCatFilter)all=all.filter(d=>d.cat===histCatFilter);
   const byMonth={};
   all.forEach(d=>{const m=(d.date||"").slice(0,7)||"inconnu";if(!byMonth[m])byMonth[m]=[];byMonth[m].push(d);});
-  let html='<div class="form-hdr">Historique<div class="form-hdr-sub">'+DATA.depenses.length+' depenses au total</div></div>';
-  html+='<div class="search-bar-wrap"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Rechercher..." value="'+esc(histSearch)+'" oninput="histSearch=this.value;renderHistorique()"></div></div>';
-  html+='<div class="filter-row"><div class="filter-chip '+(histMoisFilter?"":"active")+'" onclick="histMoisFilter='';renderHistorique()">Tous</div>';
-  allMonths.forEach(m=>{const[y,mo]=m.split("-");const lbl=new Date(y,mo-1).toLocaleString("fr-FR",{month:"short",year:"2-digit"});html+='<div class="filter-chip '+(histMoisFilter===m?"active":"")+'" onclick="histMoisFilter=''+m+'';renderHistorique()">'+lbl+'</div>';});
-  html+='</div><div class="filter-row"><div class="filter-chip '+(histCatFilter?"":"active")+'" onclick="histCatFilter='';renderHistorique()">Toutes</div>';
-  allCats.forEach(c=>{html+='<div class="filter-chip '+(histCatFilter===c?"active":"")+'" onclick="histCatFilter=''+esc(c)+'';renderHistorique()">'+esc(c)+'</div>';});
-  html+='</div>';
-  if(all.length===0){html+='<div style="text-align:center;padding:48px 20px;color:var(--text3)"><div style="font-size:36px;margin-bottom:12px">&#128269;</div>Aucune depense trouvee</div>';}
-  else{Object.entries(byMonth).forEach(([month,deps])=>{const total=deps.reduce((a,d)=>a+(parseFloat(d.montant)||0),0);const[y,m]=month.split("-");const mn=new Date(y,m-1).toLocaleString("fr-FR",{month:"long",year:"numeric"});html+='<div class="hist-month-header"><span>'+mn+'</span><span class="hist-month-total">'+fmtCAD(total)+'</span></div><div class="list-card" style="margin:0 16px 8px">';deps.forEach(d=>{const who=d.who||"";const wc=who==="Pierre"?"who-pierre":who==="Lealin"?"who-lealin":"";html+='<div class="list-row tap" onclick='openDepDetail("'+d.id+'")'>  <div class="row-left"><div class="row-title" style="display:flex;align-items:center;gap:6px">'+esc(d.desc)+(who?'<span class="who-badge '+wc+'">'+esc(who[0])+'</span>':'')+'</div><div class="row-sub">'+esc(d.cat||"—")+'  &middot;  '+esc(d.date)+'</div></div><div class="row-amt">'+fmtCAD(d.montant)+'</div></div>';});html+='</div>';});}
+
+  let html=`<div class="form-hdr">Historique<div class="form-hdr-sub">${DATA.depenses.length} depenses au total</div></div>`;
+
+  html+=`<div class="search-bar-wrap"><div class="search-bar">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" placeholder="Rechercher..." value="${esc(histSearch)}" oninput="histSearch=this.value;renderHistorique()">
+  </div></div>`;
+
+  let monthChips=`<div class="filter-chip ${histMoisFilter?"":"active"}" onclick="histMoisFilter='';renderHistorique()">Tous</div>`;
+  allMonths.forEach(m=>{
+    const[y,mo]=m.split("-");
+    const lbl=new Date(y,mo-1).toLocaleString("fr-FR",{month:"short",year:"2-digit"});
+    const active=histMoisFilter===m?"active":"";
+    monthChips+=`<div class="filter-chip ${active}" onclick="histMoisFilter='${m}';renderHistorique()">${lbl}</div>`;
+  });
+  html+=`<div class="filter-row">${monthChips}</div>`;
+
+  let catChips=`<div class="filter-chip ${histCatFilter?"":"active"}" onclick="histCatFilter='';renderHistorique()">Toutes</div>`;
+  allCats.forEach(c=>{
+    const active=histCatFilter===c?"active":"";
+    catChips+=`<div class="filter-chip ${active}" onclick="histCatFilter='${esc(c)}';renderHistorique()">${esc(c)}</div>`;
+  });
+  html+=`<div class="filter-row">${catChips}</div>`;
+
+  if(all.length===0){
+    html+=`<div style="text-align:center;padding:48px 20px;color:var(--text3)">
+      <div style="font-size:36px;margin-bottom:12px">&#128269;</div>Aucune depense trouvee</div>`;
+  } else {
+    Object.entries(byMonth).forEach(([month,deps])=>{
+      const total=deps.reduce((a,d)=>a+(parseFloat(d.montant)||0),0);
+      const[y,m]=month.split("-");
+      const mn=new Date(y,m-1).toLocaleString("fr-FR",{month:"long",year:"numeric"});
+      html+=`<div class="hist-month-header"><span>${mn}</span><span class="hist-month-total">${fmtCAD(total)}</span></div>`;
+      html+=`<div class="list-card" style="margin:0 16px 8px">`;
+      deps.forEach(d=>{
+        const who=d.who||"";
+        const wc=who==="Pierre"?"who-pierre":who==="Lealin"?"who-lealin":"";
+        const badge=who?`<span class="who-badge ${wc}">${esc(who[0])}</span>`:"";
+        html+=`<div class="list-row tap" onclick="openDepDetail('${d.id}')">
+          <div class="row-left">
+            <div class="row-title" style="display:flex;align-items:center;gap:6px">${esc(d.desc)}${badge}</div>
+            <div class="row-sub">${esc(d.cat||"—")} &middot; ${esc(d.date)}</div>
+          </div>
+          <div class="row-amt">${fmtCAD(d.montant)}</div>
+        </div>`;
+      });
+      html+=`</div>`;
+    });
+  }
   document.getElementById("tab-historique").innerHTML=html;
 }
 
-// PREVISIONS
-let prevScenario="reel";
-function getNextMonths(n){const months=[];const now=new Date();for(let i=0;i<n;i++){const d=new Date(now.getFullYear(),now.getMonth()+i,1);months.push({key:d.toISOString().slice(0,7),label:d.toLocaleString("fr-FR",{month:"long",year:"numeric"})});}return months;}
 window.renderPrevisions=function(scenario){
   prevScenario=scenario;
   if(!DATA.previsions)DATA.previsions={};
