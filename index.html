@@ -431,20 +431,8 @@ nav{
 
   /* ── CONTENT GRID */
   #desktop-content { padding: 24px 28px; position: relative; }
-  /* On desktop, tab divs are absolutely positioned inside desktop-content */
-  #tab-home, #tab-depense, #tab-argent,
-  #tab-historique, #tab-previsions, #tab-reglages {
-    position: static !important;
-  }
-  /* Move tab divs visually into desktop-content */
-  #desktop-main #tab-home:not(.hidden),
-  #desktop-main #tab-depense:not(.hidden),
-  #desktop-main #tab-argent:not(.hidden),
-  #desktop-main #tab-historique:not(.hidden),
-  #desktop-main #tab-previsions:not(.hidden),
-  #desktop-main #tab-reglages:not(.hidden) {
-    display: block;
-  }
+  /* Desktop content scrollable */
+  #desktop-content .screen { padding-bottom: 24px; }
 
   /* Override mobile layout for desktop */
   .island-bar { display: none; }
@@ -859,27 +847,36 @@ function setupDesktop(){
     });
     document.getElementById("sb-profile-btn")?.addEventListener("click",()=>profileModal());
     document.getElementById("tb-depense-btn")?.addEventListener("click",()=>showTab("depense"));
-    // Move tab divs into desktop-content on desktop
-    const deskContent=document.getElementById("desktop-content");
-    ["home","depense","argent","historique","previsions","reglages"].forEach(t=>{
-      const el=document.getElementById("tab-"+t);
-      if(el&&deskContent)deskContent.appendChild(el);
-    });
+    // On desktop: render directly into desktop-content
     // Override renderTab to inject into desktop-content
-    window.renderTab=function(t){
-      // On desktop: render into tab div, then show it in desktop-content via CSS
-      ["home","depense","argent","historique","previsions","reglages"].forEach(id=>{
-        const el=document.getElementById("tab-"+id);
-        if(el)el.classList.add("hidden");
-      });
-      const tabEl=document.getElementById("tab-"+t);
-      if(tabEl)tabEl.classList.remove("hidden");
+    // On desktop: inject a proxy tab div into desktop-content
+    // Each render function uses document.getElementById("tab-X") — we redirect it
+    const deskContent = document.getElementById("desktop-content");
+    const _origGetEl = document.getElementById.bind(document);
+    const TABS = ["home","depense","argent","historique","previsions","reglages"];
+
+    window.renderTab = function(t) {
+      if(!deskContent) return;
+      // Create a fresh div for this tab, inject into desktop-content
+      deskContent.innerHTML = "";
+      const proxy = document.createElement("div");
+      proxy.id = "tab-"+t;
+      proxy.className = "screen";
+      deskContent.appendChild(proxy);
+      // Temporarily override getElementById for this tab so render fns find it
+      const origFn = document.getElementById.bind(document);
+      const patchedGet = function(id) {
+        if(id === "tab-"+t) return proxy;
+        return origFn(id);
+      };
+      document.getElementById = patchedGet;
       if(t==="home")renderHome();
       else if(t==="depense")renderDepense();
       else if(t==="argent")renderArgent("rev");
       else if(t==="historique")renderHistorique();
       else if(t==="previsions")renderPrevisions("reel");
       else if(t==="reglages")renderReglages("comptes");
+      document.getElementById = origFn;
       updateSbProfile();
     };
   } else {
