@@ -811,7 +811,7 @@ function showTab(tab){
     // Show/hide the quick add button
     const tbBtn=document.getElementById("tb-depense-btn");
     if(tbBtn)tbBtn.style.display=tab==="depense"?"none":"flex";
-    renderTab(tab);
+    window.renderTab(tab);
   } else {
     ["home","depense","argent","historique","previsions","reglages"].forEach(t=>{
       const el=document.getElementById("tab-"+t);
