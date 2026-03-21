@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Nacho"/>
 <link rel="manifest" href="manifest.json"/>
-<link rel="apple-touch-icon" href="icon.png"/>
+<link rel="apple-touch-icon" href="icon2.png"/>
 <title>Nacho</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
@@ -643,6 +643,7 @@ async function doUnlock(){
   }
 }
 
+document.addEventListener("DOMContentLoaded", function() {
 // Wire buttons
 document.getElementById("lock-btn").addEventListener("click",doUnlock);
 document.getElementById("lock-code").addEventListener("keydown",e=>{if(e.key==="Enter")doUnlock();});
@@ -659,25 +660,29 @@ setInterval(()=>{
     showLock("Session expirée. Vérifiez votre identité.");
 },30000);
 
-// Initial load
-const savedCode=localStorage.getItem("budget_code");
-if(savedCode&&sessionOk()){
-  document.getElementById("lock-form").classList.add("hidden");
-  document.getElementById("lock-sub").textContent="Connexion en cours...";
-  document.getElementById("lock-loading").classList.remove("hidden");
-  connect(savedCode).then(()=>refreshTs()).catch((e)=>{
-    console.error("Auto-connect failed:",e);
-    localStorage.removeItem("budget_code");
-    localStorage.removeItem("budget_ts");
+// Initial load — wait for DOM
+function init(){
+  const savedCode=localStorage.getItem("budget_code");
+  if(savedCode&&sessionOk()){
+    document.getElementById("lock-form").classList.add("hidden");
+    document.getElementById("lock-sub").textContent="Connexion en cours...";
+    document.getElementById("lock-loading").classList.remove("hidden");
+    connect(savedCode).then(()=>refreshTs()).catch((e)=>{
+      console.error("Auto-connect failed:",e);
+      localStorage.removeItem("budget_code");
+      localStorage.removeItem("budget_ts");
+      document.getElementById("lock-loading").classList.add("hidden");
+      document.getElementById("lock-form").classList.remove("hidden");
+      document.getElementById("lock-sub").textContent="Entrez votre code secret";
+    });
+  } else {
+    document.getElementById("lock-sub").textContent="Entrez votre code secret";
     document.getElementById("lock-loading").classList.add("hidden");
     document.getElementById("lock-form").classList.remove("hidden");
-    document.getElementById("lock-sub").textContent="Entrez votre code secret";
-  });
-} else {
-  document.getElementById("lock-sub").textContent="Entrez votre code secret";
-  document.getElementById("lock-loading").classList.add("hidden");
-  document.getElementById("lock-form").classList.remove("hidden");
+  }
 }
+if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",init);}
+else{init();}
 
 // ── TABS
 function showTab(tab){
@@ -1434,6 +1439,7 @@ function showAddCompteForm(el){
     renderReglages("comptes");flash("Compte ajouté ✓");
   });
 }
+});
 </script>
 </body>
 </html>
