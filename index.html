@@ -1162,7 +1162,7 @@ const CATS=["Alimentation","Restaurants","Transport","Santé","Vêtements","Lois
 const FLAGS=["🍁","🇫🇷","🏦","💶","💵","💴","🏠","💳","📈","🌍","💰","🏧"];
 const DEF_FIXES=[{id:1,nom:"Loyer",montant:1500,compte:"budget_ca"},{id:2,nom:"Téléphones",montant:90,compte:"budget_ca"},{id:3,nom:"Assurances",montant:100,compte:"budget_ca"},{id:4,nom:"Abonnements",montant:30,compte:"budget_ca"},{id:5,nom:"Chat",montant:60,compte:"budget_ca"}];
 const DEF_OBJS=[{id:1,nom:"🏠 Mise de fonds",cible:50000,acc:5000,dt:"2028-06"},{id:2,nom:"✈️ Voyage",cible:5000,acc:1000,dt:"2025-12"},{id:3,nom:"🚗 Voiture",cible:15000,acc:2000,dt:"2027-06"},{id:4,nom:"🛡️ Fonds urgence",cible:10000,acc:3000,dt:"2026-06"}];
-const DEF_DATA={depenses:[],revenus:[],virements:[],fixes:DEF_FIXES,comptes:DEF_COMPTES,ouv:{budget_ca:2100,epargne_ca:15000,urgence:3000,joint_fr:2000,livret_fr:8000},taux:1.46,objectifs:[],previsions:{}};
+const DEF_DATA={depenses:[],revenus:[],virements:[],fixes:DEF_FIXES,comptes:DEF_COMPTES,ouv:{budget_ca:2100,epargne_ca:15000,urgence:3000,joint_fr:2000,livret_fr:8000},taux:1.46,objectifs:[],previsions:{},obj_versements:[]};
 const CAT_ICO={Alimentation:"🛒",Restaurants:"🍽",Transport:"🚇",Santé:"💊",Vêtements:"👕",Loisirs:"🎭",Voyages:"✈️",Sport:"⚽",Cadeaux:"🎁",Hygiène:"🪥",Culture:"📚",Divers:"📦"};
 
 let DATA=JSON.parse(JSON.stringify(DEF_DATA));
@@ -1190,6 +1190,10 @@ function soldes(){
   DATA.revenus.forEach(r=>{if(s[r.compte]!==undefined)s[r.compte]+=parseFloat(r.montantNatif)||0;});
   DATA.virements.forEach(v=>{if(s[v.source]!==undefined)s[v.source]-=parseFloat(v.montant)||0;if(s[v.dest]!==undefined)s[v.dest]+=parseFloat(v.montant)||0;});
   DATA.depenses.forEach(d=>{if(s[d.compte]!==undefined)s[d.compte]-=parseFloat(d.montant)||0;});
+  // Deduct objective versements from source accounts
+  (DATA.obj_versements||[]).forEach(v=>{
+    if(s[v.compte]!==undefined)s[v.compte]-=parseFloat(v.montant)||0;
+  });
   // Auto-deduct fixes monthly — find earliest month with activity
   const allDates=[...DATA.depenses,...DATA.revenus,...DATA.virements].map(x=>x.date||"").filter(Boolean).sort();
   if(allDates.length>0&&DATA.fixes.length>0){
@@ -1433,10 +1437,24 @@ function renderObjs(){
   const objs=(DATA.objectifs&&DATA.objectifs.length)?DATA.objectifs:DEF_OBJS;
   let h='<div class="obj-card">';
   objs.forEach(o=>{
-    const acc=o.acc||0,pct=Math.min(acc/o.cible,1),pd=Math.round(pct*100),done=pd>=100;
+    const versements=(DATA.obj_versements||[]).filter(v=>v.objId===o.id);
+    const accDyn=versements.reduce((a,v)=>a+(parseFloat(v.montant)||0),0);
+    const acc=(o.acc||0)+accDyn;
+    const pct=Math.min(acc/o.cible,1),pd=Math.round(pct*100),done=pd>=100;
     const mo=o.dt?(()=>{const[y,m]=o.dt.split("-").map(Number),now=new Date();return(y-now.getFullYear())*12+(m-now.getMonth()-1);})():null;
     const pm=(mo&&mo>0)?Math.ceil(Math.max(o.cible-acc,0)/mo):null;
-    h+=`<div class="obj-row"><div class="obj-top"><div class="obj-name">${esc(o.nom)}</div><div class="obj-pct">${done?"✓ ":""}${pd}%</div></div><div class="obj-track"><div class="obj-fill${done?" done":""}" style="width:${pd}%"></div></div><div class="obj-bot"><div class="obj-amts">${fC(acc)} <span style="color:var(--t4)">/ ${fC(o.cible)}</span></div>${pm?`<div class="obj-pm">${fC(pm)}/mois</div>`:""}</div></div>`;
+    h+=`<div class="obj-row" data-oid="${o.id}">
+      <div class="obj-top"><div class="obj-name">${esc(o.nom)}</div><div class="obj-pct">${done?"✓ ":""}${pd}%</div></div>
+      <div class="obj-track"><div class="obj-fill${done?" done":""}" style="width:${pd}%"></div></div>
+      <div class="obj-bot">
+        <div class="obj-amts">${fC(acc)} <span style="color:var(--t4)">/ ${fC(o.cible)}</span></div>
+        ${pm&&!done?`<div class="obj-pm">${fC(pm)}/mois</div>`:""}
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="obj-add-btn" data-oid="${o.id}" style="flex:1;padding:8px;border-radius:9px;border:none;background:var(--ol);color:var(--orange);font-size:12px;font-weight:700;cursor:pointer">+ Ajouter</button>
+        ${acc>0?`<button class="obj-withdraw-btn" data-oid="${o.id}" style="flex:1;padding:8px;border-radius:9px;border:none;background:var(--rl);color:var(--red);font-size:12px;font-weight:700;cursor:pointer">↩ Retirer</button>`:""}
+      </div>
+    </div>`;
   });
   h+=`<button class="obj-manage" id="obj-btn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Gérer les objectifs</button>`;
   return h+'</div>';
@@ -1549,6 +1567,8 @@ ${(()=>{
   el.querySelector("#profile-btn")?.addEventListener("click",()=>profileModal());
   el.querySelector("#settings-btn")?.addEventListener("click",()=>showTab("reglages"));
   el.querySelector("#obj-btn")?.addEventListener("click",()=>renderReglages("objectifs"));
+  el.querySelectorAll(".obj-add-btn").forEach(b=>b.addEventListener("click",()=>objVersementModal(b.dataset.oid,"add")));
+  el.querySelectorAll(".obj-withdraw-btn").forEach(b=>b.addEventListener("click",()=>objVersementModal(b.dataset.oid,"withdraw")));
   setTimeout(()=>renderChart(),80);
   if(!getProfile())setTimeout(()=>profileModal(),600);
 }
@@ -1564,6 +1584,64 @@ function profileModal(){
 }
 function closeModal(){document.getElementById("overlay").classList.add("hidden");}
 window.closeModal=closeModal;
+
+// ── OBJECTIF VERSEMENT MODAL
+function objVersementModal(objId, direction){
+  const objs=(DATA.objectifs&&DATA.objectifs.length)?DATA.objectifs:DEF_OBJS;
+  const obj=objs.find(o=>String(o.id)===String(objId));
+  if(!obj)return;
+  const versements=(DATA.obj_versements||[]).filter(v=>v.objId===objId);
+  const accDyn=versements.reduce((a,v)=>a+(parseFloat(v.montant)||0),0);
+  const accTotal=(obj.acc||0)+accDyn;
+  const o=document.getElementById("overlay");
+  const d=document.createElement("div");d.className="modal";
+  const copts=DATA.comptes.map(c=>`<option value="${esc(c.id)}">${esc((c.flag||"🏦")+" "+c.label)}</option>`).join("");
+  const isAdd=direction==="add";
+  const icon=isAdd?"💰":"↩";
+  const title=isAdd?`Alimenter — ${esc(obj.nom)}`:`Retirer — ${esc(obj.nom)}`;
+  const btnLabel=isAdd?"Confirmer le versement":"Retirer vers le compte";
+  const fromLabel=isAdd?"Depuis le compte":"Vers le compte";
+  d.innerHTML=`<div class="modal-handle"></div>
+    <div style="font-size:32px;margin-bottom:8px">${icon}</div>
+    <div style="font-size:18px;font-weight:800;color:var(--t1);margin-bottom:4px;letter-spacing:-.3px">${title}</div>
+    <div style="font-size:13px;color:var(--t3);margin-bottom:20px">Accumulé : <strong style="color:var(--orange)">${fC(accTotal)}</strong> / ${fC(obj.cible)}</div>
+    <div class="fsec" style="margin-bottom:12px">
+      <div class="frow"><div class="flbl req">Montant</div><input id="ov-montant" type="number" inputmode="decimal" placeholder="0" style="flex:1;border:none;background:none;font-size:16px;color:var(--t1);text-align:right;padding:14px 0;outline:none"></div>
+      <div class="frow"><div class="flbl">${fromLabel}</div><select id="ov-compte" style="flex:1;border:none;background:none;font-size:15px;color:var(--t2);text-align:right;padding:14px 0;outline:none;-webkit-appearance:none">${copts}</select></div>
+      <div class="frow"><div class="flbl">Date</div><input id="ov-date" type="date" value="${today()}" style="flex:1;border:none;background:none;font-size:15px;color:var(--t1);text-align:right;padding:14px 0;outline:none"></div>
+      <div class="frow"><div class="flbl">Note</div><input id="ov-note" type="text" placeholder="Optionnel" style="flex:1;border:none;background:none;font-size:15px;color:var(--t1);text-align:right;padding:14px 0;outline:none"></div>
+    </div>
+    <div id="ov-err" style="color:var(--red);font-size:13px;margin-bottom:8px"></div>
+    <div class="brow">
+      <button class="btn ghost" id="ov-cancel">Annuler</button>
+      <button class="btn orange" style="flex:1" id="ov-ok">${btnLabel}</button>
+    </div>`;
+  o.innerHTML="";o.appendChild(d);o.classList.remove("hidden");
+  o.onclick=()=>closeModal();d.onclick=e=>e.stopPropagation();
+  d.querySelector("#ov-cancel").addEventListener("click",closeModal);
+  d.querySelector("#ov-ok").addEventListener("click",async()=>{
+    const montant=parseFloat(d.querySelector("#ov-montant").value);
+    if(!montant||montant<=0){d.querySelector("#ov-err").textContent="Montant invalide";return;}
+    if(!isAdd&&montant>accTotal){d.querySelector("#ov-err").textContent=`Maximum disponible : ${fC(accTotal)}`;return;}
+    const compte=d.querySelector("#ov-compte").value;
+    const date=d.querySelector("#ov-date").value;
+    const note=d.querySelector("#ov-note").value.trim();
+    if(!DATA.obj_versements)DATA.obj_versements=[];
+    // Add positive (feed) or negative (withdraw)
+    DATA.obj_versements.push({
+      id:Date.now(),
+      objId:String(objId),
+      compte,
+      montant:isAdd?montant:-montant,
+      date,note,
+      who:getProfile()||""
+    });
+    await save();
+    closeModal();
+    flash(isAdd?`+${fC(montant)} → ${esc(obj.nom)} ✓`:`↩ ${fC(montant)} retiré de ${esc(obj.nom)}`);
+    renderHome();
+  });
+}
 
 function openDepDetail(id){
   const dep=DATA.depenses.find(d=>String(d.id)===String(id));if(!dep)return;
@@ -1621,6 +1699,35 @@ function openVirDetail(id){
   d.querySelector("#vr-d").addEventListener("click",async()=>{DATA.virements=DATA.virements.filter(v=>String(v.id)!==String(id));await save();closeModal();flash("Virement supprimé");renderHistorique();if(!document.getElementById("tab-home").classList.contains("hidden"))renderHome();});
 }
 
+// ── OBJ VERSEMENT DETAIL
+function openObjVersDetail(id){
+  const v=(DATA.obj_versements||[]).find(x=>String(x.id)===String(id));if(!v)return;
+  const objs=(DATA.objectifs&&DATA.objectifs.length)?DATA.objectifs:DEF_OBJS;
+  const obj=objs.find(o=>String(o.id)===String(v.objId));
+  const c=DATA.comptes.find(x=>x.id===v.compte);
+  const isAdd=v.montant>0;
+  const o=document.getElementById("overlay");const d=document.createElement("div");d.className="modal";
+  d.innerHTML=`<div class="modal-handle"></div>
+    <div style="font-size:32px;margin-bottom:10px">🎯</div>
+    <div style="font-size:20px;font-weight:800;color:var(--t1);margin-bottom:4px">${obj?esc(obj.nom):"Objectif"}</div>
+    <div style="font-size:34px;font-weight:900;color:${isAdd?"var(--red)":"var(--green)"};margin-bottom:8px;letter-spacing:-1px">${isAdd?"-":"+"}${fC(Math.abs(v.montant))}</div>
+    <div style="font-size:14px;color:var(--t3);margin-bottom:2px">${isAdd?"Versement":"Retrait"} · ${esc(v.date)}</div>
+    <div style="font-size:14px;color:var(--t3);margin-bottom:${v.note?"2px":"20px"}">${c?esc((c.flag||"🏦")+" "+c.label):""}</div>
+    ${v.note?`<div style="font-size:13px;color:var(--t3);margin-bottom:20px;font-style:italic">"${esc(v.note)}"</div>`:""}
+    <div class="brow">
+      <button class="btn ghost" id="ov-c">Fermer</button>
+      <button class="btn danger" id="ov-d">Supprimer</button>
+    </div>`;
+  o.innerHTML="";o.appendChild(d);o.classList.remove("hidden");
+  o.onclick=()=>closeModal();d.onclick=e=>e.stopPropagation();
+  d.querySelector("#ov-c").addEventListener("click",closeModal);
+  d.querySelector("#ov-d").addEventListener("click",async()=>{
+    DATA.obj_versements=(DATA.obj_versements||[]).filter(x=>String(x.id)!==String(id));
+    await save();closeModal();flash("Versement supprimé");renderHistorique();
+    if(!document.getElementById("tab-home")?.classList.contains("hidden"))renderHome();
+  });
+}
+
 // ── DÉPENSE
 function renderDepense(){
   const el=document.getElementById("tab-depense");
@@ -1664,8 +1771,8 @@ function renderArgent(mode){
   argMode=mode;
   const el=document.getElementById("tab-argent");
   const copts=DATA.comptes.map(c=>`<option value="${esc(c.id)}">${esc((c.flag||"🏦")+" "+c.label)}</option>`).join("");
-  let h=`<div class="page-hdr"><div class="page-hdr-name">Argent</div><div class="page-hdr-sub">Revenus & virements</div></div>
-  <div class="seg-wrap"><div class="seg"><button class="sb ${mode==="rev"?"on":""}" id="arg-r">Revenu / Salaire</button><button class="sb ${mode==="vir"?"on":""}" id="arg-v">Virement</button></div></div>
+  let h=`<div class="page-hdr"><div class="page-hdr-name">Argent</div><div class="page-hdr-sub">Revenus, virements & objectifs</div></div>
+  <div class="seg-wrap"><div class="seg"><button class="sb ${mode==="rev"?"on":""}" id="arg-r">Revenu</button><button class="sb ${mode==="vir"?"on":""}" id="arg-v">Virement</button><button class="sb ${mode==="obj"?"on":""}" id="arg-o">Objectifs</button></div></div>
   <div class="fbody">`;
   if(mode==="rev"){
     h+=`<p class="finfo">Salaire ou revenu entrant → choisissez le compte destination</p>
@@ -1695,10 +1802,33 @@ function renderArgent(mode){
     <div id="v-err"></div>
     <button class="btn orange" id="v-save">Enregistrer le virement</button>`;
   }
+  if(mode==="obj"){
+    const objs=(DATA.objectifs&&DATA.objectifs.length)?DATA.objectifs:DEF_OBJS;
+    h+=`<div class="fbody">`;
+    h+=`<p class="finfo">Versez de l'argent vers un objectif. Le compte source est débité, l'objectif se remplit.</p>`;
+    h+=`<div class="fsec">`;
+    objs.forEach(o=>{
+      const v=(DATA.obj_versements||[]).filter(x=>x.objId===String(o.id));
+      const acc=(o.acc||0)+v.reduce((a,x)=>a+(parseFloat(x.montant)||0),0);
+      const pct=Math.min(acc/o.cible,1);const pd=Math.round(pct*100);
+      h+=`<div class="frow" style="min-height:58px">
+        <div class="flbl" style="flex:1;width:auto;min-width:0">
+          <div style="font-size:14px;font-weight:600;color:var(--t1)">${esc(o.nom)}</div>
+          <div style="font-size:11px;color:var(--t3);margin-top:2px">${fC(acc)} / ${fC(o.cible)} · ${pd}%</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <button class="obj-arg-add" data-oid="${o.id}" style="padding:7px 12px;border-radius:8px;border:none;background:var(--ol);color:var(--orange);font-size:12px;font-weight:700;cursor:pointer">+ Ajouter</button>
+          ${acc>0?`<button class="obj-arg-with" data-oid="${o.id}" style="padding:7px 12px;border-radius:8px;border:none;background:var(--rl);color:var(--red);font-size:12px;font-weight:700;cursor:pointer">↩</button>`:""}
+        </div>
+      </div>`;
+    });
+    h+=`</div></div>`;
+  }
   h+=`</div>`;
   el.innerHTML=h;
   el.querySelector("#arg-r").addEventListener("click",()=>renderArgent("rev"));
   el.querySelector("#arg-v").addEventListener("click",()=>renderArgent("vir"));
+  el.querySelector("#arg-o")?.addEventListener("click",()=>renderArgent("obj"));
   if(mode==="rev"){
     const d=el.querySelector("#r-d");
     const upd=()=>{const eur=d.value==="EUR";el.querySelector("#r-tr").classList.toggle("hidden",!eur);const m=parseFloat(el.querySelector("#r-m").value)||0;const t=parseFloat(el.querySelector("#r-t").value)||DATA.taux;const cv=el.querySelector("#r-conv");if(eur&&m>0){cv.classList.remove("hidden");cv.textContent="≈ "+fC(m*t)+" CAD";}else cv.classList.add("hidden");};
@@ -1719,6 +1849,9 @@ function renderArgent(mode){
       await save();refreshTs();flash("Virement enregistré ✓");showTab("home");
     });
   }
+  // Wire objective buttons in argent tab
+  el.querySelectorAll(".obj-arg-add").forEach(b=>b.addEventListener("click",()=>objVersementModal(b.dataset.oid,"add")));
+  el.querySelectorAll(".obj-arg-with").forEach(b=>b.addEventListener("click",()=>objVersementModal(b.dataset.oid,"withdraw")));
 }
 
 // ── HISTORIQUE
@@ -1726,10 +1859,12 @@ let hS="",hM="",hType="all";
 function renderHistorique(){
   const el=document.getElementById("tab-historique");
   // Build unified transaction list
+  const objs4hist=(DATA.objectifs&&DATA.objectifs.length)?DATA.objectifs:DEF_OBJS;
   const allTx=[
     ...DATA.depenses.map(d=>({...d,_type:"dep"})),
     ...DATA.revenus.map(r=>({...r,_type:"rev"})),
     ...DATA.virements.map(v=>({...v,_type:"vir"})),
+    ...(DATA.obj_versements||[]).map(v=>({...v,_type:"obj",_objNom:(objs4hist.find(o=>String(o.id)===String(v.objId))?.nom||"Objectif")})),
   ].sort((a,b)=>(b.date||"").localeCompare(a.date||""));
   const months=[...new Set(allTx.map(t=>t.date&&t.date.slice(0,7)).filter(Boolean))].sort().reverse();
   let filtered=[...allTx];
@@ -1745,6 +1880,7 @@ function renderHistorique(){
     <div class="chip ${hType==="dep"?"on":""}" data-t="dep">💳 Dépenses</div>
     <div class="chip ${hType==="rev"?"on":""}" data-t="rev">💰 Revenus</div>
     <div class="chip ${hType==="vir"?"on":""}" data-t="vir">🔄 Virements</div>
+    <div class="chip ${hType==="obj"?"on":""}" data-t="obj">🎯 Objectifs</div>
   </div>
   <div class="chips" id="m-chips"><div class="chip ${hM?"":"on"}" data-m="">Tous les mois</div>${months.map(m=>{const[y,mo]=m.split("-");return`<div class="chip ${hM===m?"on":""}" data-m="${m}">${new Date(y,mo-1).toLocaleString("fr-FR",{month:"short",year:"2-digit"})}</div>`;}).join("")}</div>`;
   if(filtered.length===0){h+=`<div style="text-align:center;padding:48px 20px;color:var(--t3)"><span style="font-size:36px;display:block;margin-bottom:10px">🔍</span>Aucune transaction trouvée</div>`;}
@@ -1759,9 +1895,13 @@ function renderHistorique(){
       } else if(t._type==="rev"){
         const c=DATA.comptes.find(x=>x.id===t.compte);
         h+=`<div class="lr tap" data-id="${t.id}" data-type="rev"><div class="lr-ico" style="background:var(--gl)">💰</div><div class="lr-info"><div class="row-t">${esc(t.desc||"Revenu")}</div><div class="row-s">${c?esc(c.flag+" "+c.label):""} · ${esc(t.date)}</div></div><div class="row-a pos">+${fC(t.montantCAD||t.montant)}</div></div>`;
-      } else {
+      } else if(t._type==="vir") {
         const src=DATA.comptes.find(x=>x.id===t.source);const dst=DATA.comptes.find(x=>x.id===t.dest);
         h+=`<div class="lr tap" data-id="${t.id}" data-type="vir"><div class="lr-ico" style="background:var(--bl)">🔄</div><div class="lr-info"><div class="row-t">${esc(t.desc||"Virement")}</div><div class="row-s">${src?esc(src.flag):""} → ${dst?esc(dst.flag):""} · ${esc(t.date)}</div></div><div class="row-a" style="color:var(--blue)">${fC(t.montant)}</div></div>`;
+      } else if(t._type==="obj") {
+        const c=DATA.comptes.find(x=>x.id===t.compte);
+        const isAdd=t.montant>0;
+        h+=`<div class="lr tap" data-id="${t.id}" data-type="obj"><div class="lr-ico" style="background:rgba(249,115,22,.1)">🎯</div><div class="lr-info"><div class="row-t">${esc(t._objNom)}</div><div class="row-s">${isAdd?"Versement":"Retrait"} ${c?esc(c.flag+" "+c.label):""} · ${esc(t.date)}</div></div><div class="row-a ${isAdd?"neg":"pos"}">${isAdd?"-":"+"}${fC(Math.abs(t.montant))}</div></div>`;
       }
     });
     h+=`</div>`;
@@ -1775,6 +1915,7 @@ function renderHistorique(){
     if(type==="dep") openDepDetail(id);
     else if(type==="rev") openRevDetail(id);
     else if(type==="vir") openVirDetail(id);
+    else if(type==="obj") openObjVersDetail(id);
   }));
 }
 
