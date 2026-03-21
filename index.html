@@ -211,10 +211,11 @@ nav{
 .fsec{background:var(--card);border-radius:var(--rL);overflow:hidden;margin-bottom:12px;}
 .frow{display:flex;align-items:center;padding:0 15px;border-bottom:1px solid var(--sep);min-height:52px;}
 .frow:last-child{border-bottom:none;}
-.flbl{font-size:15px;color:var(--t2);font-weight:500;flex-shrink:0;min-width:108px;}
+.flbl{font-size:15px;color:var(--t2);font-weight:500;flex-shrink:0;width:110px;}
 .flbl.req::after{content:" ✦";color:var(--orange);font-size:9px;vertical-align:middle;}
-.frow input,.frow select{flex:1;border:none;background:none;outline:none;font-size:15px;color:var(--t1);text-align:right;padding:14px 0;-webkit-appearance:none;appearance:none;}
+.frow input,.frow select{flex:1;border:none;background:none;outline:none;font-size:15px;color:var(--t1);text-align:right;padding:14px 0;-webkit-appearance:none;appearance:none;min-width:0;}
 .frow input::placeholder{color:var(--t4);}
+.frow select{color:var(--t2);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%239CA3AF' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 0 center;padding-left:16px;}
 .finfo{background:rgba(249,115,22,.08);border-radius:var(--rS);padding:11px 13px;font-size:13px;color:#9A3412;line-height:1.5;margin-bottom:12px;border-left:3px solid var(--orange);}
 .fconv{font-size:13px;color:var(--green);font-weight:700;padding-bottom:10px;display:flex;align-items:center;gap:5px;}
 .ferr{background:var(--rl);color:var(--red);border-radius:var(--rS);padding:10px 13px;font-size:13px;margin-bottom:8px;}
@@ -398,7 +399,7 @@ const db  = getFirestore(app);
 const DEF_COMPTES=[{id:"budget_ca",label:"Budget Canada",devise:"CAD",flag:"🍁"},{id:"epargne_ca",label:"Épargne Canada",devise:"CAD",flag:"🍁"},{id:"joint_fr",label:"Compte joint FR",devise:"EUR",flag:"🇫🇷"},{id:"livret_fr",label:"Livret A",devise:"EUR",flag:"🇫🇷"}];
 const CATS=["Alimentation","Restaurants","Transport","Santé","Vêtements","Loisirs","Voyages","Sport","Cadeaux","Hygiène","Culture","Divers"];
 const FLAGS=["🍁","🇫🇷","🏦","💶","💵","💴","🏠","💳","📈","🌍","💰","🏧"];
-const DEF_FIXES=[{id:1,nom:"Loyer",montant:1500},{id:2,nom:"Téléphones",montant:90},{id:3,nom:"Assurances",montant:100},{id:4,nom:"Abonnements",montant:30},{id:5,nom:"Chat",montant:60}];
+const DEF_FIXES=[{id:1,nom:"Loyer",montant:1500,compte:"budget_ca"},{id:2,nom:"Téléphones",montant:90,compte:"budget_ca"},{id:3,nom:"Assurances",montant:100,compte:"budget_ca"},{id:4,nom:"Abonnements",montant:30,compte:"budget_ca"},{id:5,nom:"Chat",montant:60,compte:"budget_ca"}];
 const DEF_OBJS=[{id:1,nom:"🏠 Mise de fonds",cible:50000,acc:5000,dt:"2028-06"},{id:2,nom:"✈️ Voyage",cible:5000,acc:1000,dt:"2025-12"},{id:3,nom:"🚗 Voiture",cible:15000,acc:2000,dt:"2027-06"},{id:4,nom:"🛡️ Fonds urgence",cible:10000,acc:3000,dt:"2026-06"}];
 const DEF_DATA={depenses:[],revenus:[],virements:[],fixes:DEF_FIXES,comptes:DEF_COMPTES,ouv:{budget_ca:2100,epargne_ca:15000,joint_fr:2000,livret_fr:8000},taux:1.46,objectifs:[],previsions:{}};
 const CAT_ICO={Alimentation:"🛒",Restaurants:"🍽",Transport:"🚇",Santé:"💊",Vêtements:"👕",Loisirs:"🎭",Voyages:"✈️",Sport:"⚽",Cadeaux:"🎁",Hygiène:"🪥",Culture:"📚",Divers:"📦"};
@@ -428,6 +429,20 @@ function soldes(){
   DATA.revenus.forEach(r=>{if(s[r.compte]!==undefined)s[r.compte]+=parseFloat(r.montantNatif)||0;});
   DATA.virements.forEach(v=>{if(s[v.source]!==undefined)s[v.source]-=parseFloat(v.montant)||0;if(s[v.dest]!==undefined)s[v.dest]+=parseFloat(v.montant)||0;});
   DATA.depenses.forEach(d=>{if(s[d.compte]!==undefined)s[d.compte]-=parseFloat(d.montant)||0;});
+  // Auto-deduct fixes monthly — find earliest month with activity
+  const allDates=[...DATA.depenses,...DATA.revenus,...DATA.virements].map(x=>x.date||"").filter(Boolean).sort();
+  if(allDates.length>0&&DATA.fixes.length>0){
+    const startMonth=allDates[0].slice(0,7);
+    const now=new Date();const curM=now.getFullYear()*12+now.getMonth();
+    const[sy,sm]=startMonth.split("-").map(Number);let start=sy*12+(sm-1);
+    while(start<=curM){
+      DATA.fixes.forEach(f=>{
+        const cid=f.compte||(DATA.comptes.find(c=>c.id==="budget_ca")?.id||DATA.comptes[0]?.id);
+        if(s[cid]!==undefined)s[cid]-=parseFloat(f.montant)||0;
+      });
+      start++;
+    }
+  }
   return s;
 }
 
@@ -781,27 +796,55 @@ function renderArgent(mode){
 }
 
 // ── HISTORIQUE
-let hS="",hM="",hC="";
+let hS="",hM="",hType="all";
 function renderHistorique(){
   const el=document.getElementById("tab-historique");
-  let all=[...DATA.depenses].sort((a,b)=>(b.date||"").localeCompare(a.date||""));
-  const months=[...new Set(all.map(d=>d.date&&d.date.slice(0,7)).filter(Boolean))].sort().reverse();
-  const cats=[...new Set(all.map(d=>d.cat).filter(Boolean))].sort();
-  if(hS)all=all.filter(d=>(d.desc||"").toLowerCase().includes(hS.toLowerCase())||(d.cat||"").toLowerCase().includes(hS.toLowerCase()));
-  if(hM)all=all.filter(d=>(d.date||"").startsWith(hM));
-  if(hC)all=all.filter(d=>d.cat===hC);
-  const byMonth={};all.forEach(d=>{const m=(d.date||"").slice(0,7)||"?";if(!byMonth[m])byMonth[m]=[];byMonth[m].push(d);});
-  let h=`<div class="page-hdr"><div class="page-hdr-name">Historique</div><div class="page-hdr-sub">${DATA.depenses.length} dépenses</div></div>
+  // Build unified transaction list
+  const allTx=[
+    ...DATA.depenses.map(d=>({...d,_type:"dep"})),
+    ...DATA.revenus.map(r=>({...r,_type:"rev"})),
+    ...DATA.virements.map(v=>({...v,_type:"vir"})),
+  ].sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  const months=[...new Set(allTx.map(t=>t.date&&t.date.slice(0,7)).filter(Boolean))].sort().reverse();
+  let filtered=[...allTx];
+  if(hS)filtered=filtered.filter(t=>(t.desc||t.nom||"").toLowerCase().includes(hS.toLowerCase())||(t.cat||"").toLowerCase().includes(hS.toLowerCase()));
+  if(hM)filtered=filtered.filter(t=>(t.date||"").startsWith(hM));
+  if(hType!=="all")filtered=filtered.filter(t=>t._type===hType);
+  const byMonth={};filtered.forEach(t=>{const m=(t.date||"").slice(0,7)||"?";if(!byMonth[m])byMonth[m]=[];byMonth[m].push(t);});
+  const total=DATA.depenses.length+DATA.revenus.length+DATA.virements.length;
+  let h=`<div class="page-hdr"><div class="page-hdr-name">Historique</div><div class="page-hdr-sub">${total} transactions</div></div>
   <div class="search-wrap"><div class="sbar"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Rechercher..." id="h-s" value="${esc(hS)}"></div></div>
-  <div class="chips" id="m-chips"><div class="chip ${hM?"":"on"}" data-m="">Tous</div>${months.map(m=>{const[y,mo]=m.split("-");return`<div class="chip ${hM===m?"on":""}" data-m="${m}">${new Date(y,mo-1).toLocaleString("fr-FR",{month:"short",year:"2-digit"})}</div>`;}).join("")}</div>
-  <div class="chips" id="c-chips"><div class="chip ${hC?"":"on"}" data-c="">Toutes</div>${cats.map(c=>`<div class="chip ${hC===c?"on":""}" data-c="${esc(c)}">${esc(c)}</div>`).join("")}</div>`;
-  if(all.length===0){h+=`<div style="text-align:center;padding:48px 20px;color:var(--t3)"><span style="font-size:36px;display:block;margin-bottom:10px">🔍</span>Aucune dépense trouvée</div>`;}
-  else{Object.entries(byMonth).forEach(([month,deps])=>{const tot=deps.reduce((a,d)=>a+(parseFloat(d.montant)||0),0);const[y,mo]=month.split("-");h+=`<div class="mhdr"><span>${new Date(y,mo-1).toLocaleString("fr-FR",{month:"long",year:"numeric"})}</span><span class="mtot">${fC(tot)}</span></div><div class="lcard" style="margin:0 16px 8px">`;deps.forEach(d=>{const who=d.who||"";const wc=who==="Pierre"?"wp":who==="Lealin"?"wl":"";const badge=who?`<span class="who ${wc}">${esc(who[0])}</span>`:"";h+=`<div class="lr tap" data-id="${d.id}"><div class="lr-ico">${CAT_ICO[d.cat]||"💳"}</div><div class="lr-info"><div class="row-t">${esc(d.desc)} ${badge}</div><div class="row-s">${esc(d.cat||"—")} · ${esc(d.date)}</div></div><div class="row-a neg">${fC(d.montant)}</div></div>`;});h+=`</div>`;});}
+  <div class="chips" id="t-chips">
+    <div class="chip ${hType==="all"?"on":""}" data-t="all">Tout</div>
+    <div class="chip ${hType==="dep"?"on":""}" data-t="dep">💳 Dépenses</div>
+    <div class="chip ${hType==="rev"?"on":""}" data-t="rev">💰 Revenus</div>
+    <div class="chip ${hType==="vir"?"on":""}" data-t="vir">🔄 Virements</div>
+  </div>
+  <div class="chips" id="m-chips"><div class="chip ${hM?"":"on"}" data-m="">Tous les mois</div>${months.map(m=>{const[y,mo]=m.split("-");return`<div class="chip ${hM===m?"on":""}" data-m="${m}">${new Date(y,mo-1).toLocaleString("fr-FR",{month:"short",year:"2-digit"})}</div>`;}).join("")}</div>`;
+  if(filtered.length===0){h+=`<div style="text-align:center;padding:48px 20px;color:var(--t3)"><span style="font-size:36px;display:block;margin-bottom:10px">🔍</span>Aucune transaction trouvée</div>`;}
+  else{Object.entries(byMonth).forEach(([month,txs])=>{
+    const depTot=txs.filter(t=>t._type==="dep").reduce((a,t)=>a+(parseFloat(t.montant)||0),0);
+    const[y,mo]=month.split("-");
+    h+=`<div class="mhdr"><span>${new Date(y,mo-1).toLocaleString("fr-FR",{month:"long",year:"numeric"})}</span><span class="mtot">${fC(depTot)}</span></div><div class="lcard" style="margin:0 16px 8px">`;
+    txs.forEach(t=>{
+      if(t._type==="dep"){
+        const who=t.who||"";const wc=who==="Pierre"?"wp":who==="Lealin"?"wl":"";const badge=who?`<span class="who ${wc}">${esc(who[0])}</span>`:"";
+        h+=`<div class="lr tap" data-id="${t.id}" data-type="dep"><div class="lr-ico">${CAT_ICO[t.cat]||"💳"}</div><div class="lr-info"><div class="row-t">${esc(t.desc)} ${badge}</div><div class="row-s">${esc(t.cat||"—")} · ${esc(t.date)}</div></div><div class="row-a neg">${fC(t.montant)}</div></div>`;
+      } else if(t._type==="rev"){
+        const c=DATA.comptes.find(x=>x.id===t.compte);
+        h+=`<div class="lr"><div class="lr-ico" style="background:var(--gl)">💰</div><div class="lr-info"><div class="row-t">${esc(t.desc||"Revenu")}</div><div class="row-s">${c?esc(c.flag+" "+c.label):""} · ${esc(t.date)}</div></div><div class="row-a pos">+${fC(t.montantCAD||t.montant)}</div></div>`;
+      } else {
+        const src=DATA.comptes.find(x=>x.id===t.source);const dst=DATA.comptes.find(x=>x.id===t.dest);
+        h+=`<div class="lr"><div class="lr-ico" style="background:var(--bl)">🔄</div><div class="lr-info"><div class="row-t">${esc(t.desc||"Virement")}</div><div class="row-s">${src?esc(src.flag):""} → ${dst?esc(dst.flag):""} · ${esc(t.date)}</div></div><div class="row-a" style="color:var(--blue)">${fC(t.montant)}</div></div>`;
+      }
+    });
+    h+=`</div>`;
+  });}
   el.innerHTML=h;
   el.querySelector("#h-s").addEventListener("input",e=>{hS=e.target.value;renderHistorique();});
+  el.querySelectorAll("#t-chips .chip").forEach(c=>c.addEventListener("click",()=>{hType=c.dataset.t;renderHistorique();}));
   el.querySelectorAll("#m-chips .chip").forEach(c=>c.addEventListener("click",()=>{hM=c.dataset.m;renderHistorique();}));
-  el.querySelectorAll("#c-chips .chip").forEach(c=>c.addEventListener("click",()=>{hC=c.dataset.c;renderHistorique();}));
-  el.querySelectorAll(".lr.tap[data-id]").forEach(r=>r.addEventListener("click",()=>openDepDetail(r.dataset.id)));
+  el.querySelectorAll(".lr.tap[data-type='dep']").forEach(r=>r.addEventListener("click",()=>openDepDetail(r.dataset.id)));
 }
 
 // ── PREVISIONS
@@ -886,7 +929,16 @@ function renderReglages(sec){
   }
   if(sec==="fixes"){
     const tot=DATA.fixes.reduce((a,f)=>a+(parseFloat(f.montant)||0),0);
-    h+=`<div class="slbl">Dépenses fixes mensuelles</div><div class="scard" style="margin:0 16px">${DATA.fixes.map((f,i)=>`<div class="fixrow"><input class="fixname" type="text" value="${esc(f.nom)}" placeholder="Nom" data-fi="${i}"><input class="fixamt" type="number" value="${f.montant}" data-fi="${i}"><button class="fixdel" data-di="${i}">×</button></div>`).join("")}<div class="fixtot" id="ftot">Total : <strong>${fC(tot)}</strong></div></div><div style="padding:10px 16px 0"><button class="btn ghost" id="add-f-btn">+ Ajouter</button></div><div style="padding:10px 16px 16px"><button class="btn" id="save-f-btn">Enregistrer</button></div>`;
+    const copts=DATA.comptes.map(c=>`<option value="${esc(c.id)}">${esc((c.flag||"🏦")+" "+c.label)}</option>`).join("");
+    const fixRows=DATA.fixes.map((f,i)=>{
+      const cid=f.compte||(DATA.comptes.find(c=>c.id==="budget_ca")?.id||DATA.comptes[0]?.id);
+      const cOpts=DATA.comptes.map(c=>`<option value="${esc(c.id)}"${c.id===cid?" selected":""}>${esc((c.flag||"🏦")+" "+c.label)}</option>`).join("");
+      return `<div style="border-bottom:1px solid var(--sep)">
+        <div class="fixrow"><input class="fixname" type="text" value="${esc(f.nom)}" placeholder="Nom" data-fi="${i}"><input class="fixamt" type="number" value="${f.montant}" data-fi="${i}"><button class="fixdel" data-di="${i}">×</button></div>
+        <div style="display:flex;align-items:center;padding:8px 15px;gap:8px;border-top:1px solid var(--sep)"><span style="font-size:12px;color:var(--t3);flex-shrink:0">Compte :</span><select class="fixcpt" data-fi="${i}" style="flex:1;border:none;background:none;font-size:13px;font-weight:600;color:var(--orange);outline:none;-webkit-appearance:none;text-align:right">${cOpts}</select></div>
+      </div>`;
+    }).join("");
+    h+=`<div class="slbl">Dépenses fixes mensuelles</div><div class="finfo" style="margin:0 16px 10px">Chaque poste est déduit automatiquement une fois par mois du compte sélectionné.</div><div class="scard" style="margin:0 16px">${fixRows}<div class="fixtot" id="ftot">Total : <strong>${fC(tot)}</strong></div></div><div style="padding:10px 16px 0"><button class="btn ghost" id="add-f-btn">+ Ajouter</button></div><div style="padding:10px 16px 16px"><button class="btn" id="save-f-btn">Enregistrer</button></div>`;
   }
   if(sec==="objectifs"){
     const objs=(DATA.objectifs&&DATA.objectifs.length)?DATA.objectifs:JSON.parse(JSON.stringify(DEF_OBJS));
@@ -925,8 +977,9 @@ function renderReglages(sec){
   if(sec==="fixes"){
     el.querySelectorAll(".fixname").forEach(inp=>inp.addEventListener("input",()=>{DATA.fixes[parseInt(inp.dataset.fi)].nom=inp.value;}));
     el.querySelectorAll(".fixamt").forEach(inp=>inp.addEventListener("input",()=>{DATA.fixes[parseInt(inp.dataset.fi)].montant=parseFloat(inp.value)||0;const tot=DATA.fixes.reduce((a,f)=>a+(parseFloat(f.montant)||0),0);const ft=el.querySelector("#ftot");if(ft)ft.innerHTML=`Total : <strong>${fC(tot)}</strong>`;}));
+    el.querySelectorAll(".fixcpt").forEach(s=>s.addEventListener("change",()=>{DATA.fixes[parseInt(s.dataset.fi)].compte=s.value;}));
     el.querySelectorAll(".fixdel[data-di]").forEach(b=>b.addEventListener("click",()=>{DATA.fixes.splice(parseInt(b.dataset.di),1);renderReglages("fixes");}));
-    el.querySelector("#add-f-btn").addEventListener("click",()=>{DATA.fixes.push({id:Date.now(),nom:"",montant:0});renderReglages("fixes");});
+    el.querySelector("#add-f-btn").addEventListener("click",()=>{const defId=DATA.comptes.find(c=>c.id==="budget_ca")?.id||DATA.comptes[0]?.id;DATA.fixes.push({id:Date.now(),nom:"",montant:0,compte:defId});renderReglages("fixes");});
     el.querySelector("#save-f-btn").addEventListener("click",async()=>{await save();flash("Enregistré ✓");});
   }
   if(sec==="objectifs"){
