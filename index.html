@@ -1179,6 +1179,120 @@ nav{
 .rg-section-icon { font-size: 28px; }
 .rg-section-title { font-size: 22px; font-weight: 800; color: var(--t1); letter-spacing: -.5px; }
 
+
+/* ── HUB ─────────────────────────────────────── */
+#hub-screen {
+  background: var(--navy);
+  min-height: 100dvh;
+  display: flex; flex-direction: column;
+}
+.hub-hero {
+  background: linear-gradient(160deg,#0D0D24 0%,#0A0A1A 60%,#111128 100%);
+  padding: calc(var(--sat) + 24px) 24px 32px;
+  position: relative; overflow: hidden;
+  flex-shrink: 0;
+}
+.hub-hero::before{content:'';position:absolute;top:-80px;left:-80px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(249,115,22,.1) 0%,transparent 65%);pointer-events:none;}
+.hub-hero::after{content:'';position:absolute;bottom:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.08) 0%,transparent 65%);pointer-events:none;}
+.hub-top { display:flex;justify-content:space-between;align-items:center;margin-bottom:28px; }
+.hub-logo { display:flex;align-items:center;gap:9px; }
+.hub-logo-icon { width:32px;height:32px;border-radius:9px;overflow:hidden;flex-shrink:0; }
+.hub-logo-icon svg { width:100%;height:100%;display:block; }
+.hub-appname { font-size:18px;font-weight:800;color:#fff;letter-spacing:-.4px; }
+.hub-profile { display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:6px 12px 6px 7px;cursor:pointer;border:none; }
+.hub-avatar { width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0; }
+.hub-pname { font-size:12px;font-weight:600;color:rgba(255,255,255,.6); }
+.hub-greeting { font-size:28px;font-weight:900;color:#fff;letter-spacing:-.8px;margin-bottom:4px; }
+.hub-date { font-size:14px;color:rgba(255,255,255,.3); }
+/* Module grid */
+.hub-modules { flex:1;padding:20px 16px;display:flex;flex-direction:column;gap:12px; }
+.hub-module {
+  border-radius:22px;overflow:hidden;cursor:pointer;
+  transition:transform .15s,box-shadow .15s;
+  position:relative;
+}
+.hub-module:active { transform:scale(.98); }
+.hub-module-inner { padding:22px; }
+.hub-module-tag { font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;opacity:.6;margin-bottom:12px; }
+.hub-module-title { font-size:22px;font-weight:900;letter-spacing:-.5px;margin-bottom:4px; }
+.hub-module-sub { font-size:13px;opacity:.65;line-height:1.4; }
+.hub-module-icon { position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:52px;opacity:.25; }
+.hub-module-stats { display:flex;gap:16px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.12); }
+.hub-stat { }
+.hub-stat-v { font-size:16px;font-weight:800; }
+.hub-stat-l { font-size:11px;opacity:.5;margin-top:1px; }
+/* Budget module — dark card */
+.hm-budget { background:linear-gradient(135deg,#14142A 0%,#1E1E3A 100%);color:white; }
+/* Recettes module — warm */
+.hm-recettes { background:linear-gradient(135deg,#7C2D12 0%,#9A3412 100%);color:white; }
+/* Future module */
+.hm-soon { background:rgba(255,255,255,.05);border:1.5px dashed rgba(255,255,255,.1);color:white; }
+
+/* ── MODULE NAV BAR (replaces global nav inside a module) */
+.mod-nav {
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:430px;
+  background:rgba(240,238,233,.94);
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border-top:1px solid rgba(10,10,26,.08);
+  padding-bottom:calc(var(--sab) + 4px);
+  z-index:100;display:flex;
+}
+.mod-nav-back {
+  display:flex;flex-direction:column;align-items:center;padding:10px 0 6px;
+  background:none;border:none;cursor:pointer;gap:3px;flex:0 0 56px;
+}
+.mod-nav-back svg{width:22px;height:22px;stroke:var(--orange);fill:none;stroke-width:2;stroke-linecap:round;}
+.mod-nav-back span{font-size:10px;color:var(--orange);font-weight:500;}
+
+/* ── RECETTES MODULE ─────────────────────── */
+.rec-list { display:flex;flex-direction:column;gap:10px;padding:16px; }
+.rec-card {
+  background:var(--card);border-radius:var(--rL);overflow:hidden;
+  box-shadow:0 1px 3px rgba(10,10,26,.06);
+  display:flex;align-items:center;gap:0;cursor:pointer;
+  transition:transform .15s;
+}
+.rec-card:active { transform:scale(.98); }
+.rec-emoji { width:72px;height:72px;display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0;background:rgba(249,115,22,.06); }
+.rec-info { flex:1;padding:14px 14px 14px 12px;min-width:0; }
+.rec-name { font-size:16px;font-weight:700;color:var(--t1);margin-bottom:4px; }
+.rec-meta { display:flex;gap:10px; }
+.rec-chip { font-size:11px;font-weight:600;color:var(--t3);display:flex;align-items:center;gap:3px; }
+.rec-insulin { background:rgba(239,68,68,.1);color:#DC2626;padding:2px 7px;border-radius:8px;font-size:11px;font-weight:700; }
+.rec-actions { display:flex;flex-direction:column;gap:6px;padding:10px 12px 10px 0;flex-shrink:0; }
+.rec-action-btn { padding:6px 10px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap; }
+/* Recipe detail */
+.rec-detail-hero { background:var(--navy);padding:calc(var(--sat)+16px) 22px 24px;position:relative;overflow:hidden; }
+.rec-detail-emoji { font-size:56px;margin-bottom:12px;display:block; }
+.rec-detail-name { font-size:26px;font-weight:900;color:#fff;letter-spacing:-.8px;margin-bottom:8px; }
+.rec-detail-meta { display:flex;gap:12px;flex-wrap:wrap; }
+.rec-detail-chip { display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);border-radius:10px;padding:5px 11px;font-size:13px;color:rgba(255,255,255,.7);font-weight:600; }
+.rec-section { padding:16px; }
+.rec-section-title { font-size:13px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px; }
+.rec-ingredient { display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--sep); }
+.rec-ingredient:last-child { border-bottom:none; }
+.rec-ing-qty { font-size:14px;font-weight:700;color:var(--orange);width:60px;flex-shrink:0; }
+.rec-ing-nom { font-size:14px;color:var(--t1); }
+.rec-step { display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--sep); }
+.rec-step:last-child { border-bottom:none; }
+.rec-step-num { width:26px;height:26px;border-radius:50%;background:var(--orange);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px; }
+.rec-step-txt { font-size:14px;color:var(--t1);line-height:1.5;flex:1; }
+
+/* ── COURSES MODULE ─────────────────────── */
+.courses-list { padding:16px;display:flex;flex-direction:column;gap:6px; }
+.course-item { background:var(--card);border-radius:var(--rM);padding:14px 15px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 3px rgba(10,10,26,.05);transition:opacity .2s; }
+.course-item.done { opacity:.45; }
+.course-check { width:24px;height:24px;border-radius:50%;border:2px solid var(--gray3,#D1D5DB);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .15s; }
+.course-item.done .course-check { background:var(--green);border-color:var(--green); }
+.course-check svg { width:13px;height:13px;stroke:white;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round; }
+.course-name { flex:1;font-size:15px;font-weight:500;color:var(--t1); }
+.course-item.done .course-name { text-decoration:line-through;color:var(--t4); }
+.course-qty { font-size:13px;font-weight:600;color:var(--t3);flex-shrink:0; }
+.course-del { background:none;border:none;color:var(--t4);font-size:18px;cursor:pointer;padding:0 2px;flex-shrink:0; }
+.course-rayon { font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.7px;padding:14px 16px 4px; }
+
 </style>
 </head>
 <body>
@@ -1242,6 +1356,78 @@ nav{
 <div id="toast" class="hidden"></div>
 <div id="offline-bar">📡 Hors ligne — les données seront synchronisées à la reconnexion</div>
 <div id="overlay" class="overlay hidden"></div>
+
+<!-- HUB -->
+<div id="hub-screen" class="hidden">
+  <div class="hub-hero">
+    <div class="hub-top">
+      <div class="hub-logo">
+        <div class="hub-logo-icon"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="22" fill="#F97316"/><rect x="22" y="34" width="56" height="48" rx="20" fill="white"/><polygon points="22,50 22,26 40,42" fill="white"/><polygon points="78,50 78,26 60,42" fill="white"/><ellipse cx="40" cy="57" rx="4" ry="5" fill="#F97316"/><ellipse cx="60" cy="57" rx="4" ry="5" fill="#F97316"/><circle cx="50" cy="66" r="2.5" fill="#F97316"/></svg></div>
+        <div class="hub-appname">Nacho</div>
+      </div>
+      <button class="hub-profile" id="hub-profile-btn">
+        <div class="hub-avatar" id="hub-avatar"></div>
+        <div class="hub-pname" id="hub-pname">Profil</div>
+      </button>
+    </div>
+    <div class="hub-greeting" id="hub-greeting">Bonjour 👋</div>
+    <div class="hub-date" id="hub-date"></div>
+  </div>
+  <div class="hub-modules">
+    <div class="hub-module hm-budget" id="hub-budget">
+      <div class="hub-module-inner">
+        <div class="hub-module-tag">Finances</div>
+        <div class="hub-module-title">Budget</div>
+        <div class="hub-module-sub">Comptes, dépenses, épargne & objectifs</div>
+        <div class="hub-module-stats" id="hub-budget-stats">
+          <div class="hub-stat"><div class="hub-stat-v" id="hub-stat-pat">—</div><div class="hub-stat-l">patrimoine</div></div>
+          <div class="hub-stat"><div class="hub-stat-v" id="hub-stat-sol">—</div><div class="hub-stat-l">solde du mois</div></div>
+        </div>
+      </div>
+      <div class="hub-module-icon">💰</div>
+    </div>
+    <div class="hub-module hm-recettes" id="hub-recettes">
+      <div class="hub-module-inner">
+        <div class="hub-module-tag">Cuisine</div>
+        <div class="hub-module-title">Recettes & Courses</div>
+        <div class="hub-module-sub">Vos recettes, liste de courses partagée</div>
+        <div class="hub-module-stats">
+          <div class="hub-stat"><div class="hub-stat-v" id="hub-stat-rec">—</div><div class="hub-stat-l">recettes</div></div>
+          <div class="hub-stat"><div class="hub-stat-v" id="hub-stat-crs">—</div><div class="hub-stat-l">articles à acheter</div></div>
+        </div>
+      </div>
+      <div class="hub-module-icon">🍳</div>
+    </div>
+    <div class="hub-module hm-soon" id="hub-soon" style="opacity:.5;cursor:default">
+      <div class="hub-module-inner">
+        <div class="hub-module-tag">Bientôt</div>
+        <div class="hub-module-title">Prochaine app</div>
+        <div class="hub-module-sub">Une nouvelle fonctionnalité arrive...</div>
+      </div>
+      <div class="hub-module-icon">✨</div>
+    </div>
+  </div>
+</div>
+
+<!-- RECETTES MODULE SCREENS -->
+<div id="mod-recettes" class="hidden" style="background:var(--bg);min-height:100dvh;padding-bottom:calc(var(--sab)+88px)"></div>
+<div id="mod-courses" class="hidden" style="background:var(--bg);min-height:100dvh;padding-bottom:calc(var(--sab)+88px)"></div>
+
+<!-- RECETTES NAV BAR -->
+<nav class="mod-nav hidden" id="rec-nav">
+  <button class="mod-nav-back" id="rec-back-btn">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    <span>Nacho</span>
+  </button>
+  <button class="nb on" id="rec-nb-recettes">
+    <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18" stroke-width="2" stroke-linecap="round"/></svg>
+    <span>Recettes</span>
+  </button>
+  <button class="nb" id="rec-nb-courses">
+    <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    <span>Courses</span>
+  </button>
+</nav>
 
 <!-- LOCK -->
 <div id="lock-screen">
@@ -1427,7 +1613,8 @@ async function connect(code){
     localStorage.setItem("nacho_code",code);
     document.getElementById("lock-screen").classList.add("hidden");
     if(!isDesktop())document.getElementById("main-nav").classList.remove("hidden");
-    updateSbProfile();showTab("home");
+    updateSbProfile();
+    if(isDesktop())showTab("home"); else showHub();
     return;
   }
   const snap=await getDoc(docRef);
@@ -1463,7 +1650,12 @@ async function connect(code){
   document.getElementById("lock-screen").classList.add("hidden");
   if(!isDesktop())document.getElementById("main-nav").classList.remove("hidden");
   updateSbProfile();
-  showTab("home");
+  if(isDesktop()){
+    // Desktop: show hub in sidebar context
+    showTab("home");
+  } else {
+    showHub();
+  }
 }
 
 async function applyRecurringTransfers(){
@@ -2783,6 +2975,316 @@ function showAddCompte(el){
   area.querySelector("#nc-ok").addEventListener("click",()=>{const lbl=area.querySelector("#nc-l").value.trim();if(!lbl)return;const id="c_"+Date.now();DATA.comptes.push({id,label:lbl,devise:area.querySelector("#nc-d").value,flag:area.querySelector("#nc-f").value});DATA.ouv[id]=0;renderReglages("comptes");flash("Compte ajouté ✓");});
 }
 
+
+// ══════════════════════════════════════════════════
+// HUB
+// ══════════════════════════════════════════════════
+function showHub(){
+  // Hide everything
+  document.getElementById("lock-screen").classList.add("hidden");
+  document.getElementById("hub-screen").classList.remove("hidden");
+  document.getElementById("main-nav").classList.add("hidden");
+  document.getElementById("rec-nav").classList.add("hidden");
+  ["home","depense","argent","historique","previsions","reglages","mod-recettes","mod-courses"].forEach(id=>{
+    const el=document.getElementById("tab-"+id)||document.getElementById("mod-"+id)||document.getElementById(id);
+    if(el)el.classList.add("hidden");
+  });
+  // Update hub stats
+  const pr=getProfile();
+  const ac=pr==="Pierre"?"#2563EB":pr==="Lealin"?"#7C3AED":"#888";
+  const ab=pr==="Pierre"?"#EFF6FF":pr==="Lealin"?"#F5F3FF":"#2A2A4A";
+  const av=document.getElementById("hub-avatar");
+  const pn=document.getElementById("hub-pname");
+  if(av){av.textContent=pr?pr[0]:"?";av.style.background=ab;av.style.color=ac;}
+  if(pn)pn.textContent=pr||"Profil";
+  const greet=document.getElementById("hub-greeting");
+  const h=new Date().getHours();
+  const gTxt=h<12?"Bonjour":h<18?"Bon après-midi":"Bonsoir";
+  if(greet)greet.textContent=gTxt+(pr?" "+pr:"")+" 👋";
+  const dt=document.getElementById("hub-date");
+  if(dt)dt.textContent=new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
+  // Budget stats
+  const S=soldes();
+  const pat=DATA.comptes.reduce((a,c)=>a+(S[c.id]||0)*(c.devise==="EUR"?DATA.taux:1),0);
+  const mon=cm();
+  const budId=DATA.comptes.find(c=>c.id==="budget_ca")?.id||DATA.comptes[0]?.id;
+  const virM=DATA.virements.filter(v=>v.dest===budId&&v.date&&v.date.startsWith(mon)).reduce((a,v)=>a+(parseFloat(v.montant)||0),0)
+    + DATA.revenus.filter(r=>r.compte===budId&&r.date&&r.date.startsWith(mon)).reduce((a,r)=>a+(parseFloat(r.montantCAD||r.montant)||0),0);
+  const totFix=DATA.fixes.reduce((a,f)=>a+(parseFloat(f.montant)||0),0);
+  const depB=DATA.depenses.filter(d=>d.compte===budId&&d.date&&d.date.startsWith(mon)).reduce((a,d)=>a+(parseFloat(d.montant)||0),0);
+  const soldM=virM-totFix-depB;
+  const sp=document.getElementById("hub-stat-pat");
+  const ss=document.getElementById("hub-stat-sol");
+  if(sp)sp.textContent=fC(pat);
+  if(ss){ss.textContent=fC(Math.abs(soldM));ss.style.color=soldM>=0?"#34D399":"#F87171";}
+  // Recettes stats
+  const sr=document.getElementById("hub-stat-rec");
+  const sc=document.getElementById("hub-stat-crs");
+  if(sr)sr.textContent=(DATA.recettes||[]).length;
+  if(sc)sc.textContent=(DATA.courses||[]).filter(c=>!c.done).length;
+}
+window.showHub=showHub;
+
+function enterBudget(){
+  document.getElementById("hub-screen").classList.add("hidden");
+  document.getElementById("main-nav").classList.remove("hidden");
+  showTab("home");
+}
+
+// ══════════════════════════════════════════════════
+// RECETTES & COURSES
+// ══════════════════════════════════════════════════
+let recSection="recettes"; // "recettes" | "courses"
+let currentRecId=null;
+
+function enterRecettes(){
+  document.getElementById("hub-screen").classList.add("hidden");
+  document.getElementById("rec-nav").classList.remove("hidden");
+  document.getElementById("main-nav").classList.add("hidden");
+  recSection="recettes";
+  renderRecettes();
+}
+
+function showRecSection(sec){
+  recSection=sec;
+  document.getElementById("rec-nb-recettes").classList.toggle("on",sec==="recettes");
+  document.getElementById("rec-nb-courses").classList.toggle("on",sec==="courses");
+  if(sec==="recettes")renderRecettes();
+  else renderCourses();
+}
+
+function renderRecettes(){
+  const el=document.getElementById("mod-recettes");
+  const co=document.getElementById("mod-courses");
+  el.classList.remove("hidden");co.classList.add("hidden");
+  const recs=DATA.recettes||[];
+  let h=`<div class="page-hdr" style="background:var(--navy)"><div class="page-hdr-name" style="color:white">Recettes</div><div class="page-hdr-sub" style="color:rgba(255,255,255,.4)">${recs.length} recette${recs.length!==1?"s":""}</div></div>`;
+  h+=`<div class="rec-list">`;
+  recs.forEach(r=>{
+    const ins=r.insuline_portion>0?`<span class="rec-insulin">💉 ${r.insuline_portion}U/portion</span>`:"";
+    h+=`<div class="rec-card" data-rid="${r.id}">
+      <div class="rec-emoji">${r.emoji||"🍽"}</div>
+      <div class="rec-info">
+        <div class="rec-name">${esc(r.nom)}</div>
+        <div class="rec-meta">
+          <div class="rec-chip"><span>⏱</span>${r.temps||"—"}min</div>
+          <div class="rec-chip"><span>👥</span>${r.personnes||2}</div>
+          ${ins}
+        </div>
+      </div>
+      <div class="rec-actions">
+        <button class="rec-action-btn" data-rid="${r.id}" style="background:var(--ol);color:var(--orange)" data-action="courses">+ Courses</button>
+        <button class="rec-action-btn" data-rid="${r.id}" style="background:rgba(10,10,26,.07);color:var(--t2)" data-action="edit">Modifier</button>
+      </div>
+    </div>`;
+  });
+  h+=`<button id="add-rec-btn" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:16px;border-radius:var(--rL);border:2px dashed rgba(249,115,22,.3);background:rgba(249,115,22,.05);color:var(--orange);font-size:14px;font-weight:700;cursor:pointer">+ Nouvelle recette</button>`;
+  h+=`</div>`;
+  el.innerHTML=h;
+  el.querySelectorAll(".rec-card[data-rid]").forEach(card=>{
+    card.addEventListener("click",e=>{
+      if(e.target.closest(".rec-action-btn"))return;
+      openRecette(parseInt(card.dataset.rid));
+    });
+  });
+  el.querySelectorAll(".rec-action-btn[data-action='courses']").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();addRecetteToListe(parseInt(b.dataset.rid));}));
+  el.querySelectorAll(".rec-action-btn[data-action='edit']").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();editRecetteModal(parseInt(b.dataset.rid));}));
+  el.querySelector("#add-rec-btn").addEventListener("click",()=>editRecetteModal(null));
+}
+
+function openRecette(id){
+  const r=(DATA.recettes||[]).find(x=>x.id===id);if(!r)return;
+  currentRecId=id;
+  const el=document.getElementById("mod-recettes");
+  const portionFactor=1; // could add servings selector
+  let h=`<div class="rec-detail-hero">
+    <span class="rec-detail-emoji">${r.emoji||"🍽"}</span>
+    <div class="rec-detail-name">${esc(r.nom)}</div>
+    <div class="rec-detail-meta">
+      <div class="rec-detail-chip">⏱ ${r.temps||"—"} min</div>
+      <div class="rec-detail-chip">👥 ${r.personnes||2} pers.</div>
+      ${r.insuline_portion>0?`<div class="rec-detail-chip" style="background:rgba(220,38,38,.2);color:#FCA5A5">💉 ${r.insuline_portion}U / portion</div>`:""}
+    </div>
+  </div>
+  <div style="padding:12px 16px;display:flex;gap:8px">
+    <button id="rd-back" style="flex:1;padding:12px;border-radius:var(--rM);border:none;background:rgba(10,10,26,.07);color:var(--t2);font-size:14px;font-weight:700;cursor:pointer">‹ Recettes</button>
+    <button id="rd-courses" style="flex:1;padding:12px;border-radius:var(--rM);border:none;background:var(--ol);color:var(--orange);font-size:14px;font-weight:700;cursor:pointer">+ Ajouter aux courses</button>
+    <button id="rd-edit" style="padding:12px;border-radius:var(--rM);border:none;background:rgba(10,10,26,.07);color:var(--t2);font-size:14px;font-weight:700;cursor:pointer">✏️</button>
+  </div>
+  <div style="padding:0 16px 16px">
+    <div class="lcard" style="margin-bottom:14px">
+      <div class="rec-section-title" style="padding:14px 15px 0">Ingrédients</div>`;
+  (r.ingredients||[]).forEach(ing=>{
+    h+=`<div class="rec-ingredient"><div class="rec-ing-qty">${esc(ing.q)} ${esc(ing.u)}</div><div class="rec-ing-nom">${esc(ing.nom)}</div></div>`;
+  });
+  h+=`</div><div class="lcard">
+      <div class="rec-section-title" style="padding:14px 15px 0">Préparation</div>`;
+  (r.etapes||[]).forEach((etape,i)=>{
+    h+=`<div class="rec-step"><div class="rec-step-num">${i+1}</div><div class="rec-step-txt">${esc(etape)}</div></div>`;
+  });
+  h+=`</div></div>`;
+  el.innerHTML=h;
+  el.querySelector("#rd-back").addEventListener("click",()=>renderRecettes());
+  el.querySelector("#rd-courses").addEventListener("click",()=>addRecetteToListe(id));
+  el.querySelector("#rd-edit").addEventListener("click",()=>editRecetteModal(id));
+}
+
+async function addRecetteToListe(id){
+  const r=(DATA.recettes||[]).find(x=>x.id===id);if(!r)return;
+  if(!DATA.courses)DATA.courses=[];
+  let added=0;
+  (r.ingredients||[]).forEach(ing=>{
+    const existing=DATA.courses.find(c=>c.nom.toLowerCase()===ing.nom.toLowerCase()&&!c.done);
+    if(!existing){DATA.courses.push({id:Date.now()+Math.random(),nom:ing.nom,qty:ing.q+" "+ing.u,rayon:"",done:false,recetteId:id});added++;}
+  });
+  await save();
+  flash(`${added} article${added!==1?"s":""} ajouté${added!==1?"s":""} à la liste ✓`);
+  showRecSection("courses");
+}
+
+function renderCourses(){
+  const el=document.getElementById("mod-courses");
+  const mr=document.getElementById("mod-recettes");
+  el.classList.remove("hidden");mr.classList.add("hidden");
+  const items=DATA.courses||[];
+  const pending=items.filter(c=>!c.done);
+  const done=items.filter(c=>c.done);
+  let h=`<div class="page-hdr" style="background:var(--navy)"><div class="page-hdr-name" style="color:white">Liste de courses</div><div class="page-hdr-sub" style="color:rgba(255,255,255,.4)">${pending.length} article${pending.length!==1?"s":""} à acheter</div></div>`;
+  // Add item form
+  h+=`<div style="padding:12px 16px 0"><div style="display:flex;gap:8px">
+    <input id="new-course-item" type="text" placeholder="Ajouter un article..." style="flex:1;padding:12px 14px;border-radius:var(--rM);border:1.5px solid rgba(10,10,26,.1);background:var(--card);font-size:15px;outline:none;color:var(--t1)">
+    <input id="new-course-qty" type="text" placeholder="qté" style="width:64px;padding:12px 10px;border-radius:var(--rM);border:1.5px solid rgba(10,10,26,.1);background:var(--card);font-size:14px;outline:none;color:var(--t1);text-align:center">
+    <button id="add-course-btn" style="width:44px;height:44px;border-radius:var(--rM);border:none;background:var(--orange);color:white;font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center">+</button>
+  </div></div>`;
+  if(pending.length>0){
+    h+=`<div class="courses-list">`;
+    pending.forEach(item=>{
+      h+=`<div class="course-item" data-cid="${item.id}">
+        <div class="course-check" data-cid="${item.id}"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="course-name">${esc(item.nom)}</div>
+        ${item.qty?`<div class="course-qty">${esc(item.qty)}</div>`:""}
+        <button class="course-del" data-cid="${item.id}">×</button>
+      </div>`;
+    });
+    h+=`</div>`;
+  } else {
+    h+=`<div style="text-align:center;padding:40px 20px;color:var(--t3)"><span style="font-size:40px;display:block;margin-bottom:10px">🛒</span>Liste vide<br>Ajoutez des articles ou importez une recette</div>`;
+  }
+  if(done.length>0){
+    h+=`<div class="course-rayon">Déjà achetés (${done.length})</div><div class="courses-list" style="padding-top:0">`;
+    done.forEach(item=>{
+      h+=`<div class="course-item done" data-cid="${item.id}">
+        <div class="course-check done" data-cid="${item.id}"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="course-name">${esc(item.nom)}</div>
+        <button class="course-del" data-cid="${item.id}">×</button>
+      </div>`;
+    });
+    h+=`</div>`;
+    h+=`<div style="padding:0 16px 16px"><button id="clear-done-btn" style="width:100%;padding:13px;border-radius:var(--rM);border:none;background:var(--rl);color:var(--red);font-size:14px;font-weight:700;cursor:pointer">Supprimer les articles cochés</button></div>`;
+  }
+  el.innerHTML=h;
+  // Wire events
+  el.querySelectorAll(".course-check").forEach(b=>b.addEventListener("click",async()=>{
+    const cid=b.dataset.cid;
+    const item=DATA.courses.find(c=>String(c.id)===String(cid));
+    if(item){item.done=!item.done;await save();renderCourses();}
+  }));
+  el.querySelectorAll(".course-del").forEach(b=>b.addEventListener("click",async()=>{
+    DATA.courses=DATA.courses.filter(c=>String(c.id)!==String(b.dataset.cid));
+    await save();renderCourses();
+  }));
+  el.querySelector("#add-course-btn").addEventListener("click",async()=>{
+    const nom=el.querySelector("#new-course-item").value.trim();
+    if(!nom)return;
+    if(!DATA.courses)DATA.courses=[];
+    DATA.courses.push({id:Date.now(),nom,qty:el.querySelector("#new-course-qty").value.trim(),rayon:"",done:false});
+    await save();el.querySelector("#new-course-item").value="";el.querySelector("#new-course-qty").value="";renderCourses();
+  });
+  el.querySelector("#new-course-item").addEventListener("keydown",e=>{if(e.key==="Enter")el.querySelector("#add-course-btn").click();});
+  el.querySelector("#clear-done-btn")?.addEventListener("click",async()=>{
+    DATA.courses=DATA.courses.filter(c=>!c.done);await save();renderCourses();
+  });
+}
+
+// ── RECIPE EDIT MODAL
+function editRecetteModal(id){
+  const isNew=id===null;
+  const r=isNew?{id:Date.now(),nom:"",emoji:"🍽",personnes:4,temps:30,insuline_portion:0,ingredients:[{q:"",u:"",nom:""}],etapes:[""]}
+    :(DATA.recettes||[]).find(x=>x.id===id)||{};
+  const o=document.getElementById("overlay");
+  const d=document.createElement("div");d.className="modal";
+  d.style.cssText="max-height:90vh;overflow-y:auto;border-radius:26px 26px 0 0;padding-bottom:calc(var(--sab)+32px)";
+  const EMOJIS=["🍗","🍝","🥗","🍕","🍣","🥩","🍜","🥘","🫕","🍲","🥞","🧆","🥙","🫔","🍱","🥚","🧀","🫛","🍳","🥗"];
+  const emojiOpts=EMOJIS.map(e=>`<button class="emoji-opt" data-e="${e}" style="font-size:24px;background:none;border:none;cursor:pointer;padding:4px;border-radius:8px;opacity:${r.emoji===e?1:.5}">${e}</button>`).join("");
+  const ingRows=(r.ingredients||[]).map((ing,i)=>`<div class="ing-row" style="display:flex;gap:6px;margin-bottom:6px">
+    <input class="ing-q" data-i="${i}" type="text" value="${esc(ing.q)}" placeholder="qté" style="width:52px;padding:9px 8px;border:1.5px solid rgba(10,10,26,.1);border-radius:9px;font-size:14px;text-align:center;outline:none;background:var(--bg)">
+    <input class="ing-u" data-i="${i}" type="text" value="${esc(ing.u)}" placeholder="unité" style="width:60px;padding:9px 8px;border:1.5px solid rgba(10,10,26,.1);border-radius:9px;font-size:14px;text-align:center;outline:none;background:var(--bg)">
+    <input class="ing-n" data-i="${i}" type="text" value="${esc(ing.nom)}" placeholder="Ingrédient" style="flex:1;padding:9px 10px;border:1.5px solid rgba(10,10,26,.1);border-radius:9px;font-size:14px;outline:none;background:var(--bg)">
+    <button class="ing-del" data-i="${i}" style="width:34px;height:38px;border:none;background:var(--rl);color:var(--red);border-radius:9px;cursor:pointer;font-size:16px">×</button>
+  </div>`).join("");
+  const etapeRows=(r.etapes||[]).map((e,i)=>`<div style="display:flex;gap:6px;margin-bottom:6px">
+    <div style="width:26px;height:26px;border-radius:50%;background:var(--orange);color:white;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:6px">${i+1}</div>
+    <textarea class="etape-inp" data-i="${i}" rows="2" style="flex:1;padding:9px 10px;border:1.5px solid rgba(10,10,26,.1);border-radius:9px;font-size:14px;outline:none;background:var(--bg);resize:none;font-family:inherit">${esc(e)}</textarea>
+  </div>`).join("");
+  d.innerHTML=`<div class="modal-handle"></div>
+  <div style="font-size:20px;font-weight:800;color:var(--t1);margin-bottom:16px;letter-spacing:-.4px">${isNew?"Nouvelle recette":"Modifier la recette"}</div>
+  <div style="margin-bottom:12px"><div style="font-size:12px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Emoji</div><div style="display:flex;flex-wrap:wrap;gap:2px" id="emoji-grid">${emojiOpts}</div></div>
+  <div class="fsec" style="margin-bottom:12px">
+    <div class="frow"><div class="flbl req">Nom</div><input id="rec-nom" type="text" value="${esc(r.nom)}" placeholder="Ex : Poulet rôti"></div>
+    <div class="frow"><div class="flbl">Personnes</div><input id="rec-pers" type="number" min="1" value="${r.personnes||4}"></div>
+    <div class="frow"><div class="flbl">Temps (min)</div><input id="rec-temps" type="number" min="0" value="${r.temps||30}"></div>
+    <div class="frow"><div class="flbl">💉 Insuline/portion</div><input id="rec-ins" type="number" min="0" step="0.5" value="${r.insuline_portion||0}" placeholder="0 si non applicable"></div>
+  </div>
+  <div style="margin-bottom:12px"><div style="font-size:12px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Ingrédients</div>
+    <div id="ing-list">${ingRows}</div>
+    <button id="add-ing-btn" style="width:100%;padding:10px;border-radius:9px;border:1.5px dashed rgba(249,115,22,.3);background:rgba(249,115,22,.05);color:var(--orange);font-size:13px;font-weight:700;cursor:pointer">+ Ingrédient</button>
+  </div>
+  <div style="margin-bottom:16px"><div style="font-size:12px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Étapes</div>
+    <div id="etape-list">${etapeRows}</div>
+    <button id="add-etape-btn" style="width:100%;padding:10px;border-radius:9px;border:1.5px dashed rgba(37,99,235,.3);background:rgba(37,99,235,.05);color:var(--blue);font-size:13px;font-weight:700;cursor:pointer">+ Étape</button>
+  </div>
+  <div class="brow">
+    <button class="btn ghost" id="rec-modal-cancel">Annuler</button>
+    <button class="btn orange" style="flex:1" id="rec-modal-save">Enregistrer</button>
+    ${!isNew?`<button class="btn danger sml" id="rec-modal-del" style="padding:13px 14px">🗑</button>`:""}
+  </div>`;
+  o.innerHTML="";o.appendChild(d);o.classList.remove("hidden");
+  o.onclick=null;d.onclick=e=>e.stopPropagation();
+  let selEmoji=r.emoji||"🍽";
+  d.querySelector("#emoji-grid").querySelectorAll(".emoji-opt").forEach(b=>b.addEventListener("click",()=>{selEmoji=b.dataset.e;d.querySelectorAll(".emoji-opt").forEach(x=>x.style.opacity=".5");b.style.opacity="1";}));
+  // Ing add/del
+  d.querySelector("#add-ing-btn").addEventListener("click",()=>{
+    const list=d.querySelector("#ing-list");
+    const i=list.querySelectorAll(".ing-row").length;
+    const row=document.createElement("div");row.className="ing-row";row.style.cssText="display:flex;gap:6px;margin-bottom:6px";
+    row.innerHTML=`<input class="ing-q" data-i="${i}" type="text" placeholder="qté" style="width:52px;padding:9px 8px;border:1.5px solid rgba(10,10,26,.1);border-radius:9px;font-size:14px;text-align:center;outline:none;background:var(--bg)"><input class="ing-u" data-i="${i}" type="text" placeholder="unité" style="width:60px;padding:9px 8px;border:1.5px solid rgba(10,10,26,.1);border-radius:9px;font-size:14px;text-align:center;outline:none;background:var(--bg)"><input class="ing-n" data-i="${i}" type="text" placeholder="Ingrédient" style="flex:1;padding:9px 10px;border:1.5px solid rgba(10,10,26,.1);border-radius:9px;font-size:14px;outline:none;background:var(--bg)"><button class="ing-del" data-i="${i}" style="width:34px;height:38px;border:none;background:var(--rl);color:var(--red);border-radius:9px;cursor:pointer;font-size:16px">×</button>`;
+    list.appendChild(row);
+    row.querySelector(".ing-del").addEventListener("click",()=>row.remove());
+  });
+  d.querySelectorAll(".ing-del").forEach(b=>b.addEventListener("click",()=>b.closest(".ing-row").remove()));
+  // Etape add
+  d.querySelector("#add-etape-btn").addEventListener("click",()=>{
+    const list=d.querySelector("#etape-list");const i=list.querySelectorAll("div").length;
+    const row=document.createElement("div");row.style.cssText="display:flex;gap:6px;margin-bottom:6px";
+    row.innerHTML=`<div style="width:26px;height:26px;border-radius:50%;background:var(--orange);color:white;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:6px">${i+1}</div><textarea class="etape-inp" rows="2" style="flex:1;padding:9px 10px;border:1.5px solid rgba(10,10,26,.1);border-radius:9px;font-size:14px;outline:none;background:var(--bg);resize:none;font-family:inherit"></textarea>`;
+    list.appendChild(row);
+  });
+  d.querySelector("#rec-modal-cancel").addEventListener("click",closeModal);
+  d.querySelector("#rec-modal-del")?.addEventListener("click",async()=>{
+    DATA.recettes=(DATA.recettes||[]).filter(x=>x.id!==id);await save();closeModal();flash("Recette supprimée");renderRecettes();
+  });
+  d.querySelector("#rec-modal-save").addEventListener("click",async()=>{
+    const nom=d.querySelector("#rec-nom").value.trim();if(!nom){flash("Nom requis");return;}
+    const ingredients=Array.from(d.querySelectorAll(".ing-row")).map(row=>({q:row.querySelector(".ing-q").value.trim(),u:row.querySelector(".ing-u").value.trim(),nom:row.querySelector(".ing-n").value.trim()})).filter(i=>i.nom);
+    const etapes=Array.from(d.querySelectorAll(".etape-inp")).map(t=>t.value.trim()).filter(Boolean);
+    const rec={id:isNew?Date.now():id,nom,emoji:selEmoji,personnes:parseInt(d.querySelector("#rec-pers").value)||4,temps:parseInt(d.querySelector("#rec-temps").value)||30,insuline_portion:parseFloat(d.querySelector("#rec-ins").value)||0,ingredients,etapes};
+    if(!DATA.recettes)DATA.recettes=[];
+    if(isNew)DATA.recettes.push(rec);
+    else{const idx=DATA.recettes.findIndex(x=>x.id===id);if(idx>=0)DATA.recettes[idx]=rec;}
+    await save();closeModal();flash(isNew?"Recette créée ✓":"Recette mise à jour ✓");renderRecettes();
+  });
+}
+
 // ── INIT
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("lock-btn").addEventListener("click", doUnlock);
@@ -2793,6 +3295,19 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("lock-form").classList.remove("hidden");
   });
   setupDesktop();
+  // Hub module buttons
+  document.getElementById("hub-budget")?.addEventListener("click",()=>enterBudget());
+  document.getElementById("hub-recettes")?.addEventListener("click",()=>enterRecettes());
+  document.getElementById("hub-profile-btn")?.addEventListener("click",()=>profileModal());
+  // Recettes nav
+  document.getElementById("rec-back-btn")?.addEventListener("click",()=>{
+    document.getElementById("rec-nav").classList.add("hidden");
+    document.getElementById("mod-recettes").classList.add("hidden");
+    document.getElementById("mod-courses").classList.add("hidden");
+    showHub();
+  });
+  document.getElementById("rec-nb-recettes")?.addEventListener("click",()=>showRecSection("recettes"));
+  document.getElementById("rec-nb-courses")?.addEventListener("click",()=>showRecSection("courses"));
   const code = localStorage.getItem("nacho_code");
   if(code){
     const age = Date.now() - parseInt(localStorage.getItem("nacho_ts")||"0");
