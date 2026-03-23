@@ -1599,81 +1599,73 @@ nav{
 
 
 /* ── DIABETES HUB ───────────────────────────────── */
-.hub-mod-diabetes{
-  background:linear-gradient(135deg,#FFFFFF 0%,#F7F4FF 100%);
-}
-.hub-mod-diabetes::before{
-  content:'';position:absolute;top:-34px;right:-34px;width:120px;height:120px;border-radius:50%;
-  background:radial-gradient(circle,rgba(124,58,237,.12) 0%,transparent 68%);pointer-events:none;
-}
-.diab-wrap{padding:0 16px 24px;display:flex;flex-direction:column;gap:14px;}
-.diab-hero-card{
-  margin-top:-18px;background:linear-gradient(135deg,#FFFFFF 0%,#F7F5FF 52%,#EEF6FF 100%);
-  border-radius:24px;padding:18px;box-shadow:0 18px 40px rgba(10,10,26,.12);position:relative;overflow:hidden;
-}
-.diab-hero-card::before{content:'';position:absolute;top:-42px;right:-36px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.12) 0%,transparent 68%);pointer-events:none;}
-.diab-hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px;position:relative;z-index:1;}
-.diab-hero-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;}
-.diab-hero-title{font-size:28px;font-weight:900;color:var(--t1);letter-spacing:-1px;line-height:1.02;margin-bottom:6px;}
-.diab-hero-sub{font-size:14px;color:var(--t3);line-height:1.45;max-width:240px;}
-.diab-hero-chip{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.7);border:1px solid rgba(10,10,26,.06);font-size:12px;font-weight:700;color:var(--t2);white-space:nowrap;backdrop-filter:blur(8px);}
-.diab-kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;position:relative;z-index:1;}
-.diab-kpi{background:rgba(255,255,255,.68);border:1px solid rgba(10,10,26,.05);border-radius:18px;padding:12px 12px 13px;backdrop-filter:blur(10px);}
-.diab-kpi-label{font-size:10px;font-weight:700;color:var(--t4);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;}
-.diab-kpi-value{font-size:18px;font-weight:900;color:var(--t1);letter-spacing:-.5px;}
+.hub-mod-diabetes{background:linear-gradient(135deg,#FFFFFF 0%,#F6F3EE 100%);}
+.hub-mod-diabetes::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,10,26,.02),transparent 55%);pointer-events:none;}
+.diab-wrap{padding:0 16px 24px;display:flex;flex-direction:column;gap:12px;}
+.diab-hero-card{margin-top:-18px;background:#FFFFFF;border:1px solid rgba(10,10,26,.06);border-radius:28px;padding:20px;box-shadow:0 14px 32px rgba(10,10,26,.08);}
+.diab-hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px;}
+.diab-hero-eyebrow{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--t4);margin-bottom:10px;}
+.diab-hero-title{font-size:32px;font-weight:900;color:var(--t1);letter-spacing:-1.4px;line-height:1;}
+.diab-hero-sub{font-size:13px;color:var(--t3);line-height:1.45;margin-top:8px;max-width:220px;}
+.diab-hero-chip{display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:999px;background:var(--bg);border:1px solid rgba(10,10,26,.05);font-size:11px;font-weight:800;letter-spacing:.5px;color:var(--t2);white-space:nowrap;}
+.diab-kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.diab-kpi{padding:0;border:none;}
+.diab-kpi-label{font-size:10px;font-weight:700;color:var(--t4);text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px;}
+.diab-kpi-value{font-size:21px;font-weight:900;color:var(--t1);letter-spacing:-.8px;}
 .diab-kpi-sub{font-size:11px;color:var(--t3);margin-top:3px;line-height:1.35;}
-.diab-card{background:var(--card);border-radius:22px;padding:16px;box-shadow:0 8px 24px rgba(10,10,26,.08);}
-.diab-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px;}
-.diab-item-pill{display:flex;align-items:center;gap:10px;}
-.diab-item-icon{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-.diab-item-name{font-size:16px;font-weight:800;color:var(--t1);letter-spacing:-.3px;}
+.diab-card{background:var(--card);border:1px solid rgba(10,10,26,.06);border-radius:24px;padding:16px 16px 14px;box-shadow:0 8px 22px rgba(10,10,26,.05);}
+.diab-card-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;}
+.diab-item-pill{display:flex;align-items:center;gap:12px;min-width:0;}
+.diab-item-icon{width:44px;height:44px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.diab-item-name{font-size:17px;font-weight:800;color:var(--t1);letter-spacing:-.35px;}
 .diab-item-meta{font-size:12px;color:var(--t3);margin-top:2px;}
-.diab-status-chip{padding:7px 11px;border-radius:999px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;white-space:nowrap;}
+.diab-status-chip{padding:7px 10px;border-radius:999px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;white-space:nowrap;}
 .diab-status-ok{background:rgba(5,150,105,.1);color:var(--green);}
 .diab-status-warn{background:rgba(217,119,6,.12);color:#B45309;}
 .diab-status-critical{background:rgba(220,38,38,.1);color:var(--red);}
-.diab-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;}
-.diab-stat{background:var(--bg);border-radius:16px;padding:11px 12px;}
-.diab-stat-label{font-size:10px;font-weight:700;color:var(--t4);text-transform:uppercase;letter-spacing:.55px;margin-bottom:4px;}
-.diab-stat-value{font-size:16px;font-weight:800;color:var(--t1);letter-spacing:-.3px;line-height:1.2;}
-.diab-stat-value.small{font-size:13px;line-height:1.35;}
-.diab-progress{height:8px;border-radius:999px;background:rgba(10,10,26,.07);overflow:hidden;margin-bottom:9px;}
+.diab-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.diab-stat{padding:0;}
+.diab-stat-label{font-size:10px;font-weight:700;color:var(--t4);text-transform:uppercase;letter-spacing:.65px;margin-bottom:4px;}
+.diab-stat-value{font-size:18px;font-weight:800;color:var(--t1);letter-spacing:-.4px;line-height:1.15;}
+.diab-stat-value.small{font-size:14px;line-height:1.3;}
+.diab-progress{height:6px;border-radius:999px;background:rgba(10,10,26,.08);overflow:hidden;margin-bottom:10px;}
 .diab-progress-fill{height:100%;border-radius:999px;transition:width .35s ease;}
-.diab-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;color:var(--t3);margin-bottom:14px;}
+.diab-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;color:var(--t3);margin-bottom:14px;padding-top:2px;}
+.diab-foot strong{color:var(--t1);font-weight:700;}
 .diab-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
 .diab-btn{border:none;border-radius:14px;padding:11px 10px;font-size:12px;font-weight:700;cursor:pointer;transition:transform .15s,opacity .15s;}
 .diab-btn:active{transform:scale(.97);}
 .diab-btn.primary{background:var(--navy);color:white;}
-.diab-btn.soft{background:rgba(10,10,26,.06);color:var(--t2);}
+.diab-btn.soft{background:rgba(10,10,26,.05);color:var(--t2);}
 .diab-btn.warn{background:rgba(249,115,22,.12);color:var(--orange);}
 .diab-btn:disabled{opacity:.45;cursor:not-allowed;}
-.diab-inline-card{background:var(--card);border-radius:22px;padding:16px;box-shadow:0 8px 24px rgba(10,10,26,.08);}
-.diab-inline-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px;}
+.diab-inline-card{background:var(--card);border:1px solid rgba(10,10,26,.06);border-radius:24px;padding:16px;box-shadow:0 8px 22px rgba(10,10,26,.05);}
+.diab-inline-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;}
 .diab-inline-title{font-size:16px;font-weight:800;color:var(--t1);letter-spacing:-.3px;}
 .diab-inline-sub{font-size:12px;color:var(--t3);margin-top:3px;line-height:1.4;}
 .diab-quick-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
-.diab-qa{background:var(--bg);border-radius:18px;padding:14px;border:1px solid rgba(10,10,26,.04);}
-.diab-qa-label{font-size:12px;font-weight:700;color:var(--t2);margin-bottom:8px;}
+.diab-qa{background:#FAF8F4;border-radius:18px;padding:14px;border:1px solid rgba(10,10,26,.05);}
+.diab-qa-label{font-size:11px;font-weight:800;color:var(--t2);margin-bottom:10px;letter-spacing:.5px;text-transform:uppercase;}
 .diab-qa-row{display:flex;gap:8px;flex-wrap:wrap;}
-.diab-mini-btn{border:none;border-radius:12px;padding:9px 10px;background:white;color:var(--t2);font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 1px 4px rgba(10,10,26,.06);}
-.diab-mini-btn.primary{background:var(--orange);color:white;}
-.diab-history{background:var(--card);border-radius:22px;overflow:hidden;box-shadow:0 8px 24px rgba(10,10,26,.08);}
-.diab-history-row{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-bottom:1px solid var(--sep);}
+.diab-mini-btn{border:none;border-radius:12px;padding:9px 10px;background:white;color:var(--t2);font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 1px 3px rgba(10,10,26,.05);}
+.diab-mini-btn.primary{background:var(--navy);color:white;}
+.diab-history{background:var(--card);border:1px solid rgba(10,10,26,.06);border-radius:24px;overflow:hidden;box-shadow:0 8px 22px rgba(10,10,26,.05);}
+.diab-history-row{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-bottom:1px solid var(--sep);}
 .diab-history-row:last-child{border-bottom:none;}
-.diab-history-icon{width:36px;height:36px;border-radius:12px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.diab-history-icon{width:34px;height:34px;border-radius:12px;background:#FAF8F4;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
 .diab-history-main{flex:1;min-width:0;}
 .diab-history-title{font-size:14px;font-weight:700;color:var(--t1);line-height:1.3;}
 .diab-history-sub{font-size:12px;color:var(--t3);margin-top:3px;line-height:1.35;}
 .diab-history-qty{font-size:13px;font-weight:800;color:var(--t1);white-space:nowrap;}
-.diab-empty{background:var(--card);border-radius:22px;padding:32px 24px;text-align:center;color:var(--t3);box-shadow:0 8px 24px rgba(10,10,26,.08);}
-.diab-empty-icon{font-size:42px;display:block;margin-bottom:12px;}
+.diab-empty{background:var(--card);border:1px solid rgba(10,10,26,.06);border-radius:24px;padding:30px 24px;text-align:center;color:var(--t3);box-shadow:0 8px 22px rgba(10,10,26,.05);}
+.diab-empty-icon{font-size:40px;display:block;margin-bottom:12px;}
 .diab-modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
 .diab-choice{border:1.5px solid rgba(10,10,26,.08);border-radius:16px;padding:14px;background:var(--card);cursor:pointer;text-align:left;}
-.diab-choice.on{border-color:var(--orange);background:rgba(249,115,22,.06);}
+.diab-choice.on{border-color:var(--navy);background:rgba(10,10,26,.03);}
 .diab-choice-emoji{font-size:22px;display:block;margin-bottom:8px;}
 .diab-choice-name{font-size:14px;font-weight:800;color:var(--t1);margin-bottom:3px;}
 .diab-choice-sub{font-size:12px;color:var(--t3);line-height:1.35;}
-@media (max-width: 380px){.diab-kpi-grid,.diab-stats,.diab-actions,.diab-quick-actions,.diab-modal-grid{grid-template-columns:1fr;}.diab-hero-sub{max-width:none;}}
+@media (max-width: 380px){.diab-kpi-grid,.diab-stats,.diab-actions,.diab-quick-actions,.diab-modal-grid{grid-template-columns:1fr;}.diab-hero-top{flex-direction:column;}.diab-hero-sub{max-width:none;}}
 
 </style>
 </head>
@@ -3707,24 +3699,24 @@ function renderDiabetesModule(){
   const cont=document.getElementById("diabetes-content");if(!cont)return;
   const summary=getDiabetesSummary();
   const heroStatus=summary.warnCount>0?`${summary.warnCount} alerte${summary.warnCount>1?"s":""}`:"Suivi à jour";
-  let h=`<div class="mod-header"><div class="mod-header-eyebrow">Module santé</div><div class="mod-header-title">Stock diabète 🩺</div><div class="mod-header-sub">Automatique, visuel et prêt pour les changements anticipés</div></div><div class="diab-wrap">`;
-  h+=`<div class="diab-hero-card"><div class="diab-hero-top"><div><div class="diab-hero-eyebrow">Vue d'ensemble</div><div class="diab-hero-title">Stock jusqu'au ${fmtDate(summary.stockUntil)}</div><div class="diab-hero-sub">Le suivi se fait tout seul pour les pompes patch et les capteurs, avec correction instantanée si vous devez changer plus tôt.</div></div><div class="diab-hero-chip">${summary.warnCount>0?"⚠️":"✨"} ${heroStatus}</div></div><div class="diab-kpi-grid"><div class="diab-kpi"><div class="diab-kpi-label">Unités</div><div class="diab-kpi-value">${summary.totalUnits}</div><div class="diab-kpi-sub">Tous matériels confondus</div></div><div class="diab-kpi"><div class="diab-kpi-label">Marge min</div><div class="diab-kpi-value">${summary.shortestCoverage}</div><div class="diab-kpi-sub">jours avant rupture</div></div><div class="diab-kpi"><div class="diab-kpi-label">Prochain switch</div><div class="diab-kpi-value">${summary.soonest?fmtDate(summary.soonest.nextChange):"—"}</div><div class="diab-kpi-sub">${summary.soonest?summary.soonest.label:"Configurez votre routine"}</div></div></div></div>`;
+  let h=`<div class="mod-header"><div class="mod-header-eyebrow">Module santé</div><div class="mod-header-title">Stock diabète</div><div class="mod-header-sub">Vue claire et essentielle</div></div><div class="diab-wrap">`;
+  h+=`<div class="diab-hero-card"><div class="diab-hero-top"><div><div class="diab-hero-eyebrow">Vue d'ensemble</div><div class="diab-hero-title">${summary.shortestCoverage} j</div><div class="diab-hero-sub">de marge minimale · rupture estimée le ${fmtDate(summary.stockUntil)}</div></div><div class="diab-hero-chip">${heroStatus}</div></div><div class="diab-kpi-grid"><div class="diab-kpi"><div class="diab-kpi-label">Stock total</div><div class="diab-kpi-value">${summary.totalUnits}</div><div class="diab-kpi-sub">unités</div></div><div class="diab-kpi"><div class="diab-kpi-label">Prochain changement</div><div class="diab-kpi-value">${summary.soonest?formatDaysLabel(summary.soonest.nextChangeIn):"—"}</div><div class="diab-kpi-sub">${summary.soonest?summary.soonest.label:"Aucun"}</div></div><div class="diab-kpi"><div class="diab-kpi-label">État</div><div class="diab-kpi-value">${summary.warnCount>0?"À suivre":"Stable"}</div><div class="diab-kpi-sub">${summary.warnCount>0?`${summary.warnCount} poste${summary.warnCount>1?"s":""}`:"RAS"}</div></div></div></div>`;
   Object.entries(summary.items).forEach(([key,item])=>{
     const pct=Math.round(item.ratio*100);
-    const foot=item.nextChange?`Prochain changement <strong>${fmtDate(item.nextChange)}</strong> · ${formatDaysLabel(item.nextChangeIn)}`:`Basé sur l'usage des pompes patch`;
+    const foot=item.nextChange?`Prochain changement <strong>${fmtDate(item.nextChange)}</strong>`:`Piloté par les pompes patch`;
     const thirdStat=key==="pen"?`${item.stockUntil?fmtDate(item.stockUntil):"—"}`:fmtDate(item.stockUntil);
-    h+=`<div class="diab-card"><div class="diab-card-top"><div class="diab-item-pill"><div class="diab-item-icon" style="background:${item.soft};color:${item.color}">${item.emoji}</div><div><div class="diab-item-name">${item.label}</div><div class="diab-item-meta">${item.helper}</div></div></div><div class="diab-status-chip ${diabetesStatusClass(item.status)}">${diabetesStatusLabel(item.status)}</div></div><div class="diab-stats"><div class="diab-stat"><div class="diab-stat-label">Stock</div><div class="diab-stat-value">${item.stock}</div></div><div class="diab-stat"><div class="diab-stat-label">Niveau</div><div class="diab-stat-value">${pct}%</div></div><div class="diab-stat"><div class="diab-stat-label">Stock jusqu'au</div><div class="diab-stat-value small">${thirdStat}</div></div></div><div class="diab-progress"><div class="diab-progress-fill" style="width:${pct}%;background:${diabetesFillColor(item.status)}"></div></div><div class="diab-foot"><span>${foot}</span><span>${item.coverageDays} jours restants</span></div><div class="diab-actions"><button class="diab-btn primary" data-di-action="add" data-di-item="${key}">+ Réception</button>${key!=="pen"?`<button class="diab-btn warn" data-di-action="change" data-di-item="${key}">Changer + tôt</button>`:`<button class="diab-btn warn" data-di-action="manual" data-di-item="${key}">Usage manuel</button>`}<button class="diab-btn soft" data-di-action="adjust" data-di-item="${key}">${key!=="pen"?"Ajuster date":"Ajuster stock"}</button></div></div>`;
+    h+=`<div class="diab-card"><div class="diab-card-top"><div class="diab-item-pill"><div class="diab-item-icon" style="background:${item.soft};color:${item.color}">${item.emoji}</div><div><div class="diab-item-name">${item.label}</div><div class="diab-item-meta">${item.coverageDays} jours de couverture</div></div></div><div class="diab-status-chip ${diabetesStatusClass(item.status)}">${diabetesStatusLabel(item.status)}</div></div><div class="diab-stats"><div class="diab-stat"><div class="diab-stat-label">Stock</div><div class="diab-stat-value">${item.stock}</div></div><div class="diab-stat"><div class="diab-stat-label">Niveau</div><div class="diab-stat-value">${pct}%</div></div><div class="diab-stat"><div class="diab-stat-label">Jusqu'au</div><div class="diab-stat-value small">${thirdStat}</div></div></div><div class="diab-progress"><div class="diab-progress-fill" style="width:${pct}%;background:${diabetesFillColor(item.status)}"></div></div><div class="diab-foot"><span>${foot}</span><span>${formatDaysLabel(item.coverageDays)}</span></div><div class="diab-actions"><button class="diab-btn primary" data-di-action="add" data-di-item="${key}">Ajouter</button>${key!=="pen"?`<button class="diab-btn warn" data-di-action="change" data-di-item="${key}">Changer</button>`:`<button class="diab-btn warn" data-di-action="manual" data-di-item="${key}">Déduire</button>`}<button class="diab-btn soft" data-di-action="adjust" data-di-item="${key}">Ajuster</button></div></div>`;
   });
-  h+=`<div class="diab-inline-card"><div class="diab-inline-top"><div><div class="diab-inline-title">Actions rapides</div><div class="diab-inline-sub">Ajoutez du matériel reçu, forcez un changement immédiat ou corrigez le planning sans casser l'automatisation.</div></div><button class="btn ghost sml" id="diab-sync-btn">Actualiser</button></div><div class="diab-quick-actions"><div class="diab-qa"><div class="diab-qa-label">Réceptions</div><div class="diab-qa-row"><button class="diab-mini-btn primary" data-di-action="add" data-di-item="patch">+ pompes</button><button class="diab-mini-btn" data-di-action="add" data-di-item="pen">+ stylos</button><button class="diab-mini-btn" data-di-action="add" data-di-item="sensor">+ capteurs</button></div></div><div class="diab-qa"><div class="diab-qa-label">Corrections</div><div class="diab-qa-row"><button class="diab-mini-btn" data-di-action="change" data-di-item="patch">Pompe maintenant</button><button class="diab-mini-btn" data-di-action="change" data-di-item="sensor">Capteur maintenant</button><button class="diab-mini-btn" data-di-action="manual" data-di-item="pen">Stylo manuel</button></div></div></div></div>`;
-  const logs=(getDiabetesData().logs||[]).slice(0,12);
-  h+=`<div><div class="stitle" style="padding:0 2px 10px">Historique récent</div>`;
-  if(logs.length===0){h+=`<div class="diab-empty"><span class="diab-empty-icon">📦</span><div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:6px">Hub prêt à être utilisé</div><div style="font-size:14px;line-height:1.55">Ajoutez votre premier stock reçu pour lancer le suivi automatique des pompes patch, stylos et capteurs.</div></div>`;}
+  h+=`<div class="diab-inline-card"><div class="diab-inline-top"><div><div class="diab-inline-title">Raccourcis</div><div class="diab-inline-sub">Les actions utiles, rien de plus.</div></div><button class="btn ghost sml" id="diab-sync-btn">Sync</button></div><div class="diab-quick-actions"><div class="diab-qa"><div class="diab-qa-label">Ajouter</div><div class="diab-qa-row"><button class="diab-mini-btn primary" data-di-action="add" data-di-item="patch">Pompes</button><button class="diab-mini-btn" data-di-action="add" data-di-item="pen">Stylos</button><button class="diab-mini-btn" data-di-action="add" data-di-item="sensor">Capteurs</button></div></div><div class="diab-qa"><div class="diab-qa-label">Mettre à jour</div><div class="diab-qa-row"><button class="diab-mini-btn" data-di-action="change" data-di-item="patch">Pompe</button><button class="diab-mini-btn" data-di-action="change" data-di-item="sensor">Capteur</button><button class="diab-mini-btn" data-di-action="manual" data-di-item="pen">Stylo</button></div></div></div></div>`;
+  const logs=(getDiabetesData().logs||[]).slice(0,8);
+  h+=`<div><div class="stitle" style="padding:0 2px 10px">Derniers mouvements</div>`;
+  if(logs.length===0){h+=`<div class="diab-empty"><span class="diab-empty-icon">📦</span><div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:6px">Aucun mouvement</div><div style="font-size:14px;line-height:1.55">Ajoutez une première réception pour démarrer le suivi.</div></div>`;}
   else{
     h+=`<div class="diab-history">`;
     logs.forEach(log=>{
       const date=new Date(log.date).toLocaleDateString("fr-FR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
       const verb=log.type==="add"?"Réception":"Mouvement";
-      h+=`<div class="diab-history-row"><div class="diab-history-icon">${log.emoji||"🩺"}</div><div class="diab-history-main"><div class="diab-history-title">${verb} · ${log.label}</div><div class="diab-history-sub">${log.note||"Ajustement de stock"} · ${date}</div></div><div class="diab-history-qty">${log.type==="add"?"+":"−"}${log.qty}</div></div>`;
+      h+=`<div class="diab-history-row"><div class="diab-history-icon">${log.emoji||"🩺"}</div><div class="diab-history-main"><div class="diab-history-title">${verb} · ${log.label}</div><div class="diab-history-sub">${date}</div></div><div class="diab-history-qty">${log.type==="add"?"+":"−"}${log.qty}</div></div>`;
     });
     h+=`</div>`;
   }
