@@ -111,7 +111,7 @@ nav{
 .nb.on::after{content:'';position:absolute;bottom:3px;width:18px;height:3px;background:var(--orange);border-radius:1.5px 1.5px 0 0;}
 
 /* ── SCREENS */
-.screen{min-height:100dvh;padding-bottom:calc(var(--sab) + 88px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+.screen{min-height:100dvh;padding-bottom:calc(var(--sab) + 88px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--bg);}
 
 /* ── PAGE HEADER — used by all non-home tabs */
 .page-hdr{
@@ -645,7 +645,7 @@ nav{
 .nb.on::after{content:'';position:absolute;bottom:3px;width:18px;height:3px;background:var(--orange);border-radius:1.5px 1.5px 0 0;}
 
 /* ── SCREENS */
-.screen{min-height:100dvh;padding-bottom:calc(var(--sab) + 88px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+.screen{min-height:100dvh;padding-bottom:calc(var(--sab) + 88px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--bg);}
 
 /* ── PAGE HEADER — used by all non-home tabs */
 .page-hdr{
@@ -1149,7 +1149,7 @@ nav{
 
 
 /* ── APPLE-STYLE SETTINGS ─────────────────────── */
-.rg-page { padding-bottom: 40px; }
+.rg-page { padding: calc(var(--sat) + 8px) 0 40px; }
 .rg-profile-hdr {
   display: flex; align-items: center; gap: 14px;
   padding: 20px 16px; background: var(--card);
@@ -2883,7 +2883,7 @@ function renderArgent(mode){
       DATA.revenus.unshift({id:Date.now(),date:el.querySelector("#r-date").value,desc:el.querySelector("#r-desc").value.trim(),montant:m,montantNatif:m,montantCAD:devise==="EUR"?m*t:m,devise,taux:t,compte:el.querySelector("#r-c").value});
       await save();refreshTs();flash("Revenu enregistré ✓");showTab("home");
     });
-  } else {
+  } else if(mode==="vir") {
     el.querySelector("#v-save").addEventListener("click",async()=>{
       const m=parseFloat(el.querySelector("#v-m").value);const src=el.querySelector("#v-src").value;const dst=el.querySelector("#v-dst").value;const errEl=el.querySelector("#v-err");
       if(!m||m<=0){errEl.innerHTML='<div class="ferr">Montant invalide</div>';return;}
