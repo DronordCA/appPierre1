@@ -47,11 +47,11 @@ if('serviceWorker' in navigator){
   --rXL: 26px;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html{background:var(--bg);overscroll-behavior:none;width:100%;overflow-x:hidden;}
-body{font-family:-apple-system,"SF Pro Display","SF Pro Text",Helvetica,sans-serif;background:var(--bg);width:100%;max-width:430px;margin:0 auto;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;overscroll-behavior:none;touch-action:pan-y;}
+html{background:var(--navy);overscroll-behavior:none;width:100%;min-height:100%;overflow:hidden;}
+body{font-family:-apple-system,"SF Pro Display","SF Pro Text",Helvetica,sans-serif;background:var(--navy);width:100%;max-width:430px;margin:0 auto;min-height:100dvh;overflow:hidden;-webkit-font-smoothing:antialiased;overscroll-behavior:none;touch-action:pan-y;}
 /* Prevent white flash bars on iOS scroll bounce */
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:200px;background:var(--navy);z-index:-1;}
-body::after{content:'';position:fixed;bottom:0;left:0;right:0;height:200px;background:var(--bg);z-index:-1;}
+body::after{content:'';position:fixed;bottom:0;left:0;right:0;height:200px;background:var(--navy);z-index:-1;}
 input,select,button{font-family:inherit;font-size:16px;}/* 16px prevents iOS zoom */
 .hidden{display:none!important;}
 
@@ -111,7 +111,7 @@ nav{
 .nb.on::after{content:'';position:absolute;bottom:3px;width:18px;height:3px;background:var(--orange);border-radius:1.5px 1.5px 0 0;}
 
 /* ── SCREENS */
-.screen{padding-bottom:calc(var(--sab) + 88px);}
+.screen{min-height:100dvh;padding-bottom:calc(var(--sab) + 88px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
 
 /* ── PAGE HEADER — used by all non-home tabs */
 .page-hdr{
@@ -581,11 +581,11 @@ if('serviceWorker' in navigator){
   --rXL: 26px;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html{background:var(--bg);overscroll-behavior:none;width:100%;overflow-x:hidden;}
-body{font-family:-apple-system,"SF Pro Display","SF Pro Text",Helvetica,sans-serif;background:var(--bg);width:100%;max-width:430px;margin:0 auto;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;overscroll-behavior:none;touch-action:pan-y;}
+html{background:var(--navy);overscroll-behavior:none;width:100%;min-height:100%;overflow:hidden;}
+body{font-family:-apple-system,"SF Pro Display","SF Pro Text",Helvetica,sans-serif;background:var(--navy);width:100%;max-width:430px;margin:0 auto;min-height:100dvh;overflow:hidden;-webkit-font-smoothing:antialiased;overscroll-behavior:none;touch-action:pan-y;}
 /* Prevent white flash bars on iOS scroll bounce */
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:200px;background:var(--navy);z-index:-1;}
-body::after{content:'';position:fixed;bottom:0;left:0;right:0;height:200px;background:var(--bg);z-index:-1;}
+body::after{content:'';position:fixed;bottom:0;left:0;right:0;height:200px;background:var(--navy);z-index:-1;}
 input,select,button{font-family:inherit;font-size:16px;}/* 16px prevents iOS zoom */
 .hidden{display:none!important;}
 
@@ -645,7 +645,7 @@ nav{
 .nb.on::after{content:'';position:absolute;bottom:3px;width:18px;height:3px;background:var(--orange);border-radius:1.5px 1.5px 0 0;}
 
 /* ── SCREENS */
-.screen{padding-bottom:calc(var(--sab) + 88px);}
+.screen{min-height:100dvh;padding-bottom:calc(var(--sab) + 88px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
 
 /* ── PAGE HEADER — used by all non-home tabs */
 .page-hdr{
@@ -898,11 +898,12 @@ nav{
    DESKTOP LAYOUT (≥768px)
 ═══════════════════════════════════════ */
 @media (min-width: 768px) {
-  html { background: #1A1A2E; }
+  html { background: #1A1A2E; overflow-x: hidden; overflow-y: auto; }
   body {
     max-width: 100%;
     display: flex;
     min-height: 100vh;
+    overflow: auto;
     background: #F0EEE9;
   }
 
@@ -1183,11 +1184,13 @@ nav{
 #hub-screen {
   width: 100%;
   min-height: 100dvh;
+  height: 100dvh;
   background: var(--navy);
   display: flex; flex-direction: column;
   overflow-x: hidden;
   overflow-y: auto;
-  overscroll-behavior-x: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   touch-action: pan-y;
 }
 
@@ -1348,6 +1351,10 @@ nav{
 .mod-nav-divider { width: 1px; background: rgba(10,10,26,.08); margin: 8px 0; }
 .mod-screen {
   min-height: 100dvh;
+  height: 100dvh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   padding-bottom: calc(var(--sab) + 90px);
   animation: fadeIn .22s ease-out;
 }
@@ -1832,6 +1839,7 @@ let docRef=null,unsub=null,ignoreNext=false;
 const PROFILE_KEY="nacho_profile";
 const FACEID_KEY="nacho_faceid";
 const SESSION_MS=60*60*1000;
+const SILENT_REOPEN_MS=SESSION_MS;
 
 const today=()=>new Date().toISOString().slice(0,10);
 const fC=n=>new Intl.NumberFormat("fr-CA",{style:"currency",currency:"CAD",maximumFractionDigits:0}).format(Math.round(n));
@@ -4044,9 +4052,8 @@ document.addEventListener("DOMContentLoaded", function() {
   const code = localStorage.getItem("nacho_code");
   if(code){
     const age = Date.now() - parseInt(localStorage.getItem("nacho_ts")||"0");
-    const SILENT_MS = 3 * 60 * 1000; // only auto-connect if opened < 3min ago
-    if(age < SILENT_MS){
-      // Very recent — connect silently (background tab restore)
+    if(age < SILENT_REOPEN_MS){
+      // Session still valid — reopen silently for up to one hour
       document.getElementById("lock-form").classList.add("hidden");
       document.getElementById("lock-loading").classList.remove("hidden");
       connect(code).then(()=>refreshTs()).catch(()=>{

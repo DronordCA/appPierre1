@@ -1,5 +1,5 @@
 // Nacho Service Worker — v1
-const CACHE = "nacho-v1";
+const CACHE = "nacho-v2";
 const ASSETS = [
   "./",
   "./index.html",
