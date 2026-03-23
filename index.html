@@ -1680,6 +1680,15 @@ nav{
 .diab-inline-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px;}
 .diab-inline-title{font-size:16px;font-weight:800;color:#0F172A;letter-spacing:-.3px;}
 .diab-inline-sub{font-size:12px;color:#64748B;margin-top:4px;line-height:1.45;max-width:240px;}
+.diab-custom-list{display:flex;flex-direction:column;gap:10px;}
+.diab-custom-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:14px;border-radius:20px;border:1px solid rgba(148,163,184,.12);background:linear-gradient(180deg,#F8FBFF 0%,#F8FAFC 100%);}
+.diab-custom-main{flex:1;min-width:0;}
+.diab-custom-top{display:flex;justify-content:space-between;gap:10px;font-size:14px;font-weight:800;color:#0F172A;line-height:1.35;}
+.diab-custom-top span:last-child{font-size:11px;color:#64748B;text-transform:uppercase;letter-spacing:.6px;white-space:nowrap;}
+.diab-custom-sub{font-size:12px;color:#64748B;margin-top:5px;line-height:1.45;}
+.diab-custom-actions{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;}
+.diab-link-btn{border:none;background:none;color:#1D4ED8;font-size:12px;font-weight:800;cursor:pointer;padding:0;}
+.diab-link-btn.danger{color:#DC2626;}
 .diab-quick-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
 .diab-qa,.diab-focus-card{background:linear-gradient(180deg,#F8FBFF 0%,#F8FAFC 100%);border-radius:20px;padding:14px;border:1px solid rgba(148,163,184,.12);}
 .diab-qa-label{font-size:11px;font-weight:800;color:#0F172A;margin-bottom:10px;letter-spacing:.5px;text-transform:uppercase;}
@@ -1709,7 +1718,7 @@ nav{
 .diab-choice-name{font-size:14px;font-weight:800;color:#0F172A;margin-bottom:3px;}
 .diab-choice-sub{font-size:12px;color:#64748B;line-height:1.4;}
 @media (max-width: 430px){.mod-nav{width:100%;} .diab-wrap{padding:0 14px 24px;} .diab-card,.diab-inline-card,.diab-hero-card,.diab-history,.diab-empty{border-radius:24px;} .diab-inline-sub,.diab-hero-sub{max-width:none;}}
-@media (max-width: 390px){.diab-stats,.diab-actions,.diab-quick-actions,.diab-modal-grid{grid-template-columns:1fr;} .diab-hero-top,.diab-inline-top,.diab-header-bar,.diab-compact-top{flex-direction:column;align-items:flex-start;} .diab-header-status{white-space:normal;} .diab-compact-item{grid-template-columns:1fr;} .diab-compact-meta{text-align:left;} .mod-nav-tabs .nb{min-height:54px;} .mod-nav-tabs .nb span{font-size:9px;}}
+@media (max-width: 390px){.diab-stats,.diab-actions,.diab-quick-actions,.diab-modal-grid{grid-template-columns:1fr;} .diab-hero-top,.diab-inline-top,.diab-header-bar,.diab-compact-top,.diab-custom-top,.diab-custom-row{flex-direction:column;align-items:flex-start;} .diab-header-status{white-space:normal;} .diab-compact-item{grid-template-columns:1fr;} .diab-compact-meta{text-align:left;} .diab-custom-actions{align-items:flex-start;} .mod-nav-tabs .nb{min-height:54px;} .mod-nav-tabs .nb span{font-size:9px;}}
 
 </style>
 </head>
@@ -1859,6 +1868,7 @@ nav{
       <button class="nb" id="dn-stock"><svg viewBox="0 0 24 24"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span>Stock</span></button>
       <button class="nb" id="dn-history"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 3v6h6"/><path d="M12 7v5l3 3"/></svg><span>Journal</span></button>
       <button class="nb" id="dn-actions"><svg viewBox="0 0 24 24"><path d="M12 2v20"/><path d="M2 12h20"/><path d="M4.9 4.9l14.2 14.2"/><path d="M19.1 4.9 4.9 19.1"/></svg><span>Actions</span></button>
+      <button class="nb" id="dn-settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 0 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 4.6 15 1.7 1.7 0 0 0 3 14H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9A1.7 1.7 0 0 0 10 3.1V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 0 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9c.2.6.8 1 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg><span>Réglages</span></button>
     </div>
   </nav>
 </div>
@@ -1959,7 +1969,7 @@ const DEF_DATA={depenses:[],revenus:[],virements:[],fixes:DEF_FIXES,comptes:DEF_
   {cat:"Hygiène",items:["Pharmaprix","Jean Coutu","Sephora"]},
   {cat:"Loisirs",items:["Cinéma","Spotify","Netflix","Amazon Prime"]},
   {cat:"Sport",items:["Gym","Équipement sport","Cours yoga"]},
-],budgets_cats:{},diabetes:{items:{patch:{stock:0,baseStock:0,durationDays:3,nextChange:null,changes:0,coverageDays:3},pen:{stock:0,baseStock:0,durationDays:6,manualUses:0,changes:0,coverageDays:6},sensor:{stock:0,baseStock:0,durationDays:10,nextChange:null,changes:0,coverageDays:10}},meta:{patchChangesTowardPen:0,lastSync:null},logs:[]}};
+],budgets_cats:{},diabetes:{items:{patch:{stock:0,baseStock:0,durationDays:3,nextChange:null,changes:0,coverageDays:3},pen:{stock:0,baseStock:0,durationDays:6,manualUses:0,changes:0,coverageDays:6},sensor:{stock:0,baseStock:0,durationDays:10,nextChange:null,changes:0,coverageDays:10}},customDefs:[],meta:{patchChangesTowardPen:0,lastSync:null},logs:[]}};
 const CAT_ICO={Alimentation:"🛒",Restaurants:"🍽",Transport:"🚇",Santé:"💊",Vêtements:"👕",Loisirs:"🎭",Voyages:"✈️",Sport:"⚽",Cadeaux:"🎁",Hygiène:"🪥",Culture:"📚",Divers:"📦"};
 
 let DATA=JSON.parse(JSON.stringify(DEF_DATA));
@@ -3629,99 +3639,148 @@ function openBudgetModule(){
 function getDiabetesData(){
   if(!DATA.diabetes||typeof DATA.diabetes!=="object")DATA.diabetes=JSON.parse(JSON.stringify(DEF_DATA.diabetes));
   if(!DATA.diabetes.items)DATA.diabetes.items=JSON.parse(JSON.stringify(DEF_DATA.diabetes.items));
-  ["patch","pen","sensor"].forEach(key=>{
-    DATA.diabetes.items[key]={...JSON.parse(JSON.stringify(DEF_DATA.diabetes.items[key])),...(DATA.diabetes.items[key]||{})};
-  });
+  if(!Array.isArray(DATA.diabetes.customDefs))DATA.diabetes.customDefs=[];
   DATA.diabetes.meta={...JSON.parse(JSON.stringify(DEF_DATA.diabetes.meta)),...(DATA.diabetes.meta||{})};
   if(!Array.isArray(DATA.diabetes.logs))DATA.diabetes.logs=[];
   const t=today();
-  if(!DATA.diabetes.items.patch.nextChange)DATA.diabetes.items.patch.nextChange=addDays(t,DATA.diabetes.items.patch.durationDays);
-  if(!DATA.diabetes.items.sensor.nextChange)DATA.diabetes.items.sensor.nextChange=addDays(t,DATA.diabetes.items.sensor.durationDays);
+  const catalog=getDiabetesCatalog();
+  Object.entries(catalog).forEach(([key,meta])=>{
+    const baseItem=JSON.parse(JSON.stringify(DEF_DATA.diabetes.items[key]||{
+      stock:0,baseStock:0,durationDays:meta.durationDays||1,nextChange:null,changes:0,coverageDays:meta.coverageDays||meta.durationDays||1
+    }));
+    DATA.diabetes.items[key]={...baseItem,...(DATA.diabetes.items[key]||{})};
+    const item=DATA.diabetes.items[key];
+    item.durationDays=Math.max(1,parseInt(item.durationDays||meta.durationDays||1,10));
+    item.coverageDays=Math.max(1,parseFloat(item.coverageDays||meta.coverageDays||item.durationDays||1)||1);
+    item.stock=parseDiabetesQty(item.stock,meta.stockStep||1);
+    item.baseStock=Math.max(parseDiabetesQty(item.baseStock,meta.stockStep||1),item.stock);
+    item.changes=parseDiabetesQty(item.changes,meta.stockStep||1);
+    if(meta.autoSchedule){
+      if(!item.nextChange)item.nextChange=addDays(t,item.durationDays||meta.durationDays||1);
+    } else {
+      item.nextChange=null;
+    }
+  });
+  Object.keys(DATA.diabetes.items).forEach(key=>{
+    if(!catalog[key])delete DATA.diabetes.items[key];
+  });
   return DATA.diabetes;
 }
 function startDay(s){const d=s?new Date(s+"T00:00:00"):new Date();d.setHours(0,0,0,0);return d;}
 function fmtDate(s){return s?new Date(s+"T00:00:00").toLocaleDateString("fr-CA",{day:"numeric",month:"short"}):"—";}
-function addDays(s,n){const d=startDay(s);d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
+function addDays(s,n){const d=startDay(s);d.setDate(d.getDate()+Math.ceil(n));return d.toISOString().slice(0,10);}
 function diffDays(a,b){return Math.round((startDay(b)-startDay(a))/86400000);}
 function daysUntil(s){return diffDays(today(),s);}
-function formatDaysLabel(n){if(!isFinite(n))return "—";if(n<=0)return "Aujourd'hui";if(n===1)return "1 jour";return n+" jours";}
+function formatDaysLabel(n){if(!isFinite(n))return "—";if(n<=0)return "Aujourd'hui";if(n===1)return "1 jour";if(Math.abs(n-Math.round(n))>.001)return (Math.round(n*10)/10).toString().replace(".",",")+" jours";return n+" jours";}
 function plural(n,one,many){return n===1?one:many;}
+function roundToStep(value,step=1){const safeStep=Math.max(.1,parseFloat(step)||1);return Math.round((parseFloat(value)||0)/safeStep)*safeStep;}
+function parseDiabetesQty(value,step=1){const n=parseFloat(String(value??"").replace(",","."));if(!isFinite(n))return 0;return Math.max(0,roundToStep(n,step));}
+function formatStockQty(value){const rounded=Math.round((parseFloat(value)||0)*10)/10;return Number.isInteger(rounded)?String(rounded):rounded.toFixed(1).replace(".",",");}
+function hexToRgba(hex,alpha=.12){
+  const clean=(hex||"#64748B").replace("#","").trim();
+  const full=clean.length===3?clean.split("").map(ch=>ch+ch).join(""):clean;
+  const safe=/^[0-9a-fA-F]{6}$/.test(full)?full:"64748B";
+  const num=parseInt(safe,16);
+  return `rgba(${(num>>16)&255},${(num>>8)&255},${num&255},${alpha})`;
+}
+const DIABETES_COLOR_POOL=["#2563EB","#7C3AED","#059669","#F97316","#EC4899","#0EA5E9"];
+const BASE_DIABETES_META={
+  patch:{label:"Pompes patch",emoji:"🩹",color:"#2563EB",soft:"rgba(37,99,235,.12)",coverageDays:3,helper:"1 changement tous les 3 jours",durationDays:3,autoSchedule:true,stockStep:1,useQty:1},
+  pen:{label:"Stylos d'insuline",emoji:"💉",color:"#7C3AED",soft:"rgba(124,58,237,.12)",coverageDays:6,helper:"0,5 stylo par pompe patch",durationDays:6,autoSchedule:false,stockStep:.5,useQty:.5},
+  sensor:{label:"Capteurs",emoji:"📟",color:"#059669",soft:"rgba(5,150,105,.12)",coverageDays:10,helper:"1 capteur tous les 10 jours",durationDays:10,autoSchedule:true,stockStep:1,useQty:1}
+};
+function getDiabetesCatalog(){
+  const customDefs=Array.isArray(DATA.diabetes?.customDefs)?DATA.diabetes.customDefs:[];
+  const customEntries=customDefs.map((raw,idx)=>{
+    const id=raw.id||`custom_${idx+1}`;
+    const color=raw.color||DIABETES_COLOR_POOL[idx%DIABETES_COLOR_POOL.length];
+    const autoSchedule=raw.autoSchedule!==false;
+    const durationDays=Math.max(1,parseInt(raw.durationDays||7,10));
+    const stockStep=parseFloat(raw.stockStep)===.5?.5:1;
+    return [id,{
+      id,
+      label:(raw.label||`Matériel ${idx+1}`).trim(),
+      emoji:(raw.emoji||"📦").trim()||"📦",
+      color,
+      soft:hexToRgba(color,.12),
+      coverageDays:durationDays,
+      helper:autoSchedule?`1 unité tous les ${durationDays} jours`:`Suivi manuel · ${durationDays} jours par unité`,
+      durationDays,
+      autoSchedule,
+      stockStep,
+      useQty:stockStep,
+      isCustom:true
+    }];
+  });
+  return {...BASE_DIABETES_META,...Object.fromEntries(customEntries)};
+}
+function getDiabetesMeta(itemKey){return getDiabetesCatalog()[itemKey]||null;}
 function pushDiabetesLog(type,itemKey,qty,reason,note){
-  const conf=DIABETES_META[itemKey]||{};
+  const conf=getDiabetesMeta(itemKey)||{};
   getDiabetesData().logs.unshift({id:Date.now()+Math.random(),type,itemKey,qty,date:new Date().toISOString(),reason:reason||"",note:note||"",emoji:conf.emoji||"🩺",label:conf.label||itemKey});
   DATA.diabetes.logs=DATA.diabetes.logs.slice(0,60);
 }
 function consumeDiabetesItem(itemKey,qty,reason,options={}){
-  qty=Math.max(0,parseInt(qty)||0);if(!qty)return 0;
+  const meta=getDiabetesMeta(itemKey);if(!meta)return 0;
+  qty=parseDiabetesQty(qty,meta.stockStep||1);if(!qty)return 0;
   const diabetes=getDiabetesData();
   const item=diabetes.items[itemKey];
-  const before=item.stock||0;
-  item.stock=Math.max(0,before-qty);
-  item.changes=(item.changes||0)+qty;
+  const before=parseDiabetesQty(item.stock,meta.stockStep||1);
+  item.stock=Math.max(0,roundToStep(before-qty,meta.stockStep||1));
+  const used=roundToStep(before-item.stock,meta.stockStep||1);
+  item.changes=roundToStep((item.changes||0)+used,meta.stockStep||1);
   if(!options.skipBase&&item.baseStock<item.stock)item.baseStock=item.stock;
-  pushDiabetesLog("use",itemKey,qty,reason,options.note||"");
-  return Math.max(0,qty-Math.max(0,before-item.stock));
+  pushDiabetesLog("use",itemKey,used,reason,options.note||"");
+  return used;
 }
 function addDiabetesStock(itemKey,qty,note){
-  qty=Math.max(0,parseInt(qty)||0);if(!qty)return;
+  const meta=getDiabetesMeta(itemKey);if(!meta)return;
+  qty=parseDiabetesQty(qty,meta.stockStep||1);if(!qty)return;
   const diabetes=getDiabetesData();
   const item=diabetes.items[itemKey];
-  item.stock=(item.stock||0)+qty;
-  item.baseStock=Math.max(item.baseStock||0,item.stock||0);
-  if(itemKey!=="pen"&&!item.nextChange)item.nextChange=addDays(today(),item.durationDays||1);
+  item.stock=roundToStep((item.stock||0)+qty,meta.stockStep||1);
+  item.baseStock=Math.max(parseDiabetesQty(item.baseStock,meta.stockStep||1),item.stock||0);
+  if(meta.autoSchedule&&!item.nextChange)item.nextChange=addDays(today(),item.durationDays||1);
   pushDiabetesLog("add",itemKey,qty,"restock",note||"");
-}
-function consumePenFromPatch(reason){
-  const diabetes=getDiabetesData();
-  while((diabetes.meta.patchChangesTowardPen||0)>=2){
-    diabetes.meta.patchChangesTowardPen-=2;
-    consumeDiabetesItem("pen",1,reason||"auto_patch",{note:"Déduit automatiquement après 2 pompes patch"});
-  }
 }
 function syncDiabetesAutomation(){
   const diabetes=getDiabetesData();
-  const patch=diabetes.items.patch;
-  const sensor=diabetes.items.sensor;
+  const catalog=getDiabetesCatalog();
   let changed=false;
-  while(patch.nextChange&&startDay(patch.nextChange)<=startDay(today())){
-    consumeDiabetesItem("patch",1,"scheduled",{note:"Changement automatique prévu"});
-    diabetes.meta.patchChangesTowardPen=(diabetes.meta.patchChangesTowardPen||0)+1;
-    patch.nextChange=addDays(patch.nextChange,patch.durationDays||3);
-    changed=true;
-  }
-  if(changed)consumePenFromPatch("auto_patch");
-  while(sensor.nextChange&&startDay(sensor.nextChange)<=startDay(today())){
-    consumeDiabetesItem("sensor",1,"scheduled",{note:"Remplacement automatique prévu"});
-    sensor.nextChange=addDays(sensor.nextChange,sensor.durationDays||10);
-    changed=true;
-  }
+  Object.entries(catalog).forEach(([key,meta])=>{
+    if(!meta.autoSchedule)return;
+    const item=diabetes.items[key];
+    while(item?.nextChange&&startDay(item.nextChange)<=startDay(today())){
+      const note=key==="patch"?"Changement automatique prévu":key==="sensor"?"Remplacement automatique prévu":"Consommation automatique prévue";
+      consumeDiabetesItem(key,meta.useQty||1,"scheduled",{note});
+      if(key==="patch")consumeDiabetesItem("pen",.5,"auto_patch",{note:"Déduit automatiquement pour 1 pompe patch"});
+      item.nextChange=addDays(item.nextChange,item.durationDays||meta.durationDays||1);
+      changed=true;
+    }
+  });
   diabetes.meta.lastSync=new Date().toISOString();
   if(changed)save();
 }
-const DIABETES_META={
-  patch:{label:"Pompes patch",emoji:"🩹",color:"#2563EB",soft:"rgba(37,99,235,.12)",coverageDays:3,helper:"1 changement tous les 3 jours"},
-  pen:{label:"Stylos d'insuline",emoji:"💉",color:"#7C3AED",soft:"rgba(124,58,237,.12)",coverageDays:6,helper:"1 stylo couvre 2 pompes"},
-  sensor:{label:"Capteurs",emoji:"📟",color:"#059669",soft:"rgba(5,150,105,.12)",coverageDays:10,helper:"1 capteur tous les 10 jours"}
-};
 function getDiabetesSummary(){
   syncDiabetesAutomation();
   const diabetes=getDiabetesData();
+  const catalog=getDiabetesCatalog();
   const items={};
   let warnCount=0,totalCoverage=0,totalUnits=0,shortestCoverage=Infinity;
-  Object.entries(DIABETES_META).forEach(([key,meta])=>{
+  Object.entries(catalog).forEach(([key,meta])=>{
     const item=diabetes.items[key];
-    const base=Math.max(item.baseStock||0,item.stock||0,1);
+    const base=Math.max(item.baseStock||0,item.stock||0,meta.stockStep||1);
     const ratio=Math.max(0,Math.min(1,(item.stock||0)/base));
     const status=(item.stock||0)<=0?"critical":ratio<=0.1?"critical":ratio<=0.2?"warn":"ok";
     if(status!=="ok")warnCount++;
     const covDays=(item.stock||0)*(item.coverageDays||meta.coverageDays||1);
     totalCoverage+=covDays;totalUnits+=(item.stock||0);shortestCoverage=Math.min(shortestCoverage,covDays);
     items[key]={
-      ...meta,...item,ratio,status,stock:item.stock||0,base,
+      ...meta,...item,key,ratio,status,stock:item.stock||0,base,
       coverageDays:covDays,
       stockUntil:addDays(today(),covDays),
-      nextChange:key==="pen"?null:(item.nextChange||addDays(today(),item.durationDays||1)),
-      nextChangeIn:key==="pen"?null:daysUntil(item.nextChange||addDays(today(),item.durationDays||1))
+      nextChange:meta.autoSchedule?(item.nextChange||addDays(today(),item.durationDays||1)):null,
+      nextChangeIn:meta.autoSchedule?daysUntil(item.nextChange||addDays(today(),item.durationDays||1)):null
     };
   });
   const soonest=Object.values(items).filter(i=>i.nextChange).sort((a,b)=>startDay(a.nextChange)-startDay(b.nextChange))[0]||null;
@@ -3752,30 +3811,36 @@ function setDiabetesTab(tab){
 function renderDiabetesModule(){
   const cont=document.getElementById("diabetes-content");if(!cont)return;
   const summary=getDiabetesSummary();
+  const catalog=getDiabetesCatalog();
+  const customDefs=getDiabetesData().customDefs||[];
   const heroStatus=summary.warnCount>0?`${summary.warnCount} alerte${summary.warnCount>1?"s":""}`:"Suivi premium à jour";
-  const upcoming=Object.values(summary.items).filter(item=>item.nextChange).sort((a,b)=>startDay(a.nextChange)-startDay(b.nextChange)).slice(0,3);
   const logs=(getDiabetesData().logs||[]).slice(0,12);
   const renderHeader=()=>`<div class="mod-header mod-header-diabetes"><div class="diab-header-bar"><button class="diab-logo-btn" id="diab-logo-home"><span class="diab-logo-badge"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="22" fill="#F97316"/><rect x="22" y="34" width="56" height="48" rx="20" fill="white"/><polygon points="22,50 22,26 40,42" fill="white"/><polygon points="78,50 78,26 60,42" fill="white"/><ellipse cx="40" cy="57" rx="4" ry="5" fill="#F97316"/><ellipse cx="60" cy="57" rx="4" ry="5" fill="#F97316"/><circle cx="50" cy="66" r="2.5" fill="#F97316"/></svg></span><span class="diab-logo-text"><strong>Diabète</strong><span>Retour au tableau de bord</span></span></button><div class="diab-header-status">${heroStatus}</div></div><div class="mod-header-eyebrow">Suivi santé premium</div><div class="mod-header-title">Diabète</div><div class="mod-header-sub">Un espace plus premium, mieux aligné, avec des repères visuels nets sur iPhone.</div></div>`;
-  const renderHero=()=>`<div class="diab-hero-card"><div class="diab-hero-top"><div><div class="diab-hero-eyebrow">Vue d'ensemble</div><div class="diab-hero-title">${summary.shortestCoverage} j</div><div class="diab-hero-sub">de marge minimale · rupture estimée le ${fmtDate(summary.stockUntil)}</div></div><div class="diab-hero-chip">${summary.warnCount>0?"Vigilance active":"Équilibre stable"}</div></div><div class="diab-kpi-grid"><div class="diab-kpi"><div class="diab-kpi-label">Stock total</div><div class="diab-kpi-value">${summary.totalUnits}</div><div class="diab-kpi-sub">unités disponibles</div></div><div class="diab-kpi"><div class="diab-kpi-label">Prochain changement</div><div class="diab-kpi-value">${summary.soonest?formatDaysLabel(summary.soonest.nextChangeIn):"—"}</div><div class="diab-kpi-sub">${summary.soonest?summary.soonest.label:"Aucun"}</div></div><div class="diab-kpi"><div class="diab-kpi-label">État global</div><div class="diab-kpi-value">${summary.warnCount>0?"À suivre":"Stable"}</div><div class="diab-kpi-sub">${summary.warnCount>0?`${summary.warnCount} poste${summary.warnCount>1?"s":""}`:"Tout est aligné"}</div></div></div></div>`;
+  const renderHero=()=>`<div class="diab-hero-card"><div class="diab-hero-top"><div><div class="diab-hero-eyebrow">Vue d'ensemble</div><div class="diab-hero-title">${Math.ceil(summary.shortestCoverage)} j</div><div class="diab-hero-sub">de marge minimale · rupture estimée le ${fmtDate(summary.stockUntil)}</div></div><div class="diab-hero-chip">${summary.warnCount>0?"Vigilance active":"Équilibre stable"}</div></div><div class="diab-kpi-grid"><div class="diab-kpi"><div class="diab-kpi-label">Stock total</div><div class="diab-kpi-value">${formatStockQty(summary.totalUnits)}</div><div class="diab-kpi-sub">unités disponibles</div></div><div class="diab-kpi"><div class="diab-kpi-label">Prochain changement</div><div class="diab-kpi-value">${summary.soonest?formatDaysLabel(summary.soonest.nextChangeIn):"—"}</div><div class="diab-kpi-sub">${summary.soonest?summary.soonest.label:"Aucun"}</div></div><div class="diab-kpi"><div class="diab-kpi-label">État global</div><div class="diab-kpi-value">${summary.warnCount>0?"À suivre":"Stable"}</div><div class="diab-kpi-sub">${summary.warnCount>0?`${summary.warnCount} poste${summary.warnCount>1?"s":""}`:"Tout est aligné"}</div></div></div></div>`;
   const renderStockCards=()=>Object.entries(summary.items).map(([key,item])=>{
     const pct=Math.round(item.ratio*100);
-    const foot=item.nextChange?`Prochain changement <strong>${fmtDate(item.nextChange)}</strong>`:`Piloté par les pompes patch`;
+    const foot=item.nextChange?`Prochain changement <strong>${fmtDate(item.nextChange)}</strong>`:item.key==="pen"?"Piloté par les pompes patch":item.autoSchedule?"En attente de prochaine échéance":"Suivi manuel";
     const thirdStat=key==="pen"?`${item.stockUntil?fmtDate(item.stockUntil):"—"}`:fmtDate(item.stockUntil);
-    return `<div class="diab-card"><div class="diab-card-top"><div class="diab-item-pill"><div class="diab-item-icon" style="background:${item.soft};color:${item.color}">${item.emoji}</div><div><div class="diab-item-name">${item.label}</div><div class="diab-item-meta">${item.coverageDays} jours de couverture</div></div></div><div class="diab-status-chip ${diabetesStatusClass(item.status)}">${diabetesStatusLabel(item.status)}</div></div><div class="diab-stats"><div class="diab-stat"><div class="diab-stat-label">Stock</div><div class="diab-stat-value">${item.stock}</div></div><div class="diab-stat"><div class="diab-stat-label">Niveau</div><div class="diab-stat-value">${pct}%</div></div><div class="diab-stat"><div class="diab-stat-label">Jusqu'au</div><div class="diab-stat-value small">${thirdStat}</div></div></div><div class="diab-progress"><div class="diab-progress-fill" style="width:${pct}%;background:${diabetesFillColor(item.status)}"></div></div><div class="diab-foot"><span>${foot}</span><span>${formatDaysLabel(item.coverageDays)}</span></div><div class="diab-actions"><button class="diab-btn primary" data-di-action="add" data-di-item="${key}">Ajouter</button>${key!=="pen"?`<button class="diab-btn warn" data-di-action="change" data-di-item="${key}">Changer</button>`:`<button class="diab-btn warn" data-di-action="manual" data-di-item="${key}">Déduire</button>`}<button class="diab-btn soft" data-di-action="adjust" data-di-item="${key}">Ajuster</button></div></div>`;
+    const secondaryAction=item.autoSchedule?`<button class="diab-btn warn" data-di-action="change" data-di-item="${key}">Changer</button>`:`<button class="diab-btn warn" data-di-action="manual" data-di-item="${key}">Déduire</button>`;
+    return `<div class="diab-card"><div class="diab-card-top"><div class="diab-item-pill"><div class="diab-item-icon" style="background:${item.soft};color:${item.color}">${item.emoji}</div><div><div class="diab-item-name">${item.label}</div><div class="diab-item-meta">${formatDaysLabel(item.coverageDays)} de couverture</div></div></div><div class="diab-status-chip ${diabetesStatusClass(item.status)}">${diabetesStatusLabel(item.status)}</div></div><div class="diab-stats"><div class="diab-stat"><div class="diab-stat-label">Stock</div><div class="diab-stat-value">${formatStockQty(item.stock)}</div></div><div class="diab-stat"><div class="diab-stat-label">Niveau</div><div class="diab-stat-value">${pct}%</div></div><div class="diab-stat"><div class="diab-stat-label">Jusqu'au</div><div class="diab-stat-value small">${thirdStat}</div></div></div><div class="diab-progress"><div class="diab-progress-fill" style="width:${pct}%;background:${diabetesFillColor(item.status)}"></div></div><div class="diab-foot"><span>${foot}</span><span>${formatDaysLabel(item.coverageDays)}</span></div><div class="diab-actions"><button class="diab-btn primary" data-di-action="add" data-di-item="${key}">Ajouter</button>${secondaryAction}<button class="diab-btn soft" data-di-action="adjust" data-di-item="${key}">Ajuster</button></div></div>`;
   }).join("");
   const renderQuickActions=()=>`<div class="diab-inline-card"><div class="diab-inline-top"><div><div class="diab-inline-title">Actions rapides</div><div class="diab-inline-sub">Des raccourcis mieux alignés pour agir sans chercher.</div></div><button class="btn ghost sml" id="diab-sync-btn">Sync</button></div><div class="diab-quick-actions"><div class="diab-qa"><div class="diab-qa-label">Ajouter</div><div class="diab-qa-row"><button class="diab-mini-btn primary" data-di-action="add" data-di-item="patch">Pompes</button><button class="diab-mini-btn" data-di-action="add" data-di-item="pen">Stylos</button><button class="diab-mini-btn" data-di-action="add" data-di-item="sensor">Capteurs</button></div></div><div class="diab-qa"><div class="diab-qa-label">Mettre à jour</div><div class="diab-qa-row"><button class="diab-mini-btn" data-di-action="change" data-di-item="patch">Pompe</button><button class="diab-mini-btn" data-di-action="change" data-di-item="sensor">Capteur</button><button class="diab-mini-btn" data-di-action="manual" data-di-item="pen">Stylo</button></div></div></div></div>`;
-  const renderHistory=()=>logs.length===0?`<div class="diab-empty"><span class="diab-empty-icon">📦</span><div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:6px">Aucun mouvement</div><div style="font-size:14px;line-height:1.55">Ajoutez une première réception pour démarrer le suivi.</div></div>`:`<div class="diab-history">${logs.map(log=>{const date=new Date(log.date).toLocaleDateString("fr-FR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});const verb=log.type==="add"?"Réception":"Mouvement";return `<div class="diab-history-row"><div class="diab-history-icon">${log.emoji||"🩺"}</div><div class="diab-history-main"><div class="diab-history-title">${verb} · ${log.label}</div><div class="diab-history-sub">${date}${log.note?` · ${esc(log.note)}`:""}</div></div><div class="diab-history-qty">${log.type==="add"?"+":"−"}${log.qty}</div></div>`;}).join("")}</div>`;
-  const renderCompactItems=()=>Object.values(summary.items).map(item=>{const pct=Math.max(8,Math.round(item.ratio*100));const until=item.stockUntil?fmtDate(item.stockUntil):"À ajuster";const subtitle=item.nextChange?`Prochain: ${fmtDate(item.nextChange)}`:item.label==="Stylos"?"Piloté par les patchs":formatDaysLabel(item.coverageDays);return `<div class="diab-compact-item"><div class="diab-compact-icon" style="background:${item.soft};color:${item.color}">${item.emoji}</div><div class="diab-compact-main"><div class="diab-compact-top"><span class="diab-compact-name">${item.label}</span><span class="diab-compact-date">Jusqu'au ${until}</span></div><div class="diab-compact-bar"><div class="diab-compact-fill" style="width:${Math.min(pct,100)}%;background:${diabetesFillColor(item.status)}"></div></div></div><div class="diab-compact-meta"><strong>${item.stock}</strong><span>${subtitle}</span></div></div>`;}).join("");
+  const renderHistory=()=>logs.length===0?`<div class="diab-empty"><span class="diab-empty-icon">📦</span><div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:6px">Aucun mouvement</div><div style="font-size:14px;line-height:1.55">Ajoutez une première réception pour démarrer le suivi.</div></div>`:`<div class="diab-history">${logs.map(log=>{const date=new Date(log.date).toLocaleDateString("fr-FR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});const verb=log.type==="add"?"Réception":"Mouvement";return `<div class="diab-history-row"><div class="diab-history-icon">${log.emoji||"🩺"}</div><div class="diab-history-main"><div class="diab-history-title">${verb} · ${log.label}</div><div class="diab-history-sub">${date}${log.note?` · ${esc(log.note)}`:""}</div></div><div class="diab-history-qty">${log.type==="add"?"+":"−"}${formatStockQty(log.qty)}</div></div>`;}).join("")}</div>`;
+  const renderCompactItems=()=>Object.values(summary.items).sort((a,b)=>startDay(a.stockUntil)-startDay(b.stockUntil)).slice(0,3).map(item=>{const pct=Math.max(8,Math.round(item.ratio*100));const until=item.stockUntil?fmtDate(item.stockUntil):"À ajuster";const subtitle=item.nextChange?`Prochain: ${fmtDate(item.nextChange)}`:item.label==="Stylos"?"Piloté par les patchs":formatDaysLabel(item.coverageDays);return `<div class="diab-compact-item"><div class="diab-compact-icon" style="background:${item.soft};color:${item.color}">${item.emoji}</div><div class="diab-compact-main"><div class="diab-compact-top"><span class="diab-compact-name">${item.label}</span><span class="diab-compact-date">Jusqu'au ${until}</span></div><div class="diab-compact-bar"><div class="diab-compact-fill" style="width:${Math.min(pct,100)}%;background:${diabetesFillColor(item.status)}"></div></div></div><div class="diab-compact-meta"><strong>${formatStockQty(item.stock)}</strong><span>${subtitle}</span></div></div>`;}).join("");
   const renderOverview=()=>`<div class="diab-wrap">${renderHero()}<div class="diab-section-title">Stocks essentiels</div><div class="diab-inline-card"><div class="diab-inline-top"><div><div class="diab-inline-title">Vue simplifiée du stock</div><div class="diab-inline-sub">Trois repères compacts, avec la date de couverture et une lecture immédiate du niveau restant.</div></div></div><div class="diab-compact-list">${renderCompactItems()}</div></div></div>`;
   const renderStock=()=>`<div class="diab-wrap"><div class="diab-section-title">Stock du matériel</div><div class="diab-stack">${renderStockCards()}</div></div>`;
   const renderJournal=()=>`<div class="diab-wrap">${renderHero()}<div class="diab-section-title">Derniers mouvements</div>${renderHistory()}</div>`;
-  const renderActions=()=>`<div class="diab-wrap">${renderQuickActions()}<div class="diab-focus-card"><div class="diab-inline-top"><div><div class="diab-inline-title">Rythmes de suivi</div><div class="diab-inline-sub">Des repères clairs pour garder un suivi cohérent au quotidien.</div></div></div><div class="diab-focus-list">${Object.values(DIABETES_META).map(meta=>`<div class="diab-focus-row"><div class="diab-focus-icon" style="color:${meta.color}">${meta.emoji}</div><div class="diab-focus-copy"><strong>${meta.label}</strong><span>${meta.helper}</span></div></div>`).join("")}</div></div><div class="diab-section-title">Journal récent</div>${renderHistory()}</div>`;
-  const body=diabetesTab==="stock"?renderStock():diabetesTab==="history"?renderJournal():diabetesTab==="actions"?renderActions():renderOverview();
+  const renderSettings=()=>`<div class="diab-wrap"><div class="diab-section-title">Paramètres</div><div class="diab-inline-card"><div class="diab-inline-top"><div><div class="diab-inline-title">Règle stylos</div><div class="diab-inline-sub">Les stylos acceptent désormais des demi-unités. Chaque pompe patch déduit automatiquement 0,5 stylo.</div></div></div><div class="diab-focus-list"><div class="diab-focus-row"><div class="diab-focus-icon" style="color:#7C3AED">💉</div><div class="diab-focus-copy"><strong>Stock au pas de 0,5</strong><span>Vous pouvez démarrer à 63,5, ajouter 0,5 et ajuster finement sans casser le suivi.</span></div></div></div></div><div class="diab-section-title">Matériel personnalisé</div><div class="diab-inline-card"><div class="diab-inline-top"><div><div class="diab-inline-title">Autres matériels</div><div class="diab-inline-sub">Ajoutez votre propre matériel et choisissez s’il se consomme automatiquement selon un rythme ou manuellement.</div></div><button class="btn ghost sml" id="diab-custom-add">Ajouter</button></div>${customDefs.length?`<div class="diab-custom-list">${customDefs.map(def=>{const item=summary.items[def.id]||{};return `<div class="diab-custom-row"><div class="diab-custom-main"><div class="diab-custom-top"><span>${esc(def.emoji||"📦")} ${esc(def.label||"Matériel personnalisé")}</span><span>${def.autoSchedule!==false?"Auto":"Manuel"}</span></div><div class="diab-custom-sub">${def.autoSchedule!==false?`1 unité tous les ${def.durationDays||7} jours`:`Suivi manuel · ${def.durationDays||7} jours par unité`} · stock ${formatStockQty(item.stock||0)}</div></div><div class="diab-custom-actions"><button class="diab-link-btn" data-di-custom-edit="${def.id}">Modifier</button><button class="diab-link-btn danger" data-di-custom-delete="${def.id}">Supprimer</button></div></div>`;}).join("")}</div>`:`<div class="diab-empty" style="box-shadow:none;border-style:dashed"><span class="diab-empty-icon">🧰</span><div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:6px">Aucun matériel perso</div><div style="font-size:14px;line-height:1.55">Ajoutez ici tout autre matériel, avec son rythme et son mode d’utilisation.</div></div>`}</div></div>`;
+  const renderActions=()=>`<div class="diab-wrap">${renderQuickActions()}<div class="diab-focus-card"><div class="diab-inline-top"><div><div class="diab-inline-title">Rythmes de suivi</div><div class="diab-inline-sub">Des repères clairs pour garder un suivi cohérent au quotidien.</div></div></div><div class="diab-focus-list">${Object.values(catalog).map(meta=>`<div class="diab-focus-row"><div class="diab-focus-icon" style="color:${meta.color}">${meta.emoji}</div><div class="diab-focus-copy"><strong>${meta.label}</strong><span>${meta.helper}</span></div></div>`).join("")}</div></div><div class="diab-section-title">Journal récent</div>${renderHistory()}</div>`;
+  const body=diabetesTab==="stock"?renderStock():diabetesTab==="history"?renderJournal():diabetesTab==="actions"?renderActions():diabetesTab==="settings"?renderSettings():renderOverview();
   cont.innerHTML=`${renderHeader()}${body}`;
   document.querySelectorAll("#diabetes-nav .nb").forEach(btn=>btn.classList.toggle("on",btn.id===`dn-${diabetesTab}`));
   cont.querySelector("#diab-logo-home")?.addEventListener("click",()=>showHub());
   cont.querySelectorAll("[data-di-action]").forEach(btn=>btn.addEventListener("click",()=>handleDiabetesAction(btn.dataset.diAction,btn.dataset.diItem)));
   cont.querySelector("#diab-sync-btn")?.addEventListener("click",()=>{syncDiabetesAutomation();renderDiabetesModule();flash("Stock mis à jour ✓");});
+  cont.querySelector("#diab-custom-add")?.addEventListener("click",()=>diabetesCustomItemModal());
+  cont.querySelectorAll("[data-di-custom-edit]").forEach(btn=>btn.addEventListener("click",()=>diabetesCustomItemModal(btn.dataset.diCustomEdit)));
+  cont.querySelectorAll("[data-di-custom-delete]").forEach(btn=>btn.addEventListener("click",()=>deleteDiabetesCustomItem(btn.dataset.diCustomDelete)));
 }
 function handleDiabetesAction(action,itemKey){
   if(action==="add")return diabetesAddStockModal(itemKey);
@@ -3784,54 +3849,109 @@ function handleDiabetesAction(action,itemKey){
   if(action==="adjust")return diabetesAdjustModal(itemKey);
 }
 function diabetesAddStockModal(itemKey){
-  const meta=DIABETES_META[itemKey];if(!meta)return;
+  const meta=getDiabetesMeta(itemKey);if(!meta)return;
   const o=document.getElementById("overlay");const d=document.createElement("div");d.className="modal";
-  d.innerHTML=`<div class="modal-handle"></div><div style="font-size:28px;margin-bottom:8px">${meta.emoji}</div><div style="font-size:20px;font-weight:800;color:var(--t1);margin-bottom:4px;letter-spacing:-.4px">Réception · ${meta.label}</div><div style="font-size:13px;color:var(--t3);margin-bottom:18px">Ajoutez la quantité reçue pour recalculer instantanément la couverture et les alertes.</div><div class="fsec" style="margin-bottom:12px"><div class="frow"><div class="flbl req">Quantité</div><input id="diab-add-qty" type="number" min="1" step="1" inputmode="numeric" placeholder="0"></div><div class="frow"><div class="flbl">Note</div><input id="diab-add-note" type="text" placeholder="Ex: colis du mois"></div></div><div id="diab-add-err" class="ferr hidden"></div><div class="brow"><button class="btn ghost" id="diab-add-cancel">Annuler</button><button class="btn orange" style="flex:1" id="diab-add-ok">Ajouter</button></div>`;
+  d.innerHTML=`<div class="modal-handle"></div><div style="font-size:28px;margin-bottom:8px">${meta.emoji}</div><div style="font-size:20px;font-weight:800;color:var(--t1);margin-bottom:4px;letter-spacing:-.4px">Réception · ${meta.label}</div><div style="font-size:13px;color:var(--t3);margin-bottom:18px">Ajoutez la quantité reçue pour recalculer instantanément la couverture et les alertes.</div><div class="fsec" style="margin-bottom:12px"><div class="frow"><div class="flbl req">Quantité</div><input id="diab-add-qty" type="number" min="0" step="${meta.stockStep||1}" inputmode="decimal" placeholder="${meta.stockStep===.5?"0,5":"0"}"></div><div class="frow"><div class="flbl">Note</div><input id="diab-add-note" type="text" placeholder="Ex: colis du mois"></div></div><div id="diab-add-err" class="ferr hidden"></div><div class="brow"><button class="btn ghost" id="diab-add-cancel">Annuler</button><button class="btn orange" style="flex:1" id="diab-add-ok">Ajouter</button></div>`;
   o.innerHTML="";o.appendChild(d);o.classList.remove("hidden");o.onclick=()=>closeModal();d.onclick=e=>e.stopPropagation();
   d.querySelector("#diab-add-cancel").addEventListener("click",closeModal);
   d.querySelector("#diab-add-ok").addEventListener("click",async()=>{
-    const qty=parseInt(d.querySelector("#diab-add-qty").value||"0",10);
-    if(!qty||qty<1){const err=d.querySelector("#diab-add-err");err.textContent="Indiquez une quantité valide";err.classList.remove("hidden");return;}
+    const qty=parseDiabetesQty(d.querySelector("#diab-add-qty").value||"0",meta.stockStep||1);
+    if(!qty||qty<=0){const err=d.querySelector("#diab-add-err");err.textContent="Indiquez une quantité valide";err.classList.remove("hidden");return;}
     addDiabetesStock(itemKey,qty,d.querySelector("#diab-add-note").value.trim());
-    await save();closeModal();renderDiabetesModule();updateHub();flash(`Stock ${meta.label.toLowerCase()} +${qty} ✓`);
+    await save();closeModal();renderDiabetesModule();updateHub();flash(`Stock ${meta.label.toLowerCase()} +${formatStockQty(qty)} ✓`);
   });
 }
 async function diabetesEarlyChange(itemKey){
-  const meta=DIABETES_META[itemKey];if(!meta)return;
+  const meta=getDiabetesMeta(itemKey);if(!meta||!meta.autoSchedule)return;
   const diabetes=getDiabetesData();
   if((diabetes.items[itemKey].stock||0)<=0){flash("Stock vide — ajoutez du matériel d'abord");return;}
-  consumeDiabetesItem(itemKey,1,"early_change",{note:"Changement anticipé demandé"});
-  if(itemKey==="patch"){diabetes.meta.patchChangesTowardPen=(diabetes.meta.patchChangesTowardPen||0)+1;consumePenFromPatch("manual_patch");}
+  consumeDiabetesItem(itemKey,meta.useQty||1,"early_change",{note:"Changement anticipé demandé"});
+  if(itemKey==="patch")consumeDiabetesItem("pen",.5,"manual_patch",{note:"Déduit automatiquement pour 1 pompe patch"});
   diabetes.items[itemKey].nextChange=addDays(today(),diabetes.items[itemKey].durationDays||1);
   await save();renderDiabetesModule();updateHub();flash(`${meta.label} changé maintenant ✓`);
 }
 async function diabetesManualUse(itemKey){
-  const meta=DIABETES_META[itemKey];if(!meta)return;
+  const meta=getDiabetesMeta(itemKey);if(!meta)return;
   const diabetes=getDiabetesData();
   if((diabetes.items[itemKey].stock||0)<=0){flash("Stock vide — ajoutez du matériel d'abord");return;}
-  consumeDiabetesItem(itemKey,1,"manual",{note:"Usage manuel"});
+  const qty=meta.useQty||meta.stockStep||1;
+  consumeDiabetesItem(itemKey,qty,"manual",{note:"Usage manuel"});
   if(itemKey==="pen")diabetes.items.pen.manualUses=(diabetes.items.pen.manualUses||0)+1;
-  await save();renderDiabetesModule();updateHub();flash(`${meta.label} mis à jour ✓`);
+  await save();renderDiabetesModule();updateHub();flash(`${meta.label} −${formatStockQty(qty)} ✓`);
 }
 function diabetesAdjustModal(itemKey){
-  const meta=DIABETES_META[itemKey];if(!meta)return;
+  const meta=getDiabetesMeta(itemKey);if(!meta)return;
   const diabetes=getDiabetesData();
   const item=diabetes.items[itemKey];
   const o=document.getElementById("overlay");const d=document.createElement("div");d.className="modal";
-  d.innerHTML=`<div class="modal-handle"></div><div style="font-size:28px;margin-bottom:8px">${meta.emoji}</div><div style="font-size:20px;font-weight:800;color:var(--t1);margin-bottom:4px;letter-spacing:-.4px">Ajuster · ${meta.label}</div><div style="font-size:13px;color:var(--t3);margin-bottom:18px">${itemKey==="pen"?"Corrigez le stock restant si besoin.":"Décalez la prochaine date prévue pour garder le suivi parfaitement aligné."}</div><div class="fsec" style="margin-bottom:12px">${itemKey==="pen"?`<div class="frow"><div class="flbl req">Stock actuel</div><input id="diab-adjust-stock" type="number" min="0" step="1" value="${item.stock||0}"></div>`:`<div class="frow"><div class="flbl req">Prochain changement</div><input id="diab-adjust-date" type="date" value="${item.nextChange||today()}"></div><div class="frow"><div class="flbl">Stock actuel</div><input id="diab-adjust-stock" type="number" min="0" step="1" value="${item.stock||0}"></div>`}</div><div id="diab-adjust-err" class="ferr hidden"></div><div class="brow"><button class="btn ghost" id="diab-adjust-cancel">Annuler</button><button class="btn orange" style="flex:1" id="diab-adjust-ok">Enregistrer</button></div>`;
+  d.innerHTML=`<div class="modal-handle"></div><div style="font-size:28px;margin-bottom:8px">${meta.emoji}</div><div style="font-size:20px;font-weight:800;color:var(--t1);margin-bottom:4px;letter-spacing:-.4px">Ajuster · ${meta.label}</div><div style="font-size:13px;color:var(--t3);margin-bottom:18px">${itemKey==="pen"?"Corrigez le stock restant si besoin.":"Décalez la prochaine date prévue pour garder le suivi parfaitement aligné."}</div><div class="fsec" style="margin-bottom:12px">${meta.autoSchedule?`<div class="frow"><div class="flbl req">Prochain changement</div><input id="diab-adjust-date" type="date" value="${item.nextChange||today()}"></div>`:""}<div class="frow"><div class="flbl req">Stock actuel</div><input id="diab-adjust-stock" type="number" min="0" step="${meta.stockStep||1}" inputmode="decimal" value="${item.stock||0}"></div></div><div id="diab-adjust-err" class="ferr hidden"></div><div class="brow"><button class="btn ghost" id="diab-adjust-cancel">Annuler</button><button class="btn orange" style="flex:1" id="diab-adjust-ok">Enregistrer</button></div>`;
   o.innerHTML="";o.appendChild(d);o.classList.remove("hidden");o.onclick=()=>closeModal();d.onclick=e=>e.stopPropagation();
   d.querySelector("#diab-adjust-cancel").addEventListener("click",closeModal);
   d.querySelector("#diab-adjust-ok").addEventListener("click",async()=>{
-    const stock=Math.max(0,parseInt(d.querySelector("#diab-adjust-stock")?.value||item.stock||0,10));
-    item.stock=stock;item.baseStock=Math.max(item.baseStock||0,stock);
-    if(itemKey!=="pen"){
-      const dt=d.querySelector("#diab-adjust-date").value;
-      if(!dt){const err=d.querySelector("#diab-adjust-err");err.textContent="Choisissez une date valide";err.classList.remove("hidden");return;}
+    const err=d.querySelector("#diab-adjust-err");
+    const stock=parseDiabetesQty(d.querySelector("#diab-adjust-stock")?.value??item.stock,meta.stockStep||1);
+    if(meta.autoSchedule){
+      const dateInput=d.querySelector("#diab-adjust-date");
+      const dt=dateInput?.value;
+      if(!dt){err.textContent="Choisissez une date valide";err.classList.remove("hidden");return;}
       item.nextChange=dt;
     }
+    item.stock=stock;
+    item.baseStock=Math.max(parseDiabetesQty(item.baseStock,meta.stockStep||1),stock);
     pushDiabetesLog("adjust",itemKey,0,"adjust",itemKey==="pen"?"Stock corrigé manuellement":"Date et stock ajustés manuellement");
     await save();closeModal();renderDiabetesModule();updateHub();flash("Suivi ajusté ✓");
   });
+}
+function diabetesCustomItemModal(itemKey=null){
+  const diabetes=getDiabetesData();
+  const existing=(diabetes.customDefs||[]).find(def=>def.id===itemKey)||null;
+  const o=document.getElementById("overlay");const d=document.createElement("div");d.className="modal";
+  d.innerHTML=`<div class="modal-handle"></div><div style="font-size:28px;margin-bottom:8px">${existing?.emoji||"📦"}</div><div style="font-size:20px;font-weight:800;color:var(--t1);margin-bottom:4px;letter-spacing:-.4px">${existing?"Modifier":"Ajouter"} un matériel</div><div style="font-size:13px;color:var(--t3);margin-bottom:18px">Créez un matériel personnalisé et définissez comment il se consomme.</div><div class="fsec" style="margin-bottom:12px"><div class="frow"><div class="flbl req">Nom</div><input id="diab-custom-label" type="text" value="${esc(existing?.label||"")}" placeholder="Ex : Réservoir"></div><div class="frow"><div class="flbl">Emoji</div><input id="diab-custom-emoji" type="text" value="${esc(existing?.emoji||"📦")}" maxlength="2" placeholder="📦"></div><div class="frow"><div class="flbl req">Mode</div><select id="diab-custom-mode"><option value="auto"${existing?.autoSchedule!==false?" selected":""}>Automatique</option><option value="manual"${existing?.autoSchedule===false?" selected":""}>Manuel</option></select></div><div class="frow"><div class="flbl req">Jours / unité</div><input id="diab-custom-days" type="number" min="1" step="1" value="${existing?.durationDays||7}"></div><div class="frow"><div class="flbl req">Stock</div><input id="diab-custom-stock" type="number" min="0" step="${existing?.stockStep===.5?.5:1}" inputmode="decimal" value="${existing?.id&&diabetes.items[existing.id]?diabetes.items[existing.id].stock||0:0}"></div><div class="frow"><div class="flbl">Pas stock</div><select id="diab-custom-step"><option value="1"${existing?.stockStep===.5?"":" selected"}>1</option><option value="0.5"${existing?.stockStep===.5?" selected":""}>0,5</option></select></div><div class="frow" id="diab-custom-date-row"><div class="flbl">Prochaine date</div><input id="diab-custom-date" type="date" value="${existing?.id&&diabetes.items[existing.id]?.nextChange?diabetes.items[existing.id].nextChange:addDays(today(),existing?.durationDays||7)}"></div></div><div id="diab-custom-err" class="ferr hidden"></div><div class="brow"><button class="btn ghost" id="diab-custom-cancel">Annuler</button><button class="btn orange" style="flex:1" id="diab-custom-ok">Enregistrer</button></div>`;
+  o.innerHTML="";o.appendChild(d);o.classList.remove("hidden");o.onclick=()=>closeModal();d.onclick=e=>e.stopPropagation();
+  const modeSel=d.querySelector("#diab-custom-mode");
+  const stepSel=d.querySelector("#diab-custom-step");
+  const stockInput=d.querySelector("#diab-custom-stock");
+  const dateRow=d.querySelector("#diab-custom-date-row");
+  const syncCustomFields=()=>{
+    stockInput.step=stepSel.value;
+    dateRow.classList.toggle("hidden",modeSel.value!=="auto");
+  };
+  syncCustomFields();
+  modeSel.addEventListener("change",syncCustomFields);
+  stepSel.addEventListener("change",syncCustomFields);
+  d.querySelector("#diab-custom-cancel").addEventListener("click",closeModal);
+  d.querySelector("#diab-custom-ok").addEventListener("click",async()=>{
+    const err=d.querySelector("#diab-custom-err");
+    const label=d.querySelector("#diab-custom-label").value.trim();
+    const emoji=d.querySelector("#diab-custom-emoji").value.trim()||"📦";
+    const autoSchedule=modeSel.value==="auto";
+    const durationDays=Math.max(1,parseInt(d.querySelector("#diab-custom-days").value||"0",10));
+    const stockStep=parseFloat(stepSel.value)===.5?.5:1;
+    const stock=parseDiabetesQty(stockInput.value,stockStep);
+    const nextDate=d.querySelector("#diab-custom-date").value||addDays(today(),durationDays);
+    if(!label){err.textContent="Choisissez un nom pour ce matériel";err.classList.remove("hidden");return;}
+    const color=existing?.color||DIABETES_COLOR_POOL[(diabetes.customDefs||[]).length%DIABETES_COLOR_POOL.length];
+    const id=existing?.id||`custom_${Date.now()}`;
+    const payload={id,label,emoji,color,autoSchedule,durationDays,stockStep};
+    if(existing){
+      diabetes.customDefs=diabetes.customDefs.map(def=>def.id===id?payload:def);
+    }else{
+      diabetes.customDefs.push(payload);
+    }
+    diabetes.items[id]={...(diabetes.items[id]||{}),stock,baseStock:Math.max(parseDiabetesQty(diabetes.items[id]?.baseStock,stockStep),stock),durationDays,coverageDays:durationDays,changes:parseDiabetesQty(diabetes.items[id]?.changes,stockStep),nextChange:autoSchedule?nextDate:null};
+    await save();closeModal();renderDiabetesModule();updateHub();flash(existing?"Matériel mis à jour ✓":"Matériel ajouté ✓");
+  });
+}
+async function deleteDiabetesCustomItem(itemKey){
+  const diabetes=getDiabetesData();
+  const def=(diabetes.customDefs||[]).find(entry=>entry.id===itemKey);
+  if(!def)return;
+  diabetes.customDefs=diabetes.customDefs.filter(entry=>entry.id!==itemKey);
+  delete diabetes.items[itemKey];
+  await save();
+  renderDiabetesModule();
+  updateHub();
+  flash(`${def.label} supprimé ✓`);
 }
 // ═══════════════════════════════════════════
 // RECETTES MODULE
@@ -4401,6 +4521,7 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("dn-stock")?.addEventListener("click",()=>setDiabetesTab("stock"));
   document.getElementById("dn-history")?.addEventListener("click",()=>setDiabetesTab("history"));
   document.getElementById("dn-actions")?.addEventListener("click",()=>setDiabetesTab("actions"));
+  document.getElementById("dn-settings")?.addEventListener("click",()=>setDiabetesTab("settings"));
   // Recettes nav
   document.getElementById("rn-liste")?.addEventListener("click",()=>renderRecettesView("liste"));
   document.getElementById("rn-planning")?.addEventListener("click",()=>renderRecettesView("planning"));
