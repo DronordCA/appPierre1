@@ -19,8 +19,8 @@ if('serviceWorker' in navigator){
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 :root {
-  --sat: env(safe-area-inset-top, 59px);
-  --sab: env(safe-area-inset-bottom, 34px);
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
   --orange: #F97316;
   --orange2: #EA6C0A;
   --ol: rgba(249,115,22,.12);
@@ -553,8 +553,8 @@ if('serviceWorker' in navigator){
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 :root {
-  --sat: env(safe-area-inset-top, 59px);
-  --sab: env(safe-area-inset-bottom, 34px);
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
   --orange: #F97316;
   --orange2: #EA6C0A;
   --ol: rgba(249,115,22,.12);
@@ -1333,13 +1333,15 @@ nav{
 /* ── MODULE NAV ───────────────────────────────── */
 .mod-nav {
   position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-  width: 100%; max-width: 430px;
-  background: rgba(240,238,233,.94);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-top: 1px solid rgba(10,10,26,.08);
-  padding-bottom: calc(var(--sab) + 4px);
-  z-index: 100; display: flex; align-items: stretch;
+  width: calc(100% - 16px); max-width: 414px;
+  background: rgba(255,255,255,.82);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  border: 1px solid rgba(255,255,255,.55);
+  box-shadow: 0 -12px 32px rgba(10,10,26,.12);
+  border-radius: 24px 24px 0 0;
+  padding: 6px 6px calc(var(--sab) + 8px);
+  z-index: 100; display: flex; align-items: stretch; gap: 6px;
 }
 .mod-back-btn {
   display: flex; align-items: center; gap: 4px;
@@ -1355,7 +1357,7 @@ nav{
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
-  padding-bottom: calc(var(--sab) + 90px);
+  padding-bottom: calc(var(--sab) + 110px);
   animation: fadeIn .22s ease-out;
 }
 .mod-header {
@@ -1601,94 +1603,100 @@ nav{
 /* ── DIABETES HUB ───────────────────────────────── */
 .hub-mod-diabetes{background:linear-gradient(135deg,#FFFFFF 0%,#F6F3EE 100%);}
 .hub-mod-diabetes::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,10,26,.02),transparent 55%);pointer-events:none;}
-.mod-nav-tabs{display:flex;flex:1;align-items:stretch;}
-.mod-nav-tabs .nb{padding-top:11px;padding-bottom:8px;}
-.mod-nav-tabs .nb span{font-size:10px;}
-.mod-nav-tabs .nb svg{width:22px;height:22px;}
-.mod-header.mod-header-diabetes{padding:calc(var(--sat) + 14px) 18px 22px;border-radius:0 0 30px 30px;background:linear-gradient(180deg,#090916 0%,#121226 100%);}
-.mod-header-diabetes::after{width:240px;height:240px;right:-70px;bottom:-80px;background:radial-gradient(circle,rgba(249,115,22,.16) 0%,transparent 68%);}
-.diab-header-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;position:relative;z-index:1;}
-.diab-logo-btn{display:inline-flex;align-items:center;gap:10px;padding:8px 12px 8px 8px;border:none;border-radius:18px;background:rgba(255,255,255,.08);color:#fff;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);}
+.mod-nav-tabs{display:flex;flex:1;align-items:stretch;gap:4px;}
+.mod-nav-tabs .nb{min-height:58px;padding:8px 0 6px;border-radius:18px;}
+.mod-nav-tabs .nb span{font-size:10px;line-height:1.15;}
+.mod-nav-tabs .nb svg{width:21px;height:21px;}
+.mod-nav-tabs .nb.on{background:rgba(15,23,42,.07);}
+.mod-nav-tabs .nb.on::after{bottom:-6px;width:24px;height:3px;border-radius:999px;}
+.mod-header.mod-header-diabetes{padding:calc(var(--sat) + 10px) 18px 26px;border-radius:0 0 32px 32px;background:linear-gradient(180deg,#09111F 0%,#10223A 52%,#0B1726 100%);box-shadow:inset 0 -1px 0 rgba(255,255,255,.04);}
+.mod-header-diabetes::before{content:'';position:absolute;inset:auto auto 22px 18px;width:92px;height:92px;border-radius:24px;background:linear-gradient(135deg,rgba(44,182,125,.18),rgba(56,189,248,.08));filter:blur(2px);opacity:.95;}
+.mod-header-diabetes::after{width:250px;height:250px;right:-90px;bottom:-90px;background:radial-gradient(circle,rgba(56,189,248,.24) 0%,rgba(249,115,22,.12) 34%,transparent 70%);}
+.diab-header-bar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px;position:relative;z-index:1;}
+.diab-logo-btn{display:inline-flex;align-items:center;gap:10px;padding:8px 12px 8px 8px;border:none;border-radius:18px;background:rgba(255,255,255,.12);color:#fff;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);backdrop-filter:blur(12px);}
 .diab-logo-btn:active{transform:scale(.98);}
 .diab-logo-badge{width:32px;height:32px;border-radius:11px;overflow:hidden;display:block;flex-shrink:0;}
 .diab-logo-badge svg{width:100%;height:100%;display:block;}
 .diab-logo-text{display:flex;flex-direction:column;align-items:flex-start;gap:1px;}
 .diab-logo-text strong{font-size:14px;font-weight:800;letter-spacing:-.2px;}
-.diab-logo-text span{font-size:11px;color:rgba(255,255,255,.45);}
-.diab-header-status{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.72);font-size:11px;font-weight:700;white-space:nowrap;}
-.diab-wrap{padding:0 16px 24px;display:flex;flex-direction:column;gap:14px;}
-.diab-hero-card{margin-top:-18px;background:#FFFFFF;border:1px solid rgba(10,10,26,.06);border-radius:28px;padding:20px;box-shadow:0 16px 36px rgba(10,10,26,.09);}
-.diab-hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px;}
-.diab-hero-eyebrow{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--t4);margin-bottom:10px;}
-.diab-hero-title{font-size:32px;font-weight:900;color:var(--t1);letter-spacing:-1.4px;line-height:1;}
-.diab-hero-sub{font-size:13px;color:var(--t3);line-height:1.45;margin-top:8px;max-width:220px;}
-.diab-hero-chip{display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:999px;background:var(--bg);border:1px solid rgba(10,10,26,.05);font-size:11px;font-weight:800;letter-spacing:.5px;color:var(--t2);white-space:nowrap;}
-.diab-kpi-grid,.diab-insight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-.diab-kpi,.diab-mini-stat{padding:0;border:none;}
-.diab-kpi-label,.diab-mini-label{font-size:10px;font-weight:700;color:var(--t4);text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px;}
-.diab-kpi-value,.diab-mini-value{font-size:21px;font-weight:900;color:var(--t1);letter-spacing:-.8px;}
-.diab-kpi-sub,.diab-mini-sub{font-size:11px;color:var(--t3);margin-top:3px;line-height:1.35;}
+.diab-logo-text span{font-size:11px;color:rgba(255,255,255,.62);}
+.diab-header-status{padding:9px 12px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.14);color:#ECFEFF;font-size:11px;font-weight:800;white-space:nowrap;box-shadow:0 8px 16px rgba(8,47,73,.18);}
+.diab-wrap{padding:0 16px 28px;display:flex;flex-direction:column;gap:14px;background:linear-gradient(180deg,#F5F7FB 0%,#EEF3F8 100%);}
+.diab-hero-card{margin-top:-24px;background:linear-gradient(180deg,#FFFFFF 0%,#F8FBFF 100%);border:1px solid rgba(148,163,184,.18);border-radius:30px;padding:22px;box-shadow:0 20px 44px rgba(15,23,42,.11);position:relative;overflow:hidden;}
+.diab-hero-card::after{content:'';position:absolute;top:-50px;right:-30px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.18),transparent 68%);}
+.diab-hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px;position:relative;z-index:1;}
+.diab-hero-eyebrow{font-size:10px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:#64748B;margin-bottom:10px;}
+.diab-hero-title{font-size:34px;font-weight:900;color:#0F172A;letter-spacing:-1.5px;line-height:1;}
+.diab-hero-sub{font-size:13px;color:#475569;line-height:1.5;margin-top:8px;max-width:232px;}
+.diab-hero-chip{display:inline-flex;align-items:center;justify-content:center;padding:9px 13px;border-radius:999px;background:linear-gradient(135deg,rgba(45,212,191,.12),rgba(56,189,248,.14));border:1px solid rgba(45,212,191,.18);font-size:11px;font-weight:800;letter-spacing:.6px;color:#0F766E;white-space:nowrap;}
+.diab-kpi-grid,.diab-insight-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+.diab-kpi-grid .diab-kpi:last-child,.diab-insight-grid .diab-mini-stat:last-child{grid-column:1 / -1;}
+.diab-kpi,.diab-mini-stat{padding:14px 14px 13px;border:1px solid rgba(148,163,184,.16);border-radius:20px;background:rgba(255,255,255,.84);backdrop-filter:blur(10px);text-align:left;}
+.diab-kpi-label,.diab-mini-label{font-size:10px;font-weight:800;color:#94A3B8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px;}
+.diab-kpi-value,.diab-mini-value{font-size:22px;font-weight:900;color:#0F172A;letter-spacing:-.9px;}
+.diab-kpi-sub,.diab-mini-sub{font-size:11px;color:#64748B;margin-top:4px;line-height:1.4;}
 .diab-stack{display:flex;flex-direction:column;gap:12px;}
-.diab-section-title{font-size:11px;font-weight:800;color:var(--t3);letter-spacing:1px;text-transform:uppercase;padding:2px 2px 0;}
-.diab-card{background:var(--card);border:1px solid rgba(10,10,26,.06);border-radius:24px;padding:16px 16px 14px;box-shadow:0 8px 22px rgba(10,10,26,.05);}
-.diab-card-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;}
+.diab-section-title{font-size:11px;font-weight:800;color:#64748B;letter-spacing:1.2px;text-transform:uppercase;padding:4px 4px 0;}
+.diab-card{background:linear-gradient(180deg,#FFFFFF 0%,#F9FBFD 100%);border:1px solid rgba(148,163,184,.14);border-radius:26px;padding:16px 16px 14px;box-shadow:0 12px 28px rgba(15,23,42,.06);}
+.diab-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px;}
 .diab-item-pill{display:flex;align-items:center;gap:12px;min-width:0;}
-.diab-item-icon{width:44px;height:44px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-.diab-item-name{font-size:17px;font-weight:800;color:var(--t1);letter-spacing:-.35px;}
-.diab-item-meta{font-size:12px;color:var(--t3);margin-top:2px;}
-.diab-status-chip{padding:7px 10px;border-radius:999px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;white-space:nowrap;}
-.diab-status-ok{background:rgba(5,150,105,.1);color:var(--green);}
-.diab-status-warn{background:rgba(217,119,6,.12);color:#B45309;}
-.diab-status-critical{background:rgba(220,38,38,.1);color:var(--red);}
-.diab-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
-.diab-stat{padding:0;}
-.diab-stat-label{font-size:10px;font-weight:700;color:var(--t4);text-transform:uppercase;letter-spacing:.65px;margin-bottom:4px;}
-.diab-stat-value{font-size:18px;font-weight:800;color:var(--t1);letter-spacing:-.4px;line-height:1.15;}
+.diab-item-icon{width:48px;height:48px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.55),0 6px 14px rgba(148,163,184,.16);}
+.diab-item-name{font-size:17px;font-weight:800;color:#0F172A;letter-spacing:-.35px;}
+.diab-item-meta{font-size:12px;color:#64748B;margin-top:3px;line-height:1.35;}
+.diab-status-chip{padding:7px 10px;border-radius:999px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.9px;white-space:nowrap;}
+.diab-status-ok{background:rgba(16,185,129,.12);color:#047857;}
+.diab-status-warn{background:rgba(245,158,11,.12);color:#B45309;}
+.diab-status-critical{background:rgba(239,68,68,.12);color:#B91C1C;}
+.diab-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px;}
+.diab-stat{padding:10px 10px 11px;border-radius:18px;background:#F8FAFC;border:1px solid rgba(148,163,184,.12);}
+.diab-stat-label{font-size:10px;font-weight:800;color:#94A3B8;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px;}
+.diab-stat-value{font-size:18px;font-weight:800;color:#0F172A;letter-spacing:-.4px;line-height:1.15;}
 .diab-stat-value.small{font-size:14px;line-height:1.3;}
-.diab-progress{height:6px;border-radius:999px;background:rgba(10,10,26,.08);overflow:hidden;margin-bottom:10px;}
-.diab-progress-fill{height:100%;border-radius:999px;transition:width .35s ease;}
-.diab-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;color:var(--t3);margin-bottom:14px;padding-top:2px;}
-.diab-foot strong{color:var(--t1);font-weight:700;}
-.diab-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.diab-btn{border:none;border-radius:14px;padding:11px 10px;font-size:12px;font-weight:700;cursor:pointer;transition:transform .15s,opacity .15s;}
+.diab-progress{height:8px;border-radius:999px;background:rgba(148,163,184,.18);overflow:hidden;margin-bottom:10px;}
+.diab-progress-fill{height:100%;border-radius:999px;transition:width .35s ease;box-shadow:0 4px 10px rgba(56,189,248,.24);}
+.diab-foot{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;font-size:12px;color:#64748B;margin-bottom:14px;padding-top:2px;line-height:1.45;}
+.diab-foot strong{color:#0F172A;font-weight:800;}
+.diab-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+.diab-btn{border:none;border-radius:14px;padding:11px 10px;font-size:12px;font-weight:800;cursor:pointer;transition:transform .15s,opacity .15s,box-shadow .15s;min-height:42px;}
 .diab-btn:active{transform:scale(.97);}
-.diab-btn.primary{background:var(--navy);color:white;}
-.diab-btn.soft{background:rgba(10,10,26,.05);color:var(--t2);}
+.diab-btn.primary{background:linear-gradient(135deg,#0F172A,#1E293B);color:white;box-shadow:0 10px 18px rgba(15,23,42,.18);}
+.diab-btn.soft{background:#EFF6FF;color:#1D4ED8;}
 .diab-btn.warn{background:rgba(249,115,22,.12);color:var(--orange);}
 .diab-btn:disabled{opacity:.45;cursor:not-allowed;}
-.diab-inline-card{background:var(--card);border:1px solid rgba(10,10,26,.06);border-radius:24px;padding:16px;box-shadow:0 8px 22px rgba(10,10,26,.05);}
-.diab-inline-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;}
-.diab-inline-title{font-size:16px;font-weight:800;color:var(--t1);letter-spacing:-.3px;}
-.diab-inline-sub{font-size:12px;color:var(--t3);margin-top:3px;line-height:1.4;}
-.diab-quick-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
-.diab-qa,.diab-focus-card{background:#FAF8F4;border-radius:18px;padding:14px;border:1px solid rgba(10,10,26,.05);}
-.diab-qa-label{font-size:11px;font-weight:800;color:var(--t2);margin-bottom:10px;letter-spacing:.5px;text-transform:uppercase;}
+.diab-inline-card{background:linear-gradient(180deg,#FFFFFF 0%,#F9FBFD 100%);border:1px solid rgba(148,163,184,.14);border-radius:26px;padding:16px;box-shadow:0 12px 28px rgba(15,23,42,.06);}
+.diab-inline-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px;}
+.diab-inline-title{font-size:16px;font-weight:800;color:#0F172A;letter-spacing:-.3px;}
+.diab-inline-sub{font-size:12px;color:#64748B;margin-top:4px;line-height:1.45;max-width:240px;}
+.diab-quick-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+.diab-qa,.diab-focus-card{background:linear-gradient(180deg,#F8FBFF 0%,#F8FAFC 100%);border-radius:20px;padding:14px;border:1px solid rgba(148,163,184,.12);}
+.diab-qa-label{font-size:11px;font-weight:800;color:#0F172A;margin-bottom:10px;letter-spacing:.5px;text-transform:uppercase;}
 .diab-qa-row{display:flex;gap:8px;flex-wrap:wrap;}
-.diab-mini-btn{border:none;border-radius:12px;padding:9px 10px;background:white;color:var(--t2);font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 1px 3px rgba(10,10,26,.05);}
-.diab-mini-btn.primary{background:var(--navy);color:white;}
+.diab-mini-btn{border:none;border-radius:12px;padding:9px 10px;background:white;color:#334155;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 1px 3px rgba(10,10,26,.05);}
+.diab-mini-btn.primary{background:linear-gradient(135deg,#0F172A,#1E293B);color:white;}
 .diab-focus-list{display:flex;flex-direction:column;gap:10px;}
-.diab-focus-row{display:flex;align-items:center;gap:10px;}
-.diab-focus-icon{width:36px;height:36px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:white;box-shadow:0 1px 3px rgba(10,10,26,.05);}
+.diab-focus-row{display:flex;align-items:flex-start;gap:10px;}
+.diab-focus-icon{width:38px;height:38px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:white;box-shadow:0 6px 12px rgba(148,163,184,.12);}
 .diab-focus-copy{flex:1;min-width:0;}
-.diab-focus-copy strong{display:block;font-size:14px;color:var(--t1);font-weight:800;line-height:1.25;}
-.diab-focus-copy span{display:block;font-size:12px;color:var(--t3);margin-top:3px;line-height:1.35;}
-.diab-history{background:var(--card);border:1px solid rgba(10,10,26,.06);border-radius:24px;overflow:hidden;box-shadow:0 8px 22px rgba(10,10,26,.05);}
-.diab-history-row{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-bottom:1px solid var(--sep);}
+.diab-focus-copy strong{display:block;font-size:14px;color:#0F172A;font-weight:800;line-height:1.3;}
+.diab-focus-copy span{display:block;font-size:12px;color:#64748B;margin-top:3px;line-height:1.45;}
+.diab-history{background:linear-gradient(180deg,#FFFFFF 0%,#F9FBFD 100%);border:1px solid rgba(148,163,184,.14);border-radius:26px;overflow:hidden;box-shadow:0 12px 28px rgba(15,23,42,.06);}
+.diab-history-row{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(148,163,184,.14);}
 .diab-history-row:last-child{border-bottom:none;}
-.diab-history-icon{width:34px;height:34px;border-radius:12px;background:#FAF8F4;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.diab-history-icon{width:36px;height:36px;border-radius:14px;background:#F8FAFC;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
 .diab-history-main{flex:1;min-width:0;}
-.diab-history-title{font-size:14px;font-weight:700;color:var(--t1);line-height:1.3;}
-.diab-history-sub{font-size:12px;color:var(--t3);margin-top:3px;line-height:1.35;}
-.diab-history-qty{font-size:13px;font-weight:800;color:var(--t1);white-space:nowrap;}
-.diab-empty{background:var(--card);border:1px solid rgba(10,10,26,.06);border-radius:24px;padding:30px 24px;text-align:center;color:var(--t3);box-shadow:0 8px 22px rgba(10,10,26,.05);}
+.diab-history-title{font-size:14px;font-weight:700;color:#0F172A;line-height:1.35;}
+.diab-history-sub{font-size:12px;color:#64748B;margin-top:3px;line-height:1.4;}
+.diab-history-qty{font-size:13px;font-weight:800;color:#0F172A;white-space:nowrap;padding-top:2px;}
+.diab-empty{background:linear-gradient(180deg,#FFFFFF 0%,#F9FBFD 100%);border:1px solid rgba(148,163,184,.14);border-radius:26px;padding:30px 24px;text-align:center;color:#64748B;box-shadow:0 12px 28px rgba(15,23,42,.06);}
 .diab-empty-icon{font-size:40px;display:block;margin-bottom:12px;}
 .diab-modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
-.diab-choice{border:1.5px solid rgba(10,10,26,.08);border-radius:16px;padding:14px;background:var(--card);cursor:pointer;text-align:left;}
-.diab-choice.on{border-color:var(--navy);background:rgba(10,10,26,.03);}
+.diab-choice{border:1.5px solid rgba(148,163,184,.18);border-radius:16px;padding:14px;background:var(--card);cursor:pointer;text-align:left;}
+.diab-choice.on{border-color:#0F172A;background:rgba(15,23,42,.03);}
 .diab-choice-emoji{font-size:22px;display:block;margin-bottom:8px;}
-.diab-choice-name{font-size:14px;font-weight:800;color:var(--t1);margin-bottom:3px;}
-.diab-choice-sub{font-size:12px;color:var(--t3);line-height:1.35;}
-@media (max-width: 380px){.diab-kpi-grid,.diab-insight-grid,.diab-stats,.diab-actions,.diab-quick-actions,.diab-modal-grid{grid-template-columns:1fr;}.diab-hero-top,.diab-inline-top,.diab-header-bar{flex-direction:column;align-items:flex-start;}.diab-hero-sub{max-width:none;}.diab-header-status{white-space:normal;}}
+.diab-choice-name{font-size:14px;font-weight:800;color:#0F172A;margin-bottom:3px;}
+.diab-choice-sub{font-size:12px;color:#64748B;line-height:1.4;}
+@media (max-width: 430px){.mod-nav{width:calc(100% - 12px);} .diab-wrap{padding:0 14px 24px;} .diab-card,.diab-inline-card,.diab-hero-card,.diab-history,.diab-empty{border-radius:24px;} .diab-inline-sub,.diab-hero-sub{max-width:none;}}
+@media (max-width: 390px){.diab-stats,.diab-actions,.diab-quick-actions,.diab-modal-grid{grid-template-columns:1fr;} .diab-hero-top,.diab-inline-top,.diab-header-bar{flex-direction:column;align-items:flex-start;} .diab-header-status{white-space:normal;} .mod-nav-tabs .nb{min-height:54px;} .mod-nav-tabs .nb span{font-size:9px;}}
 
 </style>
 </head>
@@ -1800,8 +1808,8 @@ nav{
       </div>
       <div class="hub-mod hub-mod-diabetes" id="hub-diabetes-card">
         <span class="hub-mod-icon">🩺</span>
-        <div class="hub-mod-name">Stock diabète</div>
-        <div class="hub-mod-sub" id="hub-diabetes-sub">Pompes patch · stylos · capteurs</div>
+        <div class="hub-mod-name">Diabète</div>
+        <div class="hub-mod-sub" id="hub-diabetes-sub">Codes couleur · suivi clair · stock aligné</div>
         <div class="hub-mod-badge" id="hub-diabetes-badge" style="display:none">!</div>
       </div>
     </div>
@@ -3729,10 +3737,10 @@ function setDiabetesTab(tab){
 function renderDiabetesModule(){
   const cont=document.getElementById("diabetes-content");if(!cont)return;
   const summary=getDiabetesSummary();
-  const heroStatus=summary.warnCount>0?`${summary.warnCount} alerte${summary.warnCount>1?"s":""}`:"Suivi à jour";
+  const heroStatus=summary.warnCount>0?`${summary.warnCount} alerte${summary.warnCount>1?"s":""}`:"Suivi premium à jour";
   const upcoming=Object.values(summary.items).filter(item=>item.nextChange).sort((a,b)=>startDay(a.nextChange)-startDay(b.nextChange)).slice(0,3);
   const logs=(getDiabetesData().logs||[]).slice(0,12);
-  const renderHeader=()=>`<div class="mod-header mod-header-diabetes"><div class="diab-header-bar"><button class="diab-logo-btn" id="diab-logo-home"><span class="diab-logo-badge"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="22" fill="#F97316"/><rect x="22" y="34" width="56" height="48" rx="20" fill="white"/><polygon points="22,50 22,26 40,42" fill="white"/><polygon points="78,50 78,26 60,42" fill="white"/><ellipse cx="40" cy="57" rx="4" ry="5" fill="#F97316"/><ellipse cx="60" cy="57" rx="4" ry="5" fill="#F97316"/><circle cx="50" cy="66" r="2.5" fill="#F97316"/></svg></span><span class="diab-logo-text"><strong>Nacho</strong><span>Retour au hub</span></span></button><div class="diab-header-status">${heroStatus}</div></div><div class="mod-header-eyebrow">Module santé premium</div><div class="mod-header-title">Stock diabète</div><div class="mod-header-sub">Des onglets propres, un suivi lisible, et zéro écran brouillon.</div></div>`;
+  const renderHeader=()=>`<div class="mod-header mod-header-diabetes"><div class="diab-header-bar"><button class="diab-logo-btn" id="diab-logo-home"><span class="diab-logo-badge"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="22" fill="#F97316"/><rect x="22" y="34" width="56" height="48" rx="20" fill="white"/><polygon points="22,50 22,26 40,42" fill="white"/><polygon points="78,50 78,26 60,42" fill="white"/><ellipse cx="40" cy="57" rx="4" ry="5" fill="#F97316"/><ellipse cx="60" cy="57" rx="4" ry="5" fill="#F97316"/><circle cx="50" cy="66" r="2.5" fill="#F97316"/></svg></span><span class="diab-logo-text"><strong>Diabète</strong><span>Retour au tableau de bord</span></span></button><div class="diab-header-status">${heroStatus}</div></div><div class="mod-header-eyebrow">Suivi santé premium</div><div class="mod-header-title">Diabète</div><div class="mod-header-sub">Un espace plus premium, mieux aligné, avec des repères visuels nets sur iPhone.</div></div>`;
   const renderHero=()=>`<div class="diab-hero-card"><div class="diab-hero-top"><div><div class="diab-hero-eyebrow">Vue d'ensemble</div><div class="diab-hero-title">${summary.shortestCoverage} j</div><div class="diab-hero-sub">de marge minimale · rupture estimée le ${fmtDate(summary.stockUntil)}</div></div><div class="diab-hero-chip">${summary.warnCount>0?"Vigilance active":"Équilibre stable"}</div></div><div class="diab-kpi-grid"><div class="diab-kpi"><div class="diab-kpi-label">Stock total</div><div class="diab-kpi-value">${summary.totalUnits}</div><div class="diab-kpi-sub">unités disponibles</div></div><div class="diab-kpi"><div class="diab-kpi-label">Prochain changement</div><div class="diab-kpi-value">${summary.soonest?formatDaysLabel(summary.soonest.nextChangeIn):"—"}</div><div class="diab-kpi-sub">${summary.soonest?summary.soonest.label:"Aucun"}</div></div><div class="diab-kpi"><div class="diab-kpi-label">État global</div><div class="diab-kpi-value">${summary.warnCount>0?"À suivre":"Stable"}</div><div class="diab-kpi-sub">${summary.warnCount>0?`${summary.warnCount} poste${summary.warnCount>1?"s":""}`:"Tout est aligné"}</div></div></div></div>`;
   const renderStockCards=()=>Object.entries(summary.items).map(([key,item])=>{
     const pct=Math.round(item.ratio*100);
@@ -3740,12 +3748,12 @@ function renderDiabetesModule(){
     const thirdStat=key==="pen"?`${item.stockUntil?fmtDate(item.stockUntil):"—"}`:fmtDate(item.stockUntil);
     return `<div class="diab-card"><div class="diab-card-top"><div class="diab-item-pill"><div class="diab-item-icon" style="background:${item.soft};color:${item.color}">${item.emoji}</div><div><div class="diab-item-name">${item.label}</div><div class="diab-item-meta">${item.coverageDays} jours de couverture</div></div></div><div class="diab-status-chip ${diabetesStatusClass(item.status)}">${diabetesStatusLabel(item.status)}</div></div><div class="diab-stats"><div class="diab-stat"><div class="diab-stat-label">Stock</div><div class="diab-stat-value">${item.stock}</div></div><div class="diab-stat"><div class="diab-stat-label">Niveau</div><div class="diab-stat-value">${pct}%</div></div><div class="diab-stat"><div class="diab-stat-label">Jusqu'au</div><div class="diab-stat-value small">${thirdStat}</div></div></div><div class="diab-progress"><div class="diab-progress-fill" style="width:${pct}%;background:${diabetesFillColor(item.status)}"></div></div><div class="diab-foot"><span>${foot}</span><span>${formatDaysLabel(item.coverageDays)}</span></div><div class="diab-actions"><button class="diab-btn primary" data-di-action="add" data-di-item="${key}">Ajouter</button>${key!=="pen"?`<button class="diab-btn warn" data-di-action="change" data-di-item="${key}">Changer</button>`:`<button class="diab-btn warn" data-di-action="manual" data-di-item="${key}">Déduire</button>`}<button class="diab-btn soft" data-di-action="adjust" data-di-item="${key}">Ajuster</button></div></div>`;
   }).join("");
-  const renderQuickActions=()=>`<div class="diab-inline-card"><div class="diab-inline-top"><div><div class="diab-inline-title">Raccourcis</div><div class="diab-inline-sub">Toutes les actions utiles, rangées proprement.</div></div><button class="btn ghost sml" id="diab-sync-btn">Sync</button></div><div class="diab-quick-actions"><div class="diab-qa"><div class="diab-qa-label">Ajouter</div><div class="diab-qa-row"><button class="diab-mini-btn primary" data-di-action="add" data-di-item="patch">Pompes</button><button class="diab-mini-btn" data-di-action="add" data-di-item="pen">Stylos</button><button class="diab-mini-btn" data-di-action="add" data-di-item="sensor">Capteurs</button></div></div><div class="diab-qa"><div class="diab-qa-label">Mettre à jour</div><div class="diab-qa-row"><button class="diab-mini-btn" data-di-action="change" data-di-item="patch">Pompe</button><button class="diab-mini-btn" data-di-action="change" data-di-item="sensor">Capteur</button><button class="diab-mini-btn" data-di-action="manual" data-di-item="pen">Stylo</button></div></div></div></div>`;
+  const renderQuickActions=()=>`<div class="diab-inline-card"><div class="diab-inline-top"><div><div class="diab-inline-title">Actions rapides</div><div class="diab-inline-sub">Des raccourcis mieux alignés pour agir sans chercher.</div></div><button class="btn ghost sml" id="diab-sync-btn">Sync</button></div><div class="diab-quick-actions"><div class="diab-qa"><div class="diab-qa-label">Ajouter</div><div class="diab-qa-row"><button class="diab-mini-btn primary" data-di-action="add" data-di-item="patch">Pompes</button><button class="diab-mini-btn" data-di-action="add" data-di-item="pen">Stylos</button><button class="diab-mini-btn" data-di-action="add" data-di-item="sensor">Capteurs</button></div></div><div class="diab-qa"><div class="diab-qa-label">Mettre à jour</div><div class="diab-qa-row"><button class="diab-mini-btn" data-di-action="change" data-di-item="patch">Pompe</button><button class="diab-mini-btn" data-di-action="change" data-di-item="sensor">Capteur</button><button class="diab-mini-btn" data-di-action="manual" data-di-item="pen">Stylo</button></div></div></div></div>`;
   const renderHistory=()=>logs.length===0?`<div class="diab-empty"><span class="diab-empty-icon">📦</span><div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:6px">Aucun mouvement</div><div style="font-size:14px;line-height:1.55">Ajoutez une première réception pour démarrer le suivi.</div></div>`:`<div class="diab-history">${logs.map(log=>{const date=new Date(log.date).toLocaleDateString("fr-FR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});const verb=log.type==="add"?"Réception":"Mouvement";return `<div class="diab-history-row"><div class="diab-history-icon">${log.emoji||"🩺"}</div><div class="diab-history-main"><div class="diab-history-title">${verb} · ${log.label}</div><div class="diab-history-sub">${date}${log.note?` · ${esc(log.note)}`:""}</div></div><div class="diab-history-qty">${log.type==="add"?"+":"−"}${log.qty}</div></div>`;}).join("")}</div>`;
-  const renderOverview=()=>`<div class="diab-wrap">${renderHero()}<div class="diab-section-title">Focus</div><div class="diab-inline-card"><div class="diab-insight-grid"><div class="diab-mini-stat"><div class="diab-mini-label">Patch</div><div class="diab-mini-value">${summary.items.patch.stock}</div><div class="diab-mini-sub">${formatDaysLabel(summary.items.patch.coverageDays)}</div></div><div class="diab-mini-stat"><div class="diab-mini-label">Stylos</div><div class="diab-mini-value">${summary.items.pen.stock}</div><div class="diab-mini-sub">${formatDaysLabel(summary.items.pen.coverageDays)}</div></div><div class="diab-mini-stat"><div class="diab-mini-label">Capteurs</div><div class="diab-mini-value">${summary.items.sensor.stock}</div><div class="diab-mini-sub">${formatDaysLabel(summary.items.sensor.coverageDays)}</div></div></div></div><div class="diab-focus-card"><div class="diab-inline-top"><div><div class="diab-inline-title">À venir</div><div class="diab-inline-sub">Les prochaines échéances pour garder une vue premium et calme.</div></div></div><div class="diab-focus-list">${upcoming.map(item=>`<div class="diab-focus-row"><div class="diab-focus-icon" style="color:${item.color}">${item.emoji}</div><div class="diab-focus-copy"><strong>${item.label}</strong><span>Changement prévu le ${fmtDate(item.nextChange)} · ${formatDaysLabel(item.nextChangeIn)}</span></div></div>`).join("")||`<div class="diab-focus-row"><div class="diab-focus-copy"><strong>Aucune échéance proche</strong><span>Le stock est synchronisé.</span></div></div>`}</div></div>${renderQuickActions()}</div>`;
-  const renderStock=()=>`<div class="diab-wrap"><div class="diab-section-title">Matériel</div><div class="diab-stack">${renderStockCards()}</div></div>`;
+  const renderOverview=()=>`<div class="diab-wrap">${renderHero()}<div class="diab-section-title">Focus</div><div class="diab-inline-card"><div class="diab-insight-grid"><div class="diab-mini-stat"><div class="diab-mini-label">Patch</div><div class="diab-mini-value">${summary.items.patch.stock}</div><div class="diab-mini-sub">${formatDaysLabel(summary.items.patch.coverageDays)}</div></div><div class="diab-mini-stat"><div class="diab-mini-label">Stylos</div><div class="diab-mini-value">${summary.items.pen.stock}</div><div class="diab-mini-sub">${formatDaysLabel(summary.items.pen.coverageDays)}</div></div><div class="diab-mini-stat"><div class="diab-mini-label">Capteurs</div><div class="diab-mini-value">${summary.items.sensor.stock}</div><div class="diab-mini-sub">${formatDaysLabel(summary.items.sensor.coverageDays)}</div></div></div></div><div class="diab-focus-card"><div class="diab-inline-top"><div><div class="diab-inline-title">À venir</div><div class="diab-inline-sub">Les prochaines échéances, présentées de façon plus lisible et plus calme.</div></div></div><div class="diab-focus-list">${upcoming.map(item=>`<div class="diab-focus-row"><div class="diab-focus-icon" style="color:${item.color}">${item.emoji}</div><div class="diab-focus-copy"><strong>${item.label}</strong><span>Changement prévu le ${fmtDate(item.nextChange)} · ${formatDaysLabel(item.nextChangeIn)}</span></div></div>`).join("")||`<div class="diab-focus-row"><div class="diab-focus-copy"><strong>Aucune échéance proche</strong><span>Le stock est synchronisé.</span></div></div>`}</div></div>${renderQuickActions()}</div>`;
+  const renderStock=()=>`<div class="diab-wrap"><div class="diab-section-title">Stock du matériel</div><div class="diab-stack">${renderStockCards()}</div></div>`;
   const renderJournal=()=>`<div class="diab-wrap">${renderHero()}<div class="diab-section-title">Derniers mouvements</div>${renderHistory()}</div>`;
-  const renderActions=()=>`<div class="diab-wrap">${renderQuickActions()}<div class="diab-focus-card"><div class="diab-inline-top"><div><div class="diab-inline-title">Rythmes de suivi</div><div class="diab-inline-sub">Les repères utiles pour rester aligné au quotidien.</div></div></div><div class="diab-focus-list">${Object.values(DIABETES_META).map(meta=>`<div class="diab-focus-row"><div class="diab-focus-icon" style="color:${meta.color}">${meta.emoji}</div><div class="diab-focus-copy"><strong>${meta.label}</strong><span>${meta.helper}</span></div></div>`).join("")}</div></div><div class="diab-section-title">Journal récent</div>${renderHistory()}</div>`;
+  const renderActions=()=>`<div class="diab-wrap">${renderQuickActions()}<div class="diab-focus-card"><div class="diab-inline-top"><div><div class="diab-inline-title">Rythmes de suivi</div><div class="diab-inline-sub">Des repères clairs pour garder un suivi cohérent au quotidien.</div></div></div><div class="diab-focus-list">${Object.values(DIABETES_META).map(meta=>`<div class="diab-focus-row"><div class="diab-focus-icon" style="color:${meta.color}">${meta.emoji}</div><div class="diab-focus-copy"><strong>${meta.label}</strong><span>${meta.helper}</span></div></div>`).join("")}</div></div><div class="diab-section-title">Journal récent</div>${renderHistory()}</div>`;
   const body=diabetesTab==="stock"?renderStock():diabetesTab==="history"?renderJournal():diabetesTab==="actions"?renderActions():renderOverview();
   cont.innerHTML=`${renderHeader()}${body}`;
   document.querySelectorAll("#diabetes-nav .nb").forEach(btn=>btn.classList.toggle("on",btn.id===`dn-${diabetesTab}`));
