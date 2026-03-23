@@ -21,6 +21,9 @@ if('serviceWorker' in navigator){
 :root {
   --sat: env(safe-area-inset-top, 0px);
   --sab: env(safe-area-inset-bottom, 0px);
+  --nav-bottom-gap: 4px;
+  --screen-bottom-offset: 88px;
+  --module-screen-bottom-offset: 110px;
   --orange: #F97316;
   --orange2: #EA6C0A;
   --ol: rgba(249,115,22,.12);
@@ -54,6 +57,18 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:200px;backgro
 body::after{content:'';position:fixed;bottom:0;left:0;right:0;height:200px;background:var(--navy);z-index:-1;}
 input,select,button{font-family:inherit;font-size:16px;}/* 16px prevents iOS zoom */
 .hidden{display:none!important;}
+html.standalone-app,body.standalone-app{
+  --nav-bottom-gap:0px;
+  --screen-bottom-offset:84px;
+  --module-screen-bottom-offset:104px;
+}
+@media (display-mode: standalone){
+  html,body{
+    --nav-bottom-gap:0px;
+    --screen-bottom-offset:84px;
+    --module-screen-bottom-offset:104px;
+  }
+}
 
 /* ── ISLAND BAR — covers status area with navy */
 .island-bar{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:var(--sat);background:var(--top-safe-bg,var(--navy));z-index:90;pointer-events:none;transition:background .25s ease;}
@@ -100,7 +115,7 @@ nav{
   backdrop-filter:blur(20px) saturate(180%);
   -webkit-backdrop-filter:blur(20px) saturate(180%);
   border-top:1px solid rgba(10,10,26,.08);
-  padding-bottom:calc(var(--sab) + 4px);
+  padding-bottom:calc(var(--sab) + var(--nav-bottom-gap));
   z-index:100;display:flex;
 }
 .nb{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 0 6px;background:none;border:none;cursor:pointer;gap:3px;position:relative;}
@@ -111,7 +126,7 @@ nav{
 .nb.on::after{content:'';position:absolute;bottom:3px;width:18px;height:3px;background:var(--orange);border-radius:1.5px 1.5px 0 0;}
 
 /* ── SCREENS */
-.screen{min-height:100dvh;padding-bottom:calc(var(--sab) + 88px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--bg);}
+.screen{min-height:100dvh;padding-bottom:calc(var(--sab) + var(--screen-bottom-offset));overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--bg);}
 
 /* ── PAGE HEADER — used by all non-home tabs */
 .page-hdr{
@@ -555,6 +570,9 @@ if('serviceWorker' in navigator){
 :root {
   --sat: env(safe-area-inset-top, 0px);
   --sab: env(safe-area-inset-bottom, 0px);
+  --nav-bottom-gap: 4px;
+  --screen-bottom-offset: 88px;
+  --module-screen-bottom-offset: 110px;
   --orange: #F97316;
   --orange2: #EA6C0A;
   --ol: rgba(249,115,22,.12);
@@ -588,6 +606,18 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:200px;backgro
 body::after{content:'';position:fixed;bottom:0;left:0;right:0;height:200px;background:var(--navy);z-index:-1;}
 input,select,button{font-family:inherit;font-size:16px;}/* 16px prevents iOS zoom */
 .hidden{display:none!important;}
+html.standalone-app,body.standalone-app{
+  --nav-bottom-gap:0px;
+  --screen-bottom-offset:84px;
+  --module-screen-bottom-offset:104px;
+}
+@media (display-mode: standalone){
+  html,body{
+    --nav-bottom-gap:0px;
+    --screen-bottom-offset:84px;
+    --module-screen-bottom-offset:104px;
+  }
+}
 
 /* ── ISLAND BAR — covers status area with navy */
 .island-bar{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:var(--sat);background:var(--navy);z-index:90;pointer-events:none;}
@@ -634,7 +664,7 @@ nav{
   backdrop-filter:blur(20px) saturate(180%);
   -webkit-backdrop-filter:blur(20px) saturate(180%);
   border-top:1px solid rgba(10,10,26,.08);
-  padding-bottom:calc(var(--sab) + 4px);
+  padding-bottom:calc(var(--sab) + var(--nav-bottom-gap));
   z-index:100;display:flex;
 }
 .nb{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 0 6px;background:none;border:none;cursor:pointer;gap:3px;position:relative;}
@@ -645,7 +675,7 @@ nav{
 .nb.on::after{content:'';position:absolute;bottom:3px;width:18px;height:3px;background:var(--orange);border-radius:1.5px 1.5px 0 0;}
 
 /* ── SCREENS */
-.screen{min-height:100dvh;padding-bottom:calc(var(--sab) + 88px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--bg);}
+.screen{min-height:100dvh;padding-bottom:calc(var(--sab) + var(--screen-bottom-offset));overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--bg);}
 
 /* ── PAGE HEADER — used by all non-home tabs */
 .page-hdr{
@@ -1358,7 +1388,7 @@ nav{
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
-  padding-bottom: calc(var(--sab) + 110px);
+  padding-bottom: calc(var(--sab) + var(--module-screen-bottom-offset));
   animation: fadeIn .22s ease-out;
 }
 .mod-header {
@@ -1612,7 +1642,7 @@ nav{
   border-top:1px solid rgba(10,10,26,.08);
   box-shadow:none;
   border-radius:0;
-  padding:0 0 calc(var(--sab) + 4px);
+  padding:0 0 calc(var(--sab) + var(--nav-bottom-gap));
   gap:0;
 }
 .mod-nav-tabs{display:flex;flex:1;align-items:stretch;gap:0;}
@@ -4513,6 +4543,9 @@ function coursesItem(c){
 
 // ── INIT
 document.addEventListener("DOMContentLoaded", function() {
+  const standaloneMode = window.matchMedia?.("(display-mode: standalone)")?.matches || window.navigator.standalone === true;
+  document.documentElement.classList.toggle("standalone-app", standaloneMode);
+  document.body.classList.toggle("standalone-app", standaloneMode);
   document.getElementById("lock-btn").addEventListener("click", doUnlock);
   document.getElementById("lock-code").addEventListener("keydown", e => { if(e.key==="Enter") doUnlock(); });
   document.getElementById("faceid-btn").addEventListener("click", doFaceID);
