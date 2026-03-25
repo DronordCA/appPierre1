@@ -1645,12 +1645,11 @@ nav{
   padding:0 0 calc(var(--sab) + var(--nav-bottom-gap));
   gap:0;
 }
-.mod-nav-tabs{display:flex;flex:1;align-items:stretch;gap:0;}
-.mod-nav-tabs .nb{flex:1;min-height:auto;padding:10px 0 6px;border-radius:0;gap:3px;background:none;}
-.mod-nav-tabs .nb span{font-size:10px;line-height:1.15;}
-.mod-nav-tabs .nb svg{width:24px;height:24px;}
-.mod-nav-tabs .nb.on{background:none;}
-.mod-nav-tabs .nb.on::after{bottom:3px;width:18px;height:3px;border-radius:1.5px 1.5px 0 0;}
+#diabetes-nav .nb{flex:1;min-height:auto;padding:10px 0 6px;border-radius:0;gap:3px;background:none;}
+#diabetes-nav .nb span{font-size:10px;line-height:1.15;}
+#diabetes-nav .nb svg{width:24px;height:24px;}
+#diabetes-nav .nb.on{background:none;}
+#diabetes-nav .nb.on::after{bottom:3px;width:18px;height:3px;border-radius:1.5px 1.5px 0 0;}
 #diabetes-content{background:var(--bg);}
 .mod-header.mod-header-diabetes{padding:calc(var(--sat) + 16px) 18px 34px;border-radius:0 0 36px 36px;background:linear-gradient(180deg,#08111D 0%,#102643 40%,#14314F 70%,#102437 100%);box-shadow:inset 0 -1px 0 rgba(255,255,255,.05);}
 .mod-header-diabetes::before{content:'';position:absolute;inset:auto auto 30px 18px;width:110px;height:110px;border-radius:28px;background:linear-gradient(135deg,rgba(52,211,153,.22),rgba(56,189,248,.1));filter:blur(4px);opacity:.95;}
@@ -1760,7 +1759,7 @@ nav{
 .diab-choice-name{font-size:14px;font-weight:800;color:#0F172A;margin-bottom:3px;}
 .diab-choice-sub{font-size:12px;color:#64748B;line-height:1.4;}
 @media (max-width: 430px){.mod-nav{width:100%;} .diab-wrap{padding:0 14px 20px;} .diab-card,.diab-inline-card,.diab-hero-card,.diab-history,.diab-empty{border-radius:24px;} .diab-inline-sub,.diab-hero-sub{max-width:none;}}
-@media (max-width: 390px){.diab-stats,.diab-actions,.diab-quick-actions,.diab-modal-grid{grid-template-columns:1fr;} .diab-hero-top,.diab-inline-top,.diab-header-bar,.diab-compact-top,.diab-custom-top,.diab-custom-row{flex-direction:column;align-items:flex-start;} .diab-header-status{white-space:normal;} .diab-compact-item{grid-template-columns:1fr;} .diab-compact-meta{text-align:left;} .diab-custom-actions{align-items:flex-start;} .mod-nav-tabs .nb{min-height:54px;} .mod-nav-tabs .nb span{font-size:9px;}}
+@media (max-width: 390px){.diab-stats,.diab-actions,.diab-quick-actions,.diab-modal-grid{grid-template-columns:1fr;} .diab-hero-top,.diab-inline-top,.diab-header-bar,.diab-compact-top,.diab-custom-top,.diab-custom-row{flex-direction:column;align-items:flex-start;} .diab-header-status{white-space:normal;} .diab-compact-item{grid-template-columns:1fr;} .diab-compact-meta{text-align:left;} .diab-custom-actions{align-items:flex-start;} #diabetes-nav .nb{min-height:54px;} #diabetes-nav .nb span{font-size:9px;}}
 
 </style>
 </head>
@@ -1905,13 +1904,11 @@ nav{
 <div id="module-diabetes" class="hidden">
   <div id="diabetes-content" class="mod-screen"></div>
   <nav class="mod-nav hidden" id="diabetes-nav" aria-label="Navigation diabète">
-    <div class="mod-nav-tabs">
-      <button class="nb on" id="dn-overview"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3z"/><path d="M13 21h8v-6h-8z"/><path d="M13 3h8v8h-8z"/><path d="M3 17h8v4H3z"/></svg><span>Vue</span></button>
-      <button class="nb" id="dn-stock"><svg viewBox="0 0 24 24"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span>Stock</span></button>
-      <button class="nb" id="dn-history"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 3v6h6"/><path d="M12 7v5l3 3"/></svg><span>Journal</span></button>
-      <button class="nb" id="dn-actions"><svg viewBox="0 0 24 24"><path d="M12 2v20"/><path d="M2 12h20"/><path d="M4.9 4.9l14.2 14.2"/><path d="M19.1 4.9 4.9 19.1"/></svg><span>Actions</span></button>
-      <button class="nb" id="dn-settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 0 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 4.6 15 1.7 1.7 0 0 0 3 14H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9A1.7 1.7 0 0 0 10 3.1V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 0 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9c.2.6.8 1 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg><span>Réglages</span></button>
-    </div>
+    <button class="nb on" id="dn-overview"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3z"/><path d="M13 21h8v-6h-8z"/><path d="M13 3h8v8h-8z"/><path d="M3 17h8v4H3z"/></svg><span>Vue</span></button>
+    <button class="nb" id="dn-stock"><svg viewBox="0 0 24 24"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg><span>Stock</span></button>
+    <button class="nb" id="dn-history"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 3v6h6"/><path d="M12 7v5l3 3"/></svg><span>Journal</span></button>
+    <button class="nb" id="dn-actions"><svg viewBox="0 0 24 24"><path d="M12 2v20"/><path d="M2 12h20"/><path d="M4.9 4.9l14.2 14.2"/><path d="M19.1 4.9 4.9 19.1"/></svg><span>Actions</span></button>
+    <button class="nb" id="dn-settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 0 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 4.6 15 1.7 1.7 0 0 0 3 14H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9A1.7 1.7 0 0 0 10 3.1V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 0 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9c.2.6.8 1 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg><span>Réglages</span></button>
   </nav>
 </div>
 
