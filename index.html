@@ -1214,8 +1214,9 @@ nav{
 #hub-screen {
   position: fixed;
   top: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  margin: 0 auto;
   width: 100%;
   max-width: 430px;
   min-height: 100dvh;
@@ -1226,7 +1227,7 @@ nav{
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
-  touch-action: pan-y;
+  touch-action: auto;
 }
 
 /* Top bar */
