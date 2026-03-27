@@ -4591,15 +4591,27 @@ function _renderCoursesContent(cont){
     });
   });
 
-  // Swipe delete — long press
+  // Long press delete (robust on touch: cancel on movement/scroll/outside)
   cont.querySelectorAll(".courses-item").forEach(el=>{
-    let timer;
-    el.addEventListener("pointerdown",()=>{timer=setTimeout(()=>{
-      DATA.courses=(DATA.courses||[]).filter(c=>String(c.id)!==String(el.dataset.id));
-      save().then(()=>{_renderCoursesContent(cont);updateHub();});
-    },600);});
-    el.addEventListener("pointerup",()=>clearTimeout(timer));
-    el.addEventListener("pointercancel",()=>clearTimeout(timer));
+    let timer=null,startX=0,startY=0;
+    const clearPress=()=>{if(timer){clearTimeout(timer);timer=null;}};
+    el.addEventListener("pointerdown",(e)=>{
+      if(e.pointerType==="mouse"&&e.button!==0)return;
+      startX=e.clientX;startY=e.clientY;
+      clearPress();
+      timer=setTimeout(()=>{
+        DATA.courses=(DATA.courses||[]).filter(c=>String(c.id)!==String(el.dataset.id));
+        save().then(()=>{_renderCoursesContent(cont);updateHub();});
+      },600);
+    });
+    el.addEventListener("pointermove",(e)=>{
+      if(!timer)return;
+      const moved=Math.abs(e.clientX-startX)>10||Math.abs(e.clientY-startY)>10;
+      if(moved)clearPress();
+    });
+    el.addEventListener("pointerup",clearPress);
+    el.addEventListener("pointercancel",clearPress);
+    el.addEventListener("pointerleave",clearPress);
   });
 
   cont.querySelector("#clear-checked")?.addEventListener("click",async()=>{
