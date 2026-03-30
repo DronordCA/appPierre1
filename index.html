@@ -4143,10 +4143,17 @@ function installTouchFoundation(){
     const el=e.target?.closest?.(clickableSel);
     if(!el)return;
     const last=ghostClicks.get(el);
-    if(last&&Date.now()-last<GHOST_MS){
+    if(!last)return;
+
+    if(!e.isTrusted&&Date.now()-last<GHOST_MS){
       ghostClicks.delete(el);
       e.stopImmediatePropagation();
       e.preventDefault();
+      return;
+    }
+
+    if(e.isTrusted){
+      ghostClicks.delete(el);
     }
   },{capture:true});
 }
