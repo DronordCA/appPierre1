@@ -118,6 +118,17 @@ nav{
   border-top:1px solid rgba(10,10,26,.08);
   padding-bottom:calc(var(--sab) + var(--nav-bottom-gap));
   z-index:100;display:flex;
+  isolation:isolate;
+}
+nav::after{
+  content:'';
+  position:absolute;
+  left:0;right:0;
+  bottom:calc(-1 * (var(--sab) + 40px));
+  height:calc(var(--sab) + 40px);
+  background:rgba(240,238,233,.94);
+  pointer-events:none;
+  z-index:-1;
 }
 .nb{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 0 6px;background:none;border:none;cursor:pointer;gap:3px;position:relative;}
 .nb svg{width:24px;height:24px;stroke:var(--t4);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .15s;}
@@ -831,6 +842,17 @@ nav{
   border-radius: 28px 28px 0 0;
   padding: 8px 10px max(calc(var(--sab) + 6px), 14px);
   z-index: 100; display: flex; align-items: stretch; gap: 6px;
+  isolation: isolate;
+}
+.mod-nav::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  bottom: calc(-1 * (var(--sab) + 44px));
+  height: calc(var(--sab) + 44px);
+  background: rgba(248,250,252,.96);
+  pointer-events: none;
+  z-index: -1;
 }
 .mod-back-btn {
   display: flex; align-items: center; gap: 4px;
