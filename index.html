@@ -698,6 +698,7 @@ nav::after{
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   touch-action: auto;
+  padding-bottom: 0;
 }
 
 /* Top bar */
@@ -753,7 +754,7 @@ nav::after{
 
 /* Modules grid */
 .hub-modules {
-  padding: 0 16px calc(var(--sab) + 40px);
+  padding: 0 16px calc(var(--sab) + 32px);
   display: flex; flex-direction: column; gap: 14px;
 }
 
@@ -877,7 +878,7 @@ nav::after{
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   touch-action: pan-y;
-  padding-bottom: calc(var(--app-nav-safe-bottom) + var(--module-screen-bottom-offset));
+  padding-bottom: calc(90px + var(--sab));
   animation: fadeIn .22s ease-out;
 }
 .mod-header {
