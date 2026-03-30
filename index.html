@@ -21,6 +21,9 @@ if('serviceWorker' in navigator){
 :root {
   --sat: env(safe-area-inset-top, 0px);
   --sab: env(safe-area-inset-bottom, 0px);
+  --runtime-bottom-inset: 0px;
+  --app-safe-bottom: max(var(--sab), var(--runtime-bottom-inset));
+  --app-height: 100dvh;
   --nav-bottom-gap: 4px;
   --screen-bottom-offset: 88px;
   --module-screen-bottom-offset: 110px;
@@ -116,7 +119,7 @@ nav{
   backdrop-filter:blur(20px) saturate(180%);
   -webkit-backdrop-filter:blur(20px) saturate(180%);
   border-top:1px solid rgba(10,10,26,.08);
-  padding-bottom:calc(var(--sab) + var(--nav-bottom-gap));
+  padding-bottom:calc(var(--app-safe-bottom) + var(--nav-bottom-gap));
   z-index:100;display:flex;
   isolation:isolate;
 }
@@ -124,8 +127,8 @@ nav::after{
   content:'';
   position:absolute;
   left:0;right:0;
-  bottom:calc(-1 * (var(--sab) + 40px));
-  height:calc(var(--sab) + 40px);
+  bottom:calc(-1 * (var(--app-safe-bottom) + 40px));
+  height:calc(var(--app-safe-bottom) + 40px);
   background:rgba(240,238,233,.94);
   pointer-events:none;
   z-index:-1;
@@ -138,7 +141,7 @@ nav::after{
 .nb.on::after{content:'';position:absolute;bottom:3px;width:18px;height:3px;background:var(--orange);border-radius:1.5px 1.5px 0 0;}
 
 /* ── SCREENS */
-.screen{height:100dvh;min-height:100dvh;padding-bottom:calc(var(--sab) + var(--screen-bottom-offset));overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;background:var(--bg);}
+.screen{height:var(--app-height);min-height:var(--app-height);padding-bottom:calc(var(--app-safe-bottom) + var(--screen-bottom-offset));overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;background:var(--bg);}
 
 /* ── PAGE HEADER — used by all non-home tabs */
 .page-hdr{
@@ -682,8 +685,8 @@ nav::after{
   margin: 0 auto;
   width: 100%;
   max-width: 430px;
-  min-height: 100dvh;
-  height: 100dvh;
+  min-height: var(--app-height);
+  height: var(--app-height);
   background: var(--navy);
   display: flex; flex-direction: column;
   overflow-x: hidden;
@@ -840,7 +843,7 @@ nav::after{
   border-bottom: none;
   box-shadow: 0 -14px 32px rgba(10,10,26,.12);
   border-radius: 28px 28px 0 0;
-  padding: 8px 10px max(calc(var(--sab) + 6px), 14px);
+  padding: 8px 10px max(calc(var(--app-safe-bottom) + 6px), 14px);
   z-index: 100; display: flex; align-items: stretch; gap: 6px;
   isolation: isolate;
 }
@@ -848,8 +851,8 @@ nav::after{
   content: '';
   position: absolute;
   left: 0; right: 0;
-  bottom: calc(-1 * (var(--sab) + 44px));
-  height: calc(var(--sab) + 44px);
+  bottom: calc(-1 * (var(--app-safe-bottom) + 44px));
+  height: calc(var(--app-safe-bottom) + 44px);
   background: rgba(248,250,252,.96);
   pointer-events: none;
   z-index: -1;
@@ -863,13 +866,13 @@ nav::after{
 .mod-back-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; }
 .mod-nav-divider { width: 1px; background: rgba(10,10,26,.08); margin: 8px 0; }
 .mod-screen {
-  min-height: 100dvh;
-  height: 100dvh;
+  min-height: var(--app-height);
+  height: var(--app-height);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   touch-action: pan-y;
-  padding-bottom: calc(var(--sab) + var(--module-screen-bottom-offset));
+  padding-bottom: calc(var(--app-safe-bottom) + var(--module-screen-bottom-offset));
   animation: fadeIn .22s ease-out;
 }
 .mod-header {
@@ -4180,10 +4183,24 @@ function installTouchFoundation(){
   },{capture:true});
 }
 
+function syncViewportMetrics(){
+  const vv = window.visualViewport;
+  const appHeight = vv?.height ? Math.round(vv.height) : window.innerHeight;
+  const runtimeBottomInset = vv ? Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop)) : 0;
+  document.documentElement.style.setProperty("--app-height", `${appHeight}px`);
+  document.documentElement.style.setProperty("--runtime-bottom-inset", `${runtimeBottomInset}px`);
+}
+
 // ── INIT
 document.addEventListener("DOMContentLoaded", function() {
+
   installTouchFoundation();
   const standaloneMode = window.matchMedia?.("(display-mode: standalone)")?.matches || window.navigator.standalone === true;
+  syncViewportMetrics();
+  window.addEventListener("resize", syncViewportMetrics, { passive: true });
+  window.addEventListener("orientationchange", syncViewportMetrics, { passive: true });
+  window.visualViewport?.addEventListener("resize", syncViewportMetrics, { passive: true });
+  window.visualViewport?.addEventListener("scroll", syncViewportMetrics, { passive: true });
   document.documentElement.classList.toggle("standalone-app", standaloneMode);
   document.body.classList.toggle("standalone-app", standaloneMode);
   document.getElementById("lock-btn").addEventListener("click", doUnlock);
