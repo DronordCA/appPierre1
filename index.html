@@ -127,7 +127,7 @@ nav{
 .nb.on::after{content:'';position:absolute;bottom:3px;width:18px;height:3px;background:var(--orange);border-radius:1.5px 1.5px 0 0;}
 
 /* ── SCREENS */
-.screen{min-height:100dvh;padding-bottom:calc(var(--sab) + var(--screen-bottom-offset));overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;background:var(--bg);}
+.screen{height:100dvh;min-height:100dvh;padding-bottom:calc(var(--sab) + var(--screen-bottom-offset));overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;background:var(--bg);}
 
 /* ── PAGE HEADER — used by all non-home tabs */
 .page-hdr{
@@ -471,7 +471,7 @@ nav{
   /* Override mobile layout for desktop */
   .island-bar { display: none; }
   nav { display: none !important; }
-  .screen { padding-bottom: 24px; }
+  .screen { height:auto; min-height:0; overflow-y:visible; padding-bottom: 24px; }
   .page-hdr {
     background: none;
     padding: 0 0 16px !important;
