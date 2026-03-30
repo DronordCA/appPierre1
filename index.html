@@ -126,7 +126,7 @@ nav{
 .nb.on::after{content:'';position:absolute;bottom:3px;width:18px;height:3px;background:var(--orange);border-radius:1.5px 1.5px 0 0;}
 
 /* ── SCREENS */
-.screen{min-height:100dvh;padding-bottom:calc(var(--sab) + var(--screen-bottom-offset));overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--bg);}
+.screen{min-height:100dvh;padding-bottom:calc(var(--sab) + var(--screen-bottom-offset));overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;background:var(--bg);}
 
 /* ── PAGE HEADER — used by all non-home tabs */
 .page-hdr{
@@ -675,7 +675,7 @@ nav{
 .nb.on::after{content:'';position:absolute;bottom:3px;width:18px;height:3px;background:var(--orange);border-radius:1.5px 1.5px 0 0;}
 
 /* ── SCREENS */
-.screen{min-height:100dvh;padding-bottom:calc(var(--sab) + var(--screen-bottom-offset));overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--bg);}
+.screen{min-height:100dvh;padding-bottom:calc(var(--sab) + var(--screen-bottom-offset));overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;background:var(--bg);}
 
 /* ── PAGE HEADER — used by all non-home tabs */
 .page-hdr{
@@ -1394,6 +1394,7 @@ nav{
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
+  touch-action: pan-y;
   padding-bottom: calc(var(--sab) + var(--module-screen-bottom-offset));
   animation: fadeIn .22s ease-out;
 }
@@ -2579,7 +2580,17 @@ function profileModal(){
   d.querySelector("#pp-p").addEventListener("click",()=>{localStorage.setItem(PROFILE_KEY,"Pierre");closeModal();refreshHome();});
   d.querySelector("#pp-l").addEventListener("click",()=>{localStorage.setItem(PROFILE_KEY,"Lealin");closeModal();refreshHome();});
 }
-function closeModal(){document.getElementById("overlay").classList.add("hidden");}
+function closeModal(){
+  document.getElementById("overlay").classList.add("hidden");
+
+  requestAnimationFrame(()=>{
+    const scr=document.querySelector('.screen:not(.hidden), #hub-screen:not(.hidden)');
+    if(!scr)return;
+    const y=scr.scrollTop;
+    scr.scrollTop=y?y-1:1;
+    scr.scrollTop=y;
+  });
+}
 window.closeModal=closeModal;
 
 // ── OBJECTIF RÉCURRENT MODAL
@@ -2785,7 +2796,7 @@ function openDepEdit(id){
     const deviseVal=deviseEl.value;
     const taux=deviseVal==="EUR"?(parseFloat(tauxEl.value)||DATA.taux||1):1;
     const errEl=d.querySelector("#de-err");
-    if(!m||m<=0){errEl.innerHTML='<div class="ferr">Montant invalide</div>';return;}
+    if(!m||m<=0){errEl.innerHTML='<div class="ferr">Montant invalide</div>';btn.disabled=false;btn.textContent="Enregistrer la dépense";return;}
     dep.cat=catEl.value;
     dep.desc=descEl.value.trim()||catEl.value||"Dépense";
     dep.montant=deviseVal==="EUR"?m*taux:m;
@@ -3046,12 +3057,17 @@ function renderDepense(){
   el.querySelector("#d-taux")?.addEventListener("input",upd);
 
   el.querySelector("#d-save").addEventListener("click", async()=>{
+    const btn=el.querySelector("#d-save");
+    if(btn.disabled)return;
+    btn.disabled=true;
+    btn.textContent="Enregistrement...";
+
     const desc = el.querySelector("#d-desc").value.trim();
     const m = parseFloat(el.querySelector("#d-montant").value);
     const devise = dev.value;
     const taux = devise==="EUR"?(parseFloat(el.querySelector("#d-taux").value)||DATA.taux):1;
     const errEl = el.querySelector("#d-err");
-    if(!m||m<=0){errEl.innerHTML='<div class="ferr">Montant invalide</div>';return;}
+    if(!m||m<=0){errEl.innerHTML='<div class="ferr">Montant invalide</div>';btn.disabled=false;btn.textContent="Enregistrer la dépense";return;}
     DATA.depenses.unshift({id:Date.now(),date:el.querySelector("#d-date").value,desc:desc||el.querySelector("#d-cat").value||"Dépense",cat:el.querySelector("#d-cat").value,montant:devise==="EUR"?m*taux:m,montantOriginal:m,devise,taux,note:"",compte:el.querySelector("#d-compte").value,who:getProfile()||""});
     await save();refreshTs();flash("Dépense enregistrée ✓");showTab("home");
   });
@@ -3144,7 +3160,7 @@ function renderArgent(mode){
     d.addEventListener("change",upd);el.querySelector("#r-m").addEventListener("input",upd);el.querySelector("#r-t")?.addEventListener("input",upd);
     el.querySelector("#r-save").addEventListener("click",async()=>{
       const m=parseFloat(el.querySelector("#r-m").value);const errEl=el.querySelector("#r-err");
-      if(!m||m<=0){errEl.innerHTML='<div class="ferr">Montant invalide</div>';return;}
+      if(!m||m<=0){errEl.innerHTML='<div class="ferr">Montant invalide</div>';btn.disabled=false;btn.textContent="Enregistrer la dépense";return;}
       const devise=d.value;const t=devise==="EUR"?(parseFloat(el.querySelector("#r-t").value)||DATA.taux):1;
       DATA.revenus.unshift({id:Date.now(),date:el.querySelector("#r-date").value,desc:el.querySelector("#r-desc").value.trim(),montant:m,montantNatif:m,montantCAD:devise==="EUR"?m*t:m,devise,taux:t,compte:el.querySelector("#r-c").value});
       await save();refreshTs();flash("Revenu enregistré ✓");showTab("home");
@@ -3152,7 +3168,7 @@ function renderArgent(mode){
   } else if(mode==="vir") {
     el.querySelector("#v-save").addEventListener("click",async()=>{
       const m=parseFloat(el.querySelector("#v-m").value);const src=el.querySelector("#v-src").value;const dst=el.querySelector("#v-dst").value;const errEl=el.querySelector("#v-err");
-      if(!m||m<=0){errEl.innerHTML='<div class="ferr">Montant invalide</div>';return;}
+      if(!m||m<=0){errEl.innerHTML='<div class="ferr">Montant invalide</div>';btn.disabled=false;btn.textContent="Enregistrer la dépense";return;}
       if(src===dst){errEl.innerHTML='<div class="ferr">Source et destination identiques</div>';return;}
       DATA.virements.unshift({id:Date.now(),date:el.querySelector("#v-date").value,desc:el.querySelector("#v-desc").value.trim(),montant:m,source:src,dest:dst});
       await save();refreshTs();flash("Virement enregistré ✓");showTab("home");
