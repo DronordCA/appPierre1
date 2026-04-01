@@ -1515,6 +1515,39 @@ const fN=(n,d)=>d==="EUR"?fE(n):fC(n);
 const cm=()=>today().slice(0,7);
 const mL=()=>new Date().toLocaleString("fr-FR",{month:"long",year:"numeric"});
 const esc=s=>String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const monthToIndex=(m)=>{const [y,mo]=String(m||"").split("-").map(Number);if(!y||!mo)return null;return y*12+(mo-1);};
+const indexToMonth=(i)=>`${Math.floor(i/12)}-${String((i%12)+1).padStart(2,"0")}`;
+
+function getBudgetMonthStats(targetMonth){
+  const budId=DATA.comptes.find(c=>c.id==="budget_ca")?.id||DATA.comptes[0]?.id;
+  const totFix=DATA.fixes.reduce((a,f)=>a+(parseFloat(f.montant)||0),0);
+  const virM=DATA.virements.filter(v=>v.dest===budId&&v.date&&v.date.startsWith(targetMonth)).reduce((a,v)=>a+(parseFloat(v.montant)||0),0)
+    + DATA.revenus.filter(r=>r.compte===budId&&r.date&&r.date.startsWith(targetMonth)).reduce((a,r)=>a+(parseFloat(r.montantCAD||r.montant)||0),0);
+  const depB=DATA.depenses.filter(d=>d.compte===budId&&d.date&&d.date.startsWith(targetMonth)).reduce((a,d)=>a+(parseFloat(d.montant)||0),0);
+  const monthNet=virM-totFix-depB;
+
+  const allMonths=[
+    ...DATA.depenses.map(d=>(d.date||"").slice(0,7)),
+    ...DATA.revenus.map(r=>(r.date||"").slice(0,7)),
+    ...DATA.virements.map(v=>(v.date||"").slice(0,7))
+  ].filter(Boolean);
+  let carriedDebt=0;
+  if(allMonths.length){
+    const firstIdx=monthToIndex(allMonths.sort()[0]);
+    const targetIdx=monthToIndex(targetMonth);
+    if(firstIdx!==null&&targetIdx!==null){
+      for(let mi=firstIdx;mi<targetIdx;mi++){
+        const m=indexToMonth(mi);
+        const inM=DATA.virements.filter(v=>v.dest===budId&&v.date&&v.date.startsWith(m)).reduce((a,v)=>a+(parseFloat(v.montant)||0),0)
+          + DATA.revenus.filter(r=>r.compte===budId&&r.date&&r.date.startsWith(m)).reduce((a,r)=>a+(parseFloat(r.montantCAD||r.montant)||0),0);
+        const depM=DATA.depenses.filter(d=>d.compte===budId&&d.date&&d.date.startsWith(m)).reduce((a,d)=>a+(parseFloat(d.montant)||0),0);
+        const netM=inM-totFix-depM;
+        carriedDebt=Math.min(0,carriedDebt+netM);
+      }
+    }
+  }
+  return {budId,totFix,virM,depB,carriedDebt,soldM:carriedDebt+monthNet};
+}
 
 let tt;
 function flash(m){const t=document.getElementById("toast");t.textContent=m;t.classList.remove("hidden");clearTimeout(tt);tt=setTimeout(()=>t.classList.add("hidden"),2200);}
@@ -1906,13 +1939,7 @@ function renderHome(){
   const S=soldes();
   const mon=cm();
   const depMois=DATA.depenses.filter(d=>d.date&&d.date.startsWith(mon));
-  const budId=DATA.comptes.find(c=>c.id==="budget_ca")?.id||DATA.comptes[0]?.id;
-  // Reçus = virements + revenus directs vers le compte budget ce mois
-  const virM=DATA.virements.filter(v=>v.dest===budId&&v.date&&v.date.startsWith(mon)).reduce((a,v)=>a+(parseFloat(v.montant)||0),0)
-    + DATA.revenus.filter(r=>r.compte===budId&&r.date&&r.date.startsWith(mon)).reduce((a,r)=>a+(parseFloat(r.montantCAD||r.montant)||0),0);
-  const totFix=DATA.fixes.reduce((a,f)=>a+(parseFloat(f.montant)||0),0);
-  const depB=depMois.filter(d=>d.compte===budId).reduce((a,d)=>a+(parseFloat(d.montant)||0),0);
-  const soldM=virM-totFix-depB;
+  const {budId,virM,totFix,depB,carriedDebt,soldM}=getBudgetMonthStats(mon);
   const pat=DATA.comptes.reduce((a,c)=>a+(S[c.id]||0)*(c.devise==="EUR"?DATA.taux:1),0);
   const cats={};depMois.forEach(d=>{if(d.cat)cats[d.cat]=(cats[d.cat]||0)+(parseFloat(d.montant)||0);});
   const catArr=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
@@ -1959,6 +1986,7 @@ function renderHome(){
     <div class="bp"><div class="bp-n">Reçus</div><div class="bp-v" style="color:#34D399">${fC(virM)}</div></div>
     <div class="bp"><div class="bp-n">Fixes</div><div class="bp-v" style="color:#93C5FD">${fC(totFix)}</div></div>
     <div class="bp"><div class="bp-n">Variables</div><div class="bp-v" style="color:#FCD34D">${fC(depB)}</div></div>
+    ${carriedDebt<0?`<div class="bp"><div class="bp-n">Report négatif</div><div class="bp-v" style="color:#FCA5A5">${fC(carriedDebt)}</div></div>`:""}
   </div>
 </div></div>
 ${(()=>{
@@ -3217,12 +3245,7 @@ function updateHub(){
   if(nameEl)nameEl.textContent=PR||"";
   if(greetEl)greetEl.innerHTML=greet+', <span class="name">'+(PR||"")+"</span>";
   const S=soldes();const mon=cm();
-  const budId=DATA.comptes.find(c=>c.id==="budget_ca")?.id||DATA.comptes[0]?.id;
-  const virM=DATA.virements.filter(v=>v.dest===budId&&v.date&&v.date.startsWith(mon)).reduce((a,v)=>a+(parseFloat(v.montant)||0),0)
-    +DATA.revenus.filter(r=>r.compte===budId&&r.date&&r.date.startsWith(mon)).reduce((a,r)=>a+(parseFloat(r.montantCAD||r.montant)||0),0);
-  const totFix=DATA.fixes.reduce((a,f)=>a+(parseFloat(f.montant)||0),0);
-  const depB=DATA.depenses.filter(d=>d.compte===budId&&d.date&&d.date.startsWith(mon)).reduce((a,d)=>a+(parseFloat(d.montant)||0),0);
-  const soldM=virM-totFix-depB;
+  const {virM,totFix,depB,soldM}=getBudgetMonthStats(mon);
   const sv=document.getElementById("hub-solde-val");
   if(sv){sv.textContent=fC(soldM);sv.className="hub-budget-amount"+(soldM<0?" neg":"");}
   const pr2=document.getElementById("hub-pill-recus");
