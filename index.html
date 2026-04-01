@@ -65,12 +65,14 @@ input,select,button{font-family:inherit;font-size:16px;}/* 16px prevents iOS zoo
 button,[role="button"],.tap,.nb,.sb,.chip,.psb,.pvt,.obj-row,.lr,.courses-item,.recipe-card,.rg-item,.d-home-tile{touch-action:manipulation;}
 .hidden{display:none!important;}
 html.standalone-app,body.standalone-app{
+  --app-nav-safe-bottom:max(var(--sab), var(--runtime-bottom-inset), 14px);
   --nav-bottom-gap:0px;
   --screen-bottom-offset:84px;
   --module-screen-bottom-offset:104px;
 }
 @media (display-mode: standalone){
   html,body{
+    --app-nav-safe-bottom:max(var(--sab), var(--runtime-bottom-inset), 14px);
     --nav-bottom-gap:0px;
     --screen-bottom-offset:84px;
     --module-screen-bottom-offset:104px;
@@ -78,7 +80,7 @@ html.standalone-app,body.standalone-app{
 }
 
 /* ── ISLAND BAR — covers status area with navy */
-.island-bar{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:var(--sat);background:var(--navy);z-index:90;pointer-events:none;}
+.island-bar{position:fixed;top:0;left:0;right:0;margin:0 auto;width:100%;max-width:430px;height:var(--sat);background:var(--navy);z-index:90;pointer-events:none;}
 
 /* ── LOCK */
 #lock-screen{
@@ -106,7 +108,7 @@ html.standalone-app,body.standalone-app{
 
 /* ── TOAST */
 #toast{position:fixed;top:calc(var(--sat) + 10px);left:50%;transform:translateX(-50%);background:rgba(10,10,26,.95);color:#fff;padding:10px 20px;border-radius:24px;font-size:14px;font-weight:600;z-index:500;white-space:nowrap;pointer-events:none;border:1px solid rgba(255,255,255,.08);}
-#offline-bar{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#D97706;color:white;text-align:center;font-size:12px;font-weight:700;padding:calc(var(--sat) + 2px) 0 6px;z-index:400;display:none;letter-spacing:.3px;}
+#offline-bar{position:fixed;top:0;left:0;right:0;margin:0 auto;width:100%;max-width:430px;background:#D97706;color:white;text-align:center;font-size:12px;font-weight:700;padding:calc(var(--sat) + 2px) 0 6px;z-index:400;display:none;letter-spacing:.3px;}
 
 /* ── OVERLAY */
 #overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:flex;align-items:flex-end;justify-content:center;z-index:200;}
@@ -116,7 +118,7 @@ html.standalone-app,body.standalone-app{
 
 /* ── NAV */
 nav{
-  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  position:fixed;bottom:0;left:0;right:0;margin:0 auto;
   width:100%;max-width:430px;
   background:rgba(240,238,233,.94);
   backdrop-filter:blur(20px) saturate(180%);
@@ -839,7 +841,7 @@ nav::after{
 
 /* ── MODULE NAV ───────────────────────────────── */
 .mod-nav {
-  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto;
   width: 100%; max-width: 430px;
   background: rgba(248,250,252,.96);
   backdrop-filter: blur(24px) saturate(185%);
@@ -1056,7 +1058,7 @@ nav::after{
   display:flex;gap:8px;padding:10px 16px calc(var(--sab) + 80px);
   background:rgba(240,238,233,.94);backdrop-filter:blur(20px);
   border-top:1px solid var(--sep);position:fixed;bottom:0;
-  left:50%;transform:translateX(-50%);width:100%;max-width:430px;
+  left:0;right:0;margin:0 auto;width:100%;max-width:430px;
 }
 .ai-input {
   flex:1;border:1.5px solid rgba(10,10,26,.1);border-radius:22px;
